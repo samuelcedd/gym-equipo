@@ -422,6 +422,42 @@ group = "10. Registrar series de días pasados";
   ok("Sin errores de consola", d.errors.length === 0, d.errors.join("\n"));
 }
 
+// =====================================================================
+group = "11. Unidad por confirmar y peso propio de máquinas";
+{
+  const d = device();
+  const prev = daysAgo(d, 7);
+  d.ev(`D.w.samuel['mie-peck']={u:'lb',uConfirm:false,ut:'2026-01-01',v:130,vu:'lb',d:'${prev}',f:130,fu:'lb',fd:'${prev}',h:[{d:'${prev}',s:[[130,10,'lb'],[100,10,'lb']]}]}`);
+  d.ev(`D.w.samuel['mie-face']={u:'lb',uConfirm:false,ut:'2026-01-01',v:49,vu:'lb',d:'${prev}',f:49,fu:'lb',fd:'${prev}',h:[{d:'${prev}',s:[[49,15,'lb']]}]}`);
+  d.ev(`D.w.samuel['sab-rueda']={uConfirm:false,ut:'2026-01-01',h:[{d:'${prev}',s:[[null,8]]}]}`);
+  d.ev("current='mie';renderDay()");
+  const conf = id => d.$(`.ex[data-id="${id}"] .prow[data-x], .ex[data-id="${id}"] .uconf`);
+  ok("Aviso 'Confirma la unidad en el gym' en la tarjeta", d.$('.ex[data-id="mie-peck"] .uconf')?.textContent.includes("Confirma la unidad en el gym: kg / lb / placas"));
+  setUnit(d, "mie-peck", "samuel", "lb");
+  ok("Tocar la misma unidad la confirma y quita el aviso", d.ev("D.w.samuel['mie-peck'].uConfirm") === undefined && !d.$('.ex[data-id="mie-peck"] .uconf'));
+  eq("Confirmar no cambia el registro", d.ev("D.w.samuel['mie-peck'].h[0].s[0]"), [130, 10, "lb"]);
+  setUnit(d, "mie-face", "samuel", "kg");
+  eq("Unidad por confirmar y tocar otra: corrige la etiqueta sin convertir", d.ev("[D.w.samuel['mie-face'].h[0].s[0],D.w.samuel['mie-face'].u,D.w.samuel['mie-face'].vu||'kg',D.w.samuel['mie-face'].uConfirm]"), [[49, 15], "kg", "kg", undefined]);
+  ok("Ya confirmada: cambiar de unidad otra vez sí convierte la meta", (() => { setUnit(d, "mie-face", "samuel", "lb"); return d.ev("D.w.samuel['mie-face'].h[0].s[0][0]") === 49 && d.ev("metaFor(ALLEX.find(e=>e.id==='mie-face'),'samuel',0,[]).cv").includes("49 kg"); })());
+  d.ev("current='sab';renderDay()");
+  ok("Core por confirmar muestra botón 'Está bien'", !!d.$('.ex[data-id="sab-rueda"] .uok'));
+  d.$('.ex[data-id="sab-rueda"] .uok').click();
+  ok("'Está bien' confirma el registro", d.ev("D.w.samuel['sab-rueda'].uConfirm") === undefined && !d.$('.ex[data-id="sab-rueda"] .uconf'));
+  // Mi gym: peso propio de máquinas de discos
+  const box = d.$("#gymBox");
+  ok("Mi gym tiene la sección de máquinas de carga con discos", !!box.querySelector('#gOwn .mrow[data-id="mar-prensa"]'));
+  ok("Prensa ya no aparece entre las máquinas de pila", !box.querySelector('#gMach .mrow[data-id="mar-prensa"]'));
+  box.querySelector('#gOwn .mrow[data-id="mar-prensa"] .ow').value = "60";
+  box.querySelector("#gSave").click();
+  eq("Peso propio guardado en la config", d.ev("D.g.own['mar-prensa']"), 60);
+  d.ev("current='mar';renderDay()");
+  ok("La tarjeta de prensa dice que se anotan solo los discos", d.$('.ex[data-id="mar-prensa"]').textContent.includes("Anota solo los discos, sin el peso de la máquina (la máquina pesa 60 kg)"));
+  const html = d.ev("buildExport()"), b = device();
+  b.ev(`mergeIn(readSeed(${JSON.stringify(html)}))`);
+  eq("Export/import conserva peso propio", b.ev("D.g.own['mar-prensa']"), 60);
+  ok("Sin errores de consola", d.errors.length + b.errors.length === 0, [...d.errors, ...b.errors].join("\n"));
+}
+
 // ---- Resumen ----
 const groups = [...new Set(results.map(r => r.group))];
 let fails = 0;
