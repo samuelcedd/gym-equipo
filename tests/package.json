@@ -1,0 +1,7 @@
+{
+  "name": "gym-equipo-tests",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node app.test.mjs" },
+  "devDependencies": { "jsdom": "^25.0.1" }
+}
