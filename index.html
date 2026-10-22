@@ -246,6 +246,8 @@ p{margin:0}
 .recbar input{font:inherit;font-size:15px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
 .recbar button{background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:8px 12px;font-weight:700;font-size:14px}
 .recbar p{flex-basis:100%;margin:0;font-size:13px}
+.uconf{font-size:14px;background:color-mix(in srgb,var(--p-yellow) 14%,var(--surface));border-left:4px solid var(--p-yellow);border-radius:6px;padding:6px 10px;margin:0 0 10px}
+.uconf .uok{margin-left:6px;background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:6px 10px;font-weight:700;font-size:13px}
 .recbar.past{border:2px solid var(--p-yellow);background:color-mix(in srgb,var(--p-yellow) 12%,var(--surface))}
 </style>
 </head>
@@ -532,7 +534,7 @@ const clone=o=>JSON.parse(JSON.stringify(o||{}));
 const LB=0.4536;
 const UNITS=["kg","lb","placas"];
 const ULBL={kg:"kg",lb:"lb",placas:"placa"};
-const CFG0={pref:{},bar:{kg:20,lb:45},ez:{kg:10,lb:25},plates:{kg:[25,20,15,10,5,2.5,1.25],lb:[45,35,25,10,5,2.5]},db:{kg:{min:2,max:50,step:2},lb:{min:5,max:120,step:5}},mach:{}};
+const CFG0={pref:{},bar:{kg:20,lb:45},ez:{kg:10,lb:25},plates:{kg:[25,20,15,10,5,2.5,1.25],lb:[45,35,25,10,5,2.5]},db:{kg:{min:2,max:50,step:2},lb:{min:5,max:120,step:5}},mach:{},own:{}};
 const pos=v=>typeof v==="number"&&isFinite(v)&&v>0;
 function normCfg(g){
  g=g||{};const o=clone(CFG0);
@@ -543,6 +545,7 @@ function normCfg(g){
   const d=(g.db||{})[u]||{};["min","max","step"].forEach(f=>{if(pos(d[f]))o.db[u][f]=d[f];});if(o.db[u].max<o.db[u].min)o.db[u].max=o.db[u].min;
  });
  Object.keys(g.mach||{}).forEach(id=>{const m=g.mach[id]||{};if(pos(m.w))o.mach[id]={w:m.w,u:m.u==="lb"?"lb":"kg",b:pos(m.b)?m.b:m.w};});
+ Object.keys(g.own||{}).forEach(id=>{if(pos(g.own[id]))o.own[id]=g.own[id];});
  if(g.at)o.at=g.at;
  return o;
 }
@@ -564,7 +567,7 @@ function mergeIn(src){
    const n=Object.assign({},a);
    if((b.d||"")>(a.d||"")){n.v=b.v;n.vu=b.vu;n.d=b.d;}
    if(b.fd&&(!a.fd||b.fd<a.fd)){n.f=b.f;n.fu=b.fu;n.fd=b.fd;}
-   if(b.u&&(b.ut||"")>(a.ut||"")){n.u=b.u;n.ut=b.ut;}
+   if(b.u&&(b.ut||"")>(a.ut||"")){n.u=b.u;n.ut=b.ut;if(b.uConfirm===false)n.uConfirm=false;else delete n.uConfirm;}
    if(b.h){const hm={};(a.h||[]).forEach(x=>hm[x.d]=x);b.h.forEach(x=>{const o=hm[x.d];if(!o||(x.s||[]).filter(Boolean).length>(o.s||[]).filter(Boolean).length)hm[x.d]=x;});n.h=Object.values(hm).sort((x,y)=>x.d<y.d?-1:1).slice(-12);}
    if(JSON.stringify(n)!==JSON.stringify(a)){D.w[p][id]=n;changed.add("w:"+p);}
   });
@@ -759,9 +762,12 @@ function card(e,i){
     <label><input type="number" inputmode="${ru==="kg"?"decimal":"numeric"}" step="${ru==="kg"?"0.5":"1"}" min="0" class="ikg" value="${esc(fv)}" placeholder="${ULBL[ru]}" aria-label="${PNAME[p]}, serie ${k+1}, ${UARIA[ru]}"${dis}><span class="u">${ULBL[ru]}</span></label>
     <label><input type="number" inputmode="numeric" step="1" min="0" class="irp" value="${f.reps===undefined||f.reps===null?"":esc(f.reps)}" placeholder="${esc(mm.reps)}" aria-label="${PNAME[p]}, serie ${k+1}, ${unit}"${dis}><span class="u">${unit}</span></label>
     <button type="button" class="sv${ok?" on":""}"${dis}>${ok?"✓ Hecha":"Guardar"}</button></div>`}).join("")}</div>`;
+  const own=LOADED.includes(e.id)?D.g.own[e.id]:null;
   return `<div class="prow${p===me?" me":""}">
    <div class="pname"><span class="pn"><span>${PNAME[p]}${p===me?" <small>(tú)</small>":""}</span>${showU?`<span class="useg" role="group" aria-label="Unidad de ${PNAME[p]}" data-p="${p}">${UNITS.map(x=>`<button type="button" data-u="${x}" aria-pressed="${x===u}"${dis}>${x}</button>`).join("")}</span>`:""}</span><span class="preps">${n} × ${esc(repsOf(e,p))}</span></div>
+   ${W.uConfirm===false?`<p class="uconf">⚠ ${showU?`<b>Confirma la unidad en el gym: kg / lb / placas.</b> Ahora está en ${esc(u)}. Si es correcta, tócala arriba; si no, toca la correcta y el registro se corrige sin convertir.`:`<b>Dato por confirmar en el gym.</b> Revisa el registro y confírmalo.`}${showU?"":` <button type="button" class="uok" data-p="${p}"${dis}>Está bien</button>`}</p>`:""}
    ${x.alt||x.n?`<p class="pnote">${x.alt?`Haz: <a href="${vidUrl({id:"",n:x.alt})}" target="_blank" rel="noopener">${esc(x.alt)} ▶</a>. `:""}${x.n?esc(x.n):""}</p>`:""}
+   ${LOADED.includes(e.id)&&showU?`<p class="rule">Anota solo los discos, sin el peso de la máquina${own?` (la máquina pesa ${fmtKg(own)} kg)`:""}.</p>`:""}
    ${prev?`<p class="last">Último ${DNAMES[parseD(prev.d).getDay()].toLowerCase()} (${esc(prev.d.slice(5).split("-").reverse().join("/"))}): ${esc(fmtSets(prev))}</p>`:""}
    ${e.cardio?"":(()=>{const R=rng(e,p);return `<p class="rule">Regla: ${I.t==="bw"?`cuando una serie llegue a ${R.hi}${R.sec?" s":" reps"}, la próxima vez súmale ${R.sec?"5 s":"2 reps"}`:`cuando una serie llegue a ${R.hi} reps, la próxima vez esa serie sube ${fmtInc(I.v,u)}${I.lbl?` (${I.lbl})`:""}`}.</p>`;})()}
    ${setRows}
@@ -783,6 +789,8 @@ const ITYPE={"lun-banca":"bb_up","lun-remo":"bb_up","lun-militar":"db","lun-jalo
  "mie-inclinado":"db","mie-remo":"mach","mie-dominadas":"mach","mie-peck":"mach","mie-laterales":"db_small","mie-face":"cable",
  "jue-hip":"bb_low","jue-bulgara":"db","jue-hack":"mach_big","jue-femoral":"mach","jue-pant":"mach_big","jue-colgado":"bw",
  "sab-rueda":"bw","sab-crunch":"cable","sab-piernas":"bw","sab-lateral":"bw","sab-pecho":"mach","sab-abd":"mach","sab-latpolea":"cable","sab-posterior":"mach","sab-curl":"db_small","sab-tricep":"cable"};
+// Máquinas de carga con discos: se anota solo el peso de los discos
+const LOADED=["mar-prensa","jue-hack","mar-pant","jue-pant"];
 const LTYPE={"lun-banca":"mach","lun-remo":"mach","mar-sentadilla":"db","mar-rumano":"db","mar-rueda":"bw","sab-rueda":"bw","mie-dominadas":"mach","jue-bulgara":"db","jue-colgado":"bw"};
 const IKG={bb_up:2.5,bb_low:5,bb_small:2.5,db:2,db_small:1,mach:2.5,mach_big:5,cable:2.5,bw:0};
 const ILB={bb_up:5,bb_low:10,bb_small:5,db:5,db_small:5,mach:10,mach_big:10,cable:10,bw:0};
@@ -988,13 +996,35 @@ function renderDay(){
   });
   cardEl.querySelectorAll(".useg button").forEach(b=>b.onclick=()=>{
    if(readOnly)return;
-   const p=b.parentNode.dataset.p,nu=b.dataset.u,old=unitOf(e,p);if(nu===old)return;
-   const cur=Object.assign({},D.w[p][e.id]||{});cur.u=nu;cur.ut=new Date().toISOString();D.w[p][e.id]=cur;persist("w",p);
+   const p=b.parentNode.dataset.p,nu=b.dataset.u,old=unitOf(e,p);
+   const cur=Object.assign({},D.w[p][e.id]||{}),pendiente=cur.uConfirm===false;
+   if(nu===old){
+    if(pendiente){delete cur.uConfirm;cur.ut=new Date().toISOString();D.w[p][e.id]=cur;persist("w",p);renderDay();toast(`${PNAME[p]}: unidad ${nu} confirmada`);}
+    return;
+   }
+   if(pendiente){
+    // Unidad sin confirmar y era otra: se corrige la etiqueta del registro, sin convertir los números
+    const fix=z=>z&&(z[2]||"kg")===old?(nu==="kg"?[z[0],z[1]]:[z[0],z[1],nu]):z;
+    cur.h=(cur.h||[]).map(h=>Object.assign({},h,{s:(h.s||[]).map(fix)}));
+    if((cur.vu||"kg")===old){if(nu==="kg")delete cur.vu;else cur.vu=nu;}
+    if((cur.fu||"kg")===old){if(nu==="kg")delete cur.fu;else cur.fu=nu;}
+    delete cur.uConfirm;cur.u=nu;cur.ut=new Date().toISOString();D.w[p][e.id]=cur;persist("w",p);
+    const td=D.s[p][e.id];
+    if(Array.isArray(td)&&td.some(z=>z&&(z.u||"kg")===old)){D.s[p][e.id]=td.map(z=>z&&(z.u||"kg")===old?Object.assign({},z,{u:nu}):z);persist("s",p);}
+    Object.keys(DRAFT).filter(x=>x.startsWith(p+"|"+e.id+"|")).forEach(x=>delete DRAFT[x]);
+    renderDay();toast(`${PNAME[p]}: corregido a ${nu}, sin convertir los números`);
+    return;
+   }
+   cur.u=nu;cur.ut=new Date().toISOString();D.w[p][e.id]=cur;persist("w",p);
    Object.keys(DRAFT).filter(x=>x.startsWith(p+"|"+e.id+"|")).forEach(x=>delete DRAFT[x]);
    const hasHist=(cur.h||[]).some(h=>(h.s||[]).some(hasW));
    const lost=hasHist&&(cur.h||[]).filter(h=>h.d<REC).slice(-1).some(h=>(h.s||[]).some(z=>hasW(z)&&conv(z[0],z[2],nu,e)===null));
    renderDay();
    toast(lost?`${PNAME[p]}: meta nueva en ${nu} (sin equivalencia de placas)`:hasHist?`${PNAME[p]}: ahora en ${nu}, meta convertida`:`${PNAME[p]}: ahora en ${nu}`);
+  });
+  cardEl.querySelectorAll(".uok").forEach(b=>b.onclick=()=>{
+   if(readOnly)return;const p=b.dataset.p,cur=Object.assign({},D.w[p][e.id]||{});
+   delete cur.uConfirm;cur.ut=new Date().toISOString();D.w[p][e.id]=cur;persist("w",p);renderDay();toast(`${PNAME[p]}: registro confirmado`);
   });
   cardEl.querySelectorAll(".srow").forEach(row=>{
    const btn=row.querySelector(".sv"),ik=row.querySelector(".ikg"),pc=row.querySelector(".pc");
@@ -1238,7 +1268,8 @@ function renderProgress(){
 /* ---------- Mi gym ---------- */
 let gymDirty=false;
 const parseList=s=>String(s).replace(/,\s+/g," ").split(/[\s;]+/).map(t=>parseFloat(t.replace(",","."))).filter(pos);
-const MACH_EX=ALLEX.filter(e=>!e.cardio&&(isMach(ITYPE[e.id]||"mach")||isMach(LTYPE[e.id]||"")));
+const MACH_EX=ALLEX.filter(e=>!e.cardio&&!LOADED.includes(e.id)&&(isMach(ITYPE[e.id]||"mach")||isMach(LTYPE[e.id]||"")));
+const LOADED_EX=ALLEX.filter(e=>LOADED.includes(e.id));
 function gymHTML(){
  const g=D.g,dis=readOnly?" disabled":"";
  const num=(id,v,lbl)=>`<label>${lbl}<input type="number" inputmode="decimal" step="any" min="0" id="${id}" value="${esc(v)}"${dis}></label>`;
@@ -1264,6 +1295,9 @@ function gymHTML(){
    <label>Cada placa<input type="number" inputmode="decimal" step="any" min="0" class="mw" value="${m.w?esc(m.w):""}"${dis}></label>
    <label>Unidad<select class="mu"${dis}><option value="kg"${m.u!=="lb"?" selected":""}>kg</option><option value="lb"${m.u==="lb"?" selected":""}>lb</option></select></label>
    <label>Placa 1<input type="number" inputmode="decimal" step="any" min="0" class="mb" value="${m.w&&m.b!==m.w?esc(m.b):""}" placeholder="igual"${dis}></label></div></div>`;}).join("")}</div>
+  <h3>Máquinas de carga con discos</h3>
+  <p class="phase-why" style="margin:0 0 4px">En estas se anota solo el peso de los discos. Opcional: el peso propio de la máquina (trineo o plataforma), para sumarlo más adelante.</p>
+  <div id="gOwn">${LOADED_EX.map(e=>`<div class="mrow" data-id="${e.id}"><div class="nm">${esc(e.n)}</div><div class="form two"><label>Peso propio (kg)<input type="number" inputmode="decimal" step="any" min="0" class="ow" value="${g.own[e.id]?esc(g.own[e.id]):""}" placeholder="sin dato"${dis}></label></div></div>`).join("")}</div>
   <button type="button" class="btn" id="gSave"${dis}>Guardar Mi gym</button>
   <p class="phase-why" style="margin:8px 0 0">Se guarda para los tres y viaja en el archivo de progreso.</p>
  </div>`;
@@ -1277,7 +1311,8 @@ function bindGym(box){
   const g={pref:{},bar:{kg:val("gBarKg"),lb:val("gBarLb")},ez:{kg:val("gEzKg"),lb:val("gEzLb")},
    plates:{kg:parseList(box.querySelector("#gPlKg").value),lb:parseList(box.querySelector("#gPlLb").value)},
    db:{kg:{min:val("gDbKgMin"),max:val("gDbKgMax"),step:val("gDbKgStep")},lb:{min:val("gDbLbMin"),max:val("gDbLbMax"),step:val("gDbLbStep")}},
-   mach:{},at:new Date().toISOString()};
+   mach:{},own:{},at:new Date().toISOString()};
+  box.querySelectorAll("#gOwn .mrow").forEach(r=>{const v=parseFloat(r.querySelector(".ow").value);if(pos(v))g.own[r.dataset.id]=v;});
   box.querySelectorAll("#gPref .seg").forEach(s=>{const b=s.querySelector('[aria-pressed="true"]');if(b)g.pref[s.dataset.p]=b.dataset.u;});
   box.querySelectorAll("#gMach .mrow").forEach(r=>{const w=parseFloat(r.querySelector(".mw").value),b=parseFloat(r.querySelector(".mb").value);if(pos(w))g.mach[r.dataset.id]={w:w,u:r.querySelector(".mu").value,b:pos(b)?b:w};});
   setCfg(g);gymDirty=false;persist("g");
