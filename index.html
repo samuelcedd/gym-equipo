@@ -241,6 +241,12 @@ p{margin:0}
 .mrow .nm{font-weight:600;font-size:15px;margin-bottom:6px}
 .mrow .f{display:grid;grid-template-columns:1fr 76px 1fr;gap:8px;align-items:end}
 .mrow label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.recbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin:0 0 10px;font-size:14px}
+.recbar label{display:flex;align-items:center;gap:8px;font-weight:600}
+.recbar input{font:inherit;font-size:15px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.recbar button{background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:8px 12px;font-weight:700;font-size:14px}
+.recbar p{flex-basis:100%;margin:0;font-size:13px}
+.recbar.past{border:2px solid var(--p-yellow);background:color-mix(in srgb,var(--p-yellow) 12%,var(--surface))}
 </style>
 </head>
 <body>
@@ -255,6 +261,7 @@ p{margin:0}
   </div>
   <p class="sync" id="sync"></p>
   <section class="view" id="v-train">
+    <div id="recBar" class="recbar"></div>
     <div class="plates" id="plates" role="group" aria-label="Elige el día"></div>
     <div id="dayView"></div>
   </section>
@@ -517,6 +524,7 @@ const store={
 const pad=n=>String(n).padStart(2,"0");
 const isoDay=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
 const TODAY=isoDay(new Date());
+let REC=TODAY; // fecha que se registra en Entreno: hoy o un día pasado
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const clone=o=>JSON.parse(JSON.stringify(o||{}));
 
@@ -711,19 +719,30 @@ const fmtRest=s=>s>=60?Math.floor(s/60)+":"+pad(s%60)+" min":s+" s";
 const VQ={"mie-dominadas":"jalón al pecho agarre neutro","mie-peck":"peck deck pecho","jue-hack":"hack squat","sab-piernas":"elevaciones de piernas acostado abdomen","sab-pecho":"press de pecho en máquina"};
 const vidUrl=e=>"https://www.youtube.com/results?search_query="+encodeURIComponent((VQ[e.id]||e.n)+" técnica correcta");
 const xo=(e,p)=>p==="anderson"?{s:e.sa,r:e.ra,n:e.na}:p==="lorena"?(LOR[e.id]||{}):{};
-const postMode=()=>!!(D.s.lorena&&D.s.lorena._post);
+const postMode=()=>REC===TODAY&&!!(D.s.lorena&&D.s.lorena._post);
 const setsOf=(e,p)=>{const n=xo(e,p).s||e.s;return p==="lorena"&&postMode()?Math.min(2,n):n;};
 const repsOf=(e,p)=>xo(e,p).r||e.r;
 const skipped=(e,p)=>p==="lorena"&&postMode()&&!POST_OK.includes(PH[e.id]);
 const peopleOf=e=>PEOPLE.filter(p=>(!e.only||e.only===p)&&!skipped(e,p));
 const ordered=()=>[me,...PEOPLE.filter(p=>p!==me)];
+// Series de la fecha que se registra: hoy salen de D.s; un día pasado, del historial de esa fecha
+function doneOf(p,id){
+ if(REC===TODAY)return D.s[p][id]||[];
+ const h=((D.w[p][id]||{}).h||[]).find(x=>x.d===REC);
+ return h?(h.s||[]).map(z=>z?{kg:z[0],reps:z[1],u:z[2]||"kg"}:null):[];
+}
+function setDone(p,e,arr){
+ if(REC===TODAY){D.s[p][e.id]=arr;persist("s",p);}
+ saveHist(p,e,arr);
+}
+const fmtRec=d=>{const x=parseD(d);return DNAMES[x.getDay()].toLowerCase()+" "+x.getDate()+"/"+(x.getMonth()+1);};
 
 function card(e,i){
  const rows=ordered().filter(p=>!e.only||e.only===p).map(p=>{
   if(skipped(e,p))return `<div class="prow${p===me?" me":""}"><div class="pname"><span>${PNAME[p]}</span></div><p class="skip">Modo post-turno: hoy no.</p></div>`;
-  const n=setsOf(e,p),done=D.s[p][e.id]||[],x=xo(e,p);
+  const n=setsOf(e,p),done=doneOf(p,e.id),x=xo(e,p);
   const dis=readOnly?" disabled":"";
-  const W=D.w[p][e.id]||{},hist=(W.h||[]).filter(h=>h.d!==TODAY),prev=hist[hist.length-1];
+  const W=D.w[p][e.id]||{},hist=(W.h||[]).filter(h=>h.d<REC),prev=hist[hist.length-1];
   const unit=/\bs\b/.test(repsOf(e,p))?"seg":"reps";
   const u=unitOf(e,p),I=incOf(e,p,u),showU=!e.cardio&&I.t!=="bw";
   const UARIA={kg:"kilos",lb:"libras",placas:"número de placa"};
@@ -733,7 +752,7 @@ function card(e,i){
   // Lo que se precarga en la fila: lo guardado, el borrador, la meta o lo último, siempre en la unidad actual
   const prefill=k=>{const t=done[k];if(t&&typeof t==="object")return t;const dr=DRAFT[dKey(p,e.id,k)];if(dr)return dr;const mm=M(k);if(mm.v!==null&&mm.v!==undefined)return {kg:mm.v,reps:null};const ps=prev&&prev.s&&prev.s[k];if(hasW(ps)&&inU(ps[0],ps[2])!==null)return {kg:inU(ps[0],ps[2]),reps:null};const before=done.slice(0,k).reverse().find(z=>z&&typeof z==="object"&&z.kg!==null&&z.kg!==undefined);if(before&&inU(before.kg,before.u)!==null)return {kg:inU(before.kg,before.u),reps:null};return {kg:inU(W.v,W.vu),reps:null};};
   const pcHTML=c=>c?`${esc(c.txt)}${c.warn?`<em class="pw">⚠ ${esc(c.warn)}</em>`:""}`:"";
-  const setRows=e.cardio?`<div class="sets"><button type="button" class="sv${done[0]?" on":""}" style="width:100%" data-p="${p}" data-k="0" data-cardio="1"${dis}>${done[0]?"✓ Cardio hecho":"Marcar cardio hecho"}</button></div>`:
+  const setRows=e.cardio?(REC!==TODAY?`<p class="skip">El cardio se marca el mismo día.</p>`:`<div class="sets"><button type="button" class="sv${done[0]?" on":""}" style="width:100%" data-p="${p}" data-k="0" data-cardio="1"${dis}>${done[0]?"✓ Cardio hecho":"Marcar cardio hecho"}</button></div>`):
    `<div class="srows">${Array.from({length:n},(_,k)=>{const f=prefill(k),ok=!!done[k],mm=M(k),ru=ok?(done[k].u||"kg"):u,fv=f.kg===undefined||f.kg===null?"":f.kg;return `<div class="srow${ok?" done":""}" data-p="${p}" data-k="${k}" data-u="${ru}">
     <div class="mset"><span class="tg ${mm.tag}">${TAGI[mm.tag]}</span>Meta: <b>${mm.v!==null&&mm.v!==undefined?fmtLoad(mm.v,u)+" × ":""}${mm.reps}${unit==="seg"?" s":""}</b>. ${esc(mm.txt)}${mm.cv?`<span class="cv">${esc(mm.cv)}</span>`:""}<span class="pc">${pcHTML(plateCalc(e,p,ru,fv===""?null:+fv))}</span></div>
     <span class="sn">${k+1}</span>
@@ -854,7 +873,7 @@ const fmtSet=z=>(hasW(z)?fmtLoad(z[0],z[2])+" × ":"")+z[1];
 const fmtInc=(v,u)=>u==="placas"?"+"+fmtKg(v)+(v===1?" placa":" placas"):"+"+fmtKg(v)+" "+u;
 function metaFor(e,p,k,done){
  const R=rng(e,p),u=unitOf(e,p),I=incOf(e,p,u),W=D.w[p][e.id]||{};
- const hist=(W.h||[]).filter(h=>h.d!==TODAY&&(h.s||[]).some(Boolean));
+ const hist=(W.h||[]).filter(h=>h.d<REC&&(h.s||[]).some(Boolean));
  const last=hist[hist.length-1],before=hist[hist.length-2];
  const pick=h=>h&&h.s?(h.s[k]||h.s.filter(Boolean).slice(-1)[0]):null;
  let L=pick(last);const B=pick(before);
@@ -879,7 +898,7 @@ function metaFor(e,p,k,done){
   if(fresh)return M(null,R.hi,"new",`Meta nueva en ${u==="placas"?"placas":u} (esta máquina no tiene equivalencia de placas en Plan → Mi gym): elige ${u==="placas"?"la placa con la":"un peso con el"} que logres ${R.hi} reps y te sobren 2`);
   return M(null,R.hi,"new",isBW?`Primera vez: haz ${R.hi}${R.sec?" s":" reps"} con buena técnica`:`Primera vez: elige ${u==="placas"?"la placa":"un peso"} con ${u==="placas"?"la":"el"} que logres ${R.hi} reps y te sobren 2`);
  }
- const days=Math.round((parseD(TODAY)-parseD(last.d))/86400000);
+ const days=Math.round((parseD(REC)-parseD(last.d))/86400000);
  const dname=DNAMES[parseD(last.d).getDay()].toLowerCase();
  const rpL=L[1]||0,kgL=hasW(L)?snap(conv(L[0],L[2],u,e)):null;
  const cv=hasW(L)&&(L[2]||"kg")!==u?`Convertido: ${fmtLoad(L[0],L[2])} ≈ ${fmtLoad(kgL,u)}.`:"";
@@ -898,37 +917,50 @@ function metaFor(e,p,k,done){
 }
 const TAGI={up:"↑",same:"=",down:"↓",new:"★",post:"=",back:"="};
 const DRAFT={};
-const dKey=(p,id,k)=>p+"|"+id+"|"+k;
+const dKey=(p,id,k)=>p+"|"+id+"|"+k+"|"+REC;
 function saveHist(p,e,arr){
  const cur=Object.assign({},D.w[p][e.id]||{});
- const h=(cur.h||[]).filter(x=>x.d!==TODAY);
+ const h=(cur.h||[]).filter(x=>x.d!==REC);
  // Cada serie: [valor, reps] en kg, o [valor, reps, "lb"|"placas"]
  const sets=arr.map(z=>z&&typeof z==="object"?(z.u&&z.u!=="kg"?[z.kg,z.reps,z.u]:[z.kg,z.reps]):null);
- if(sets.some(Boolean))h.push({d:TODAY,s:sets});
+ if(sets.some(Boolean))h.push({d:REC,s:sets});
+ h.sort((a,b)=>a.d<b.d?-1:1);
  cur.h=h.slice(-12);
  const ws=sets.filter(hasW);
  if(ws.length){
   let top=ws[0];
   ws.forEach(z=>{const a=toKg(z[0],z[2],e),b=toKg(top[0],top[2],e);if(a!==null&&b!==null?a>b:(z[2]||"kg")===(top[2]||"kg")&&z[0]>top[0])top=z;});
   const setU=(key,u)=>{if(u&&u!=="kg")cur[key]=u;else delete cur[key];};
-  cur.v=top[0];cur.d=TODAY;setU("vu",top[2]);
-  if(cur.f===undefined){cur.f=top[0];cur.fd=TODAY;setU("fu",top[2]);}
+  // El peso actual solo lo cambia la sesión más reciente; el inicial, la más antigua
+  if(!cur.d||REC>=cur.d){cur.v=top[0];cur.d=REC;setU("vu",top[2]);}
+  if(cur.f===undefined||!cur.fd||REC<=cur.fd){cur.f=top[0];cur.fd=REC;setU("fu",top[2]);}
  }
  D.w[p][e.id]=cur;persist("w",p);
 }
 let toastT=null;
 function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2200);}
 const wTimers={};
+// Barra "Registrar para": permite anotar series de un día pasado (por ejemplo, la semana anterior)
+function renderRec(){
+ const el=document.getElementById("recBar"),past=REC!==TODAY;
+ el.className="recbar"+(past?" past":"");
+ el.innerHTML=`<label><span>Registrar para</span><input type="date" id="recDate" value="${REC}" max="${TODAY}"></label>${past?`<button type="button" id="recToday">Volver a hoy</button>`:`<span class="muted">Hoy</span>`}
+  ${past?`<p>Estás anotando el <b>${esc(fmtRec(REC))}</b>. Las series quedan en el registro con esa fecha y las metas de hoy las tienen en cuenta.</p>`:""}`;
+ const set=v=>{REC=v&&v<=TODAY?v:TODAY;current=jsDayToKey[parseD(REC).getDay()];renderPlates();renderDay();};
+ document.getElementById("recDate").onchange=ev=>set(ev.target.value);
+ const bt=document.getElementById("recToday");if(bt)bt.onclick=()=>set(TODAY);
+}
 function renderDay(){
  const d=DAYS.find(x=>x.key===current);
  root.style.setProperty("--day",d.c);root.style.setProperty("--day-ink",d.ci);
  const openHow=new Set([...dayView.querySelectorAll(".ex")].filter(c=>{const h=c.querySelector(".howto");return h&&!h.hidden}).map(c=>c.dataset.id));
+ renderRec();
  let h=`<div class="hero"><div class="dname">${d.name}</div><h1>${esc(d.title)}</h1><p class="sub">${esc(d.sub)}</p></div>`;
  if(d.rest){
   h+=`<div class="card"><h3>${esc(d.rest.h)}</h3><ul>${d.rest.items.map(i=>`<li>${esc(i)}</li>`).join("")}</ul></div>`;
   dayView.innerHTML=h;return;
  }
- h+=`<label class="post"><input type="checkbox" id="postT"${postMode()?" checked":""}${readOnly?" disabled":""}> Lorena viene de turno nocturno</label><p class="phase-why">${postMode()?"Modo post-turno: Lorena hace solo los ejercicios principales y secundarios, 2 series cada uno, sin buscar récords. Si durmió menos de 4 horas, mejor que descanse.":"Márcalo los días en que Lorena llega de la guardia: su sesión se recorta para que recupere."}</p>`;
+ if(REC===TODAY)h+=`<label class="post"><input type="checkbox" id="postT"${postMode()?" checked":""}${readOnly?" disabled":""}> Lorena viene de turno nocturno</label><p class="phase-why">${postMode()?"Modo post-turno: Lorena hace solo los ejercicios principales y secundarios, 2 series cada uno, sin buscar récords. Si durmió menos de 4 horas, mejor que descanse.":"Márcalo los días en que Lorena llega de la guardia: su sesión se recorta para que recupere."}</p>`;
  h+=`<div class="progress bars2">${ordered().map(p=>`<div class="row"><span id="prog-${p}"></span></div><div class="bar"><i id="bar-${p}"></i></div>`).join("")}</div>`;
  const groups=[];d.ex.forEach(e=>{const p=PH[e.id]||"A";let g=groups[groups.length-1];if(!g||g.p!==p){g={p:p,ex:[]};groups.push(g)}g.ex.push(e)});
  const mins=e=>e.cardio?parseInt(e.r,10):Math.round(Math.max(...peopleOf(e).map(p=>setsOf(e,p)))*(e.rest+45)/60);
@@ -943,7 +975,7 @@ function renderDay(){
  let idx=0;
  groups.forEach(g=>{h+=`<h2 class="sec-title">Paso ${n++}: ${PHL[g.p].t}</h2><p class="phase-why">${PHL[g.p].w}</p>`;g.ex.forEach(e=>{h+=card(e,idx++)})});
  h+=`<h2 class="sec-title">Paso ${n++}: Al terminar</h2><div class="warm"><ul style="margin:0;padding-left:22px">${AFTER.map(x=>`<li style="margin:6px 0">${esc(x)}</li>`).join("")}</ul></div>`;
- h+=`<p class="foot">Al terminar cada serie escribe el peso (en kg, lb o número de placa, según elijas junto a tu nombre) y las repeticiones y toca Guardar: queda en el registro y el descanso arranca solo. La próxima sesión verás lo que hiciste la última vez.</p>`;
+ h+=`<p class="foot">Al terminar cada serie escribe el peso (en kg, lb o número de placa, según elijas junto a tu nombre) y las repeticiones y toca Guardar: queda en el registro y el descanso arranca solo. La próxima sesión verás lo que hiciste la última vez. Para anotar una sesión pasada, cambia la fecha en "Registrar para", arriba.</p>`;
  dayView.innerHTML=h;
 
  const pt=document.getElementById("postT");
@@ -960,7 +992,7 @@ function renderDay(){
    const cur=Object.assign({},D.w[p][e.id]||{});cur.u=nu;cur.ut=new Date().toISOString();D.w[p][e.id]=cur;persist("w",p);
    Object.keys(DRAFT).filter(x=>x.startsWith(p+"|"+e.id+"|")).forEach(x=>delete DRAFT[x]);
    const hasHist=(cur.h||[]).some(h=>(h.s||[]).some(hasW));
-   const lost=hasHist&&(cur.h||[]).filter(h=>h.d!==TODAY).slice(-1).some(h=>(h.s||[]).some(z=>hasW(z)&&conv(z[0],z[2],nu,e)===null));
+   const lost=hasHist&&(cur.h||[]).filter(h=>h.d<REC).slice(-1).some(h=>(h.s||[]).some(z=>hasW(z)&&conv(z[0],z[2],nu,e)===null));
    renderDay();
    toast(lost?`${PNAME[p]}: meta nueva en ${nu} (sin equivalencia de placas)`:hasHist?`${PNAME[p]}: ahora en ${nu}, meta convertida`:`${PNAME[p]}: ahora en ${nu}`);
   });
@@ -971,17 +1003,17 @@ function renderDay(){
    ik.addEventListener("input",()=>{const c=plateCalc(e,row.dataset.p,row.dataset.u,parseFloat(ik.value));pc.textContent=c?c.txt:"";if(c&&c.warn){const w=document.createElement("em");w.className="pw";w.textContent="⚠ "+c.warn;pc.appendChild(w);}});
    btn.onclick=()=>{
     if(readOnly)return;
-    const p=row.dataset.p,k=+row.dataset.k,ru=row.dataset.u,arr=(D.s[p][e.id]||[]).slice();
-    if(arr[k]){DRAFT[dKey(p,e.id,k)]={kg:conv(arr[k].kg,arr[k].u,unitOf(e,p),e),reps:arr[k].reps};arr[k]=null;D.s[p][e.id]=arr;persist("s",p);saveHist(p,e,arr);renderDay();return;}
+    const p=row.dataset.p,k=+row.dataset.k,ru=row.dataset.u,arr=doneOf(p,e.id).slice();
+    if(arr[k]){DRAFT[dKey(p,e.id,k)]={kg:conv(arr[k].kg,arr[k].u,unitOf(e,p),e),reps:arr[k].reps};arr[k]=null;setDone(p,e,arr);renderDay();return;}
     const kgv=parseFloat(ik.value),rpv=parseInt(row.querySelector(".irp").value,10);
     const kg=isNaN(kgv)?null:kgv,reps=isNaN(rpv)?null:rpv;
     if(reps===null){const r=row.querySelector(".irp");r.focus();toast("Escribe las "+(r.nextElementSibling.textContent)+" que hiciste");return;}
     // kg guarda el valor de la carga en la unidad u (kg, lb o número de placa)
-    arr[k]={kg:kg,reps:reps,u:ru};delete DRAFT[dKey(p,e.id,k)];D.s[p][e.id]=arr;persist("s",p);saveHist(p,e,arr);
+    arr[k]={kg:kg,reps:reps,u:ru};delete DRAFT[dKey(p,e.id,k)];setDone(p,e,arr);
     if(document.activeElement)document.activeElement.blur();
     renderDay();
-    toast(`${PNAME[p]}, serie ${k+1}: ${kg!==null?fmtLoad(kg,ru)+" × ":""}${reps} guardada`);
-    if(e.rest)startTimer(e.rest,PNAME[p]+", "+(xo(e,p).alt||e.n));
+    toast(`${PNAME[p]}, serie ${k+1}: ${kg!==null?fmtLoad(kg,ru)+" × ":""}${reps} guardada${REC!==TODAY?" para el "+fmtRec(REC):""}`);
+    if(e.rest&&REC===TODAY)startTimer(e.rest,PNAME[p]+", "+(xo(e,p).alt||e.n));
    };
   });
   const hb=cardEl.querySelector(".howto-btn"),ht=cardEl.querySelector(".howto");
@@ -994,14 +1026,14 @@ function renderDay(){
 function updateProgress(d){
  PEOPLE.forEach(p=>{
   let total=0,done=0;
-  d.ex.forEach(e=>{if(!peopleOf(e).includes(p))return;const arr=D.s[p][e.id]||[];const n=setsOf(e,p);total+=n;for(let j=0;j<n;j++)if(arr[j])done++;});
+  d.ex.forEach(e=>{if(!peopleOf(e).includes(p)||(e.cardio&&REC!==TODAY))return;const arr=doneOf(p,e.id);const n=setsOf(e,p);total+=n;for(let j=0;j<n;j++)if(arr[j])done++;});
   const t=document.getElementById("prog-"+p),b=document.getElementById("bar-"+p);
   if(t)t.textContent=PNAME[p]+": "+(done===total?"¡sesión completa!":done+" de "+total+" series");
   if(b)b.style.width=(total?done/total*100:0)+"%";
  });
  d.ex.forEach(e=>{
   const c=dayView.querySelector(`.ex[data-id="${e.id}"]`);if(!c)return;
-  const full=peopleOf(e).length>0&&peopleOf(e).every(p=>{const arr=D.s[p][e.id]||[];for(let j=0;j<setsOf(e,p);j++)if(!arr[j])return false;return true;});
+  const full=peopleOf(e).length>0&&peopleOf(e).every(p=>{if(e.cardio&&REC!==TODAY)return true;const arr=doneOf(p,e.id);for(let j=0;j<setsOf(e,p);j++)if(!arr[j])return false;return true;});
   c.classList.toggle("complete",full);
  });
 }
