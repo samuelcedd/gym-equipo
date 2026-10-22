@@ -458,6 +458,83 @@ group = "11. Unidad por confirmar y peso propio de máquinas";
   ok("Sin errores de consola", d.errors.length + b.errors.length === 0, [...d.errors, ...b.errors].join("\n"));
 }
 
+// =====================================================================
+group = "12. Color por persona y frase del día";
+{
+  // Contraste AA de los tokens tal como están en el CSS (claro y los dos bloques oscuros)
+  const css = RAW.match(/<style>([\s\S]*?)<\/style>/)[1];
+  const block = re => (css.match(re) || [, ""])[1];
+  const tok = (b, n) => (b.match(new RegExp("--" + n + ":\\s*(#[0-9A-Fa-f]{6})")) || [])[1];
+  const lum = h => { const c = [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255).map(v => v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  const light = block(/:root\{([\s\S]*?)\n\}/), darkMq = block(/:root:not\(\[data-theme="light"\]\)\{([\s\S]*?)\}/), darkAttr = block(/:root\[data-theme="dark"\]\{([\s\S]*?)\}/);
+  const EXP = { samuel: ["#1F5FAD", "#6BA2E8"], anderson: ["#C2410C", "#FF8A4C"], lorena: ["#7B3FA0", "#C39BE0"] };
+  for (const [p, [cl, cd]] of Object.entries(EXP)) {
+    eq(`Token ${p} en claro y en los dos bloques oscuros`, [tok(light, "c-" + p), tok(darkMq, "c-" + p), tok(darkAttr, "c-" + p)].map(x => x && x.toUpperCase()), [cl, cd, cd]);
+    const rl = ratio(tok(light, "me-ink") || "#FFFFFF", cl), rd = ratio(tok(darkMq, "me-ink"), cd), ra = ratio(tok(darkAttr, "me-ink"), cd);
+    ok(`Contraste AA ${p}: claro ${rl.toFixed(2)}, oscuro ${rd.toFixed(2)}`, rl >= 4.5 && rd >= 4.5 && ra >= 4.5);
+  }
+  ok("--me se anima 200 ms y respeta reduced-motion", /transition:--me \.2s/.test(css) && /@property --me/.test(css) && /prefers-reduced-motion:reduce\)\{\*\{transition:none!important\}/.test(css));
+  ok("Los discos de los días no usan --me", !/\.disc\{[^}]*--me/.test(css) && RAW.includes('c:"var(--p-red)"'));
+
+  const d = device();
+  eq("Al cargar, data-me = persona guardada", d.w.document.documentElement.getAttribute("data-me"), "samuel");
+  for (const p of ["anderson", "lorena", "samuel"]) {
+    d.$(`#who button[data-p="${p}"]`).click();
+    ok(`Cambiar a ${p}: data-me y saludo`, d.w.document.documentElement.getAttribute("data-me") === p && d.$("#toast").textContent === d.ev(`MOTIVA.${p}.hola`), d.$("#toast").textContent);
+  }
+  ok("Hero de Comida, Progreso y Plan con el color de la persona", ["#v-food", "#v-prog", "#v-plan"].every(s => d.$(s + " .hero").classList.contains("mine")));
+  d.ev("weekWho='all';renderWeek()");
+  eq("Semana 'Los tres': un punto de color por persona en el resumen", d.$$("#v-week .wsum .dot").map(x => x.getAttribute("style")), ["--dc:var(--c-samuel)", "--dc:var(--c-anderson)", "--dc:var(--c-lorena)"]);
+  ok("Progreso: puntos de color junto a cada nombre", d.$$("#v-prog .dot").length >= 9);
+  ok("La fila (tú) y el botón Guardar usan la clase de la persona activa", !!d.$(".prow.me .sv"));
+
+  // Frase determinista por fecha y persona
+  d.ev("current='mie';renderDay()");
+  const f1 = d.$("#frase .fq").textContent, d2 = device();
+  d2.ev("current='mie';renderDay()");
+  eq("Misma frase al recargar (mismo día y persona)", d2.$("#frase .fq").textContent, f1);
+  const pick = (p, date) => d.ev(`(()=>{const L=MOTIVA.${p}.frases;return hashN('${date}|${p}')%L.length;})()`);
+  const week = ["2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-24", "2026-10-25"];
+  ok("La frase cambia según el día", new Set(week.map(x => pick("samuel", x))).size >= 3);
+  ok("La frase cambia según la persona", new Set(["samuel", "anderson", "lorena"].map(p => d.ev(`fraseHoy('${p}').t`))).size === 3);
+  let prevT = d.$("#frase .fq").textContent, rep = 0, seenScene = null;
+  for (let i = 0; i < 12; i++) {
+    d.$('#frase [data-f="otra"]').click();
+    const t = d.$("#frase .fq").textContent; if (t === prevT) rep++; prevT = t;
+    const a = d.$("#frase .fb a"); if (a && !seenScene) seenScene = a.getAttribute("href");
+  }
+  eq("'Otra frase' no repite seguidas", rep, 0);
+  let prevJ = null, repJ = 0;
+  for (let i = 0; i < 10; i++) { d.$('#frase [data-f="chiste"]').click(); const j = d.$("#frase .fj").textContent; if (j === prevJ) repJ++; prevJ = j; }
+  ok("'Un chiste' muestra el chiste con emoji y no repite seguidos", repJ === 0 && prevJ.startsWith("😄 "));
+  ok("'Ver escena' es una búsqueda de YouTube bien codificada", !!seenScene && seenScene.startsWith("https://www.youtube.com/results?search_query=") && d.ev(`MOTIVA.samuel.frases.some(f=>f.s&&'${seenScene}'.endsWith(encodeURIComponent(f.s)))`), seenScene);
+  ok("Las frases sin escena no muestran el botón", d.ev("MOTIVA.samuel.frases.filter(f=>!f.s).length") > 0 && (() => { for (let i = 0; i < 6; i++) { if (!d.ev("fraseHoy('samuel').s")) return !d.$("#frase .fb a"); d.$('#frase [data-f="otra"]').click(); } return false; })());
+  ok("Ningún link de escena tiene IDs de video", !/youtube\.com\/watch|youtu\.be\//.test(RAW));
+
+  // Modo post-turno de Lorena: solo frases post-turno
+  d.$('#who button[data-p="lorena"]').click();
+  d.ev("D.s.lorena=Object.assign({},D.s.lorena,{_post:true});renderDay()");
+  const post = d.ev("MOTIVA.lorena.post.map(f=>f.t)");
+  let allPost = true;
+  for (let i = 0; i < 5; i++) { if (!post.includes(d.$("#frase .fq").textContent)) allPost = false; d.$('#frase [data-f="otra"]').click(); }
+  ok("Post-turno: solo frases de la lista post-turno", allPost && d.$("#frase .fw").textContent.startsWith("Post-turno"));
+  d.ev("D.s.lorena=Object.assign({},D.s.lorena,{_post:false});renderDay()");
+  ok("Sin post-turno vuelven las frases normales", d.ev("MOTIVA.lorena.frases.map(f=>f.t)").includes(d.$("#frase .fq").textContent));
+
+  // Sesión completa: toast una sola vez
+  const s = device();
+  s.ev("current='lun';renderDay()");
+  s.ev(`DAYS.find(x=>x.key==='lun').ex.forEach(e=>{const n=setsOf(e,'samuel');D.s.samuel[e.id]=Array.from({length:n},()=>({kg:10,reps:10,u:'kg'}));});D.s.samuel['lun-tricep'][2]=null;renderDay()`);
+  saveSet(s, "lun-tricep", "samuel", 2, 30, 10);
+  const fin = s.ev("MOTIVA.samuel.fin");
+  ok("Al completar todas las series sale el toast de sesión completa", fin.some(x => s.$("#toast").textContent === "Samuel: " + x), s.$("#toast").textContent);
+  s.$('.ex[data-id="lun-tricep"] .srow[data-p="samuel"][data-k="2"] .sv').click();
+  saveSet(s, "lun-tricep", "samuel", 2, 30, 10);
+  ok("Desmarcar y volver a completar no lo repite", s.$("#toast").textContent.includes("guardada"), s.$("#toast").textContent);
+  ok("Sin errores de consola", d.errors.length + d2.errors.length + s.errors.length === 0, [...d.errors, ...d2.errors, ...s.errors].join("\n"));
+}
+
 // ---- Resumen ----
 const groups = [...new Set(results.map(r => r.group))];
 let fails = 0;
