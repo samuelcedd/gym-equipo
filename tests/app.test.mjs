@@ -371,6 +371,57 @@ group = "9. Adaptador Supabase (mock: upsert + realtime)";
   ok("Sin errores de consola en ningún celular", A.errors.length + B.errors.length + C.errors.length === 0, [...A.errors, ...B.errors, ...C.errors].join("\n"));
 }
 
+// =====================================================================
+group = "10. Registrar series de días pasados";
+{
+  const server = makeServer();
+  const d = device({ server });
+  await sleep(80);
+  const today = d.ev("TODAY"), w1 = daysAgo(d, 7), w2 = daysAgo(d, 14);
+  const dayKey = d.ev(`jsDayToKey[parseD('${w1}').getDay()]`);
+  const exId = d.ev(`DAYS.find(x=>x.key==='${dayKey}').ex?.find(e=>!e.cardio)?.id||null`);
+  ok("Barra 'Registrar para' visible con la fecha de hoy", d.$("#recDate") && d.$("#recDate").value === today && d.$("#recDate").max === today);
+  const pick = v => { const i = d.$("#recDate"); i.value = v; i.dispatchEvent(new d.w.Event("change", { bubbles: true })); };
+  pick(w1);
+  eq("Al elegir una fecha pasada se muestra la rutina de ese día", d.ev("current"), dayKey);
+  ok("Aviso visible del día que se está anotando", d.$("#recBar").classList.contains("past") && d.$("#recBar").textContent.includes("Estás anotando el"));
+  if (exId) {
+    const before = server.upserts.length;
+    saveSet(d, exId, "samuel", 0, 20, 12);
+    await sleep(60);
+    eq("La serie queda en el historial con la fecha pasada", d.ev(`D.w.samuel['${exId}'].h.find(h=>h.d==='${w1}').s[0]`), [20, 12]);
+    eq("No toca las series de hoy (D.s)", d.ev(`D.s.samuel['${exId}']||null`), null);
+    const paths = server.upserts.slice(before).map(r => r.path);
+    ok("Sube w/samuel y no el doc del día de hoy", paths.includes("w/samuel") && !paths.some(x => x.startsWith("s/")), paths.join(","));
+    ok("El toast dice para qué día se guardó", d.$("#toast").textContent.includes("guardada para el"));
+    ok("En fecha pasada no arranca el descanso", d.$("#timer").hidden);
+    ok("La fila queda marcada como hecha", d.$(`.ex[data-id="${exId}"] .srow[data-p="samuel"][data-k="0"]`).classList.contains("done"));
+    // Fecha aún más vieja: se vuelve el peso de inicio, el actual no cambia
+    pick(w2);
+    saveSet(d, exId, "samuel", 0, 16, 10);
+    eq("Historial ordenado por fecha", d.ev(`D.w.samuel['${exId}'].h.map(h=>h.d)`), [w2, w1]);
+    eq("Inicio = la sesión más antigua; actual = la más reciente", d.ev(`[D.w.samuel['${exId}'].f,D.w.samuel['${exId}'].fd,D.w.samuel['${exId}'].v,D.w.samuel['${exId}'].d]`), [16, w2, 20, w1]);
+    // Volver a hoy: la meta usa la semana anterior
+    d.$("#recToday").click();
+    eq("Volver a hoy", [d.ev("REC"), d.ev("current")], [today, d.ev("todayKey")]);
+    d.ev(`current='${dayKey}';renderDay()`);
+    const m = d.ev(`(()=>{const m=metaFor(ALLEX.find(e=>e.id==='${exId}'),'samuel',0,[]);return [m.v,m.tag];})()`);
+    ok("La meta de hoy se basa en lo anotado la semana anterior (sube)", m[1] === "up" && m[0] > 20, JSON.stringify(m));
+    // Semana anterior en la vista Semana
+    d.ev("weekWho='samuel';weekOff=-1;renderWeek()");
+    ok("La semana pasada muestra la serie anotada", d.$("#v-week").textContent.includes("20 kg × 12"));
+    // Desmarcar una serie pasada la quita del historial
+    pick(w2);
+    d.$(`.ex[data-id="${exId}"] .srow[data-p="samuel"][data-k="0"] .sv`).click();
+    eq("Desmarcar en fecha pasada la borra del historial", d.ev(`D.w.samuel['${exId}'].h.map(h=>h.d)`), [w1]);
+  }
+  pick("2999-01-01");
+  eq("Una fecha futura se corrige a hoy", d.ev("REC"), today);
+  d.ev(`REC='${w1}';current='mie';renderDay()`);
+  ok("El cardio en fecha pasada no se puede marcar", d.$('.ex[data-id="mie-cardio"]').textContent.includes("El cardio se marca el mismo día"));
+  ok("Sin errores de consola", d.errors.length === 0, d.errors.join("\n"));
+}
+
 // ---- Resumen ----
 const groups = [...new Set(results.map(r => r.group))];
 let fails = 0;
