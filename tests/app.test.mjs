@@ -338,7 +338,7 @@ group = "9. Adaptador Supabase (mock: upsert + realtime)";
   const server = makeServer();
   const A = device({ server }), B = device({ server });
   await sleep(80);
-  eq("Dice 'Progreso compartido: se guarda para los tres.'", A.$("#sync").textContent, "Progreso compartido: se guarda para los tres.");
+  eq("Dice 'Progreso compartido: se guarda para el equipo.'", A.$("#sync").textContent, "Progreso compartido: se guarda para el equipo.");
   A.ev("current='lun';renderDay()"); B.ev("current='lun';renderDay()");
   setUnit(A, "lun-banca", "samuel", "lb");
   saveSet(A, "lun-banca", "samuel", 0, 135, 8);
@@ -468,7 +468,7 @@ group = "12. Color por persona y frase del día";
   const lum = h => { const c = [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255).map(v => v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
   const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
   const light = block(/:root\{([\s\S]*?)\n\}/), darkMq = block(/:root:not\(\[data-theme="light"\]\)\{([\s\S]*?)\}/), darkAttr = block(/:root\[data-theme="dark"\]\{([\s\S]*?)\}/);
-  const EXP = { samuel: ["#1F5FAD", "#6BA2E8"], anderson: ["#C2410C", "#FF8A4C"], lorena: ["#7B3FA0", "#C39BE0"] };
+  const EXP = { samuel: ["#1F5FAD", "#6BA2E8"], anderson: ["#C2410C", "#FF8A4C"], lorena: ["#7B3FA0", "#C39BE0"], nayaira: ["#0F766E", "#4FD1C5"] };
   for (const [p, [cl, cd]] of Object.entries(EXP)) {
     eq(`Token ${p} en claro y en los dos bloques oscuros`, [tok(light, "c-" + p), tok(darkMq, "c-" + p), tok(darkAttr, "c-" + p)].map(x => x && x.toUpperCase()), [cl, cd, cd]);
     const rl = ratio(tok(light, "me-ink") || "#FFFFFF", cl), rd = ratio(tok(darkMq, "me-ink"), cd), ra = ratio(tok(darkAttr, "me-ink"), cd);
@@ -479,13 +479,13 @@ group = "12. Color por persona y frase del día";
 
   const d = device();
   eq("Al cargar, data-me = persona guardada", d.w.document.documentElement.getAttribute("data-me"), "samuel");
-  for (const p of ["anderson", "lorena", "samuel"]) {
+  for (const p of ["anderson", "lorena", "nayaira", "samuel"]) {
     d.$(`#who button[data-p="${p}"]`).click();
     ok(`Cambiar a ${p}: data-me y saludo`, d.w.document.documentElement.getAttribute("data-me") === p && d.$("#toast").textContent === d.ev(`MOTIVA.${p}.hola`), d.$("#toast").textContent);
   }
   ok("Hero de Comida, Progreso y Plan con el color de la persona", ["#v-food", "#v-prog", "#v-plan"].every(s => d.$(s + " .hero").classList.contains("mine")));
   d.ev("weekWho='all';renderWeek()");
-  eq("Semana 'Los tres': un punto de color por persona en el resumen", d.$$("#v-week .wsum .dot").map(x => x.getAttribute("style")), ["--dc:var(--c-samuel)", "--dc:var(--c-anderson)", "--dc:var(--c-lorena)"]);
+  eq("Semana 'Todos': un punto de color por persona en el resumen", d.$$("#v-week .wsum .dot").map(x => x.getAttribute("style")), ["--dc:var(--c-samuel)", "--dc:var(--c-anderson)", "--dc:var(--c-lorena)", "--dc:var(--c-nayaira)"]);
   ok("Progreso: puntos de color junto a cada nombre", d.$$("#v-prog .dot").length >= 9);
   ok("La fila (tú) y el botón Guardar usan la clase de la persona activa", !!d.$(".prow.me .sv"));
 
@@ -533,6 +533,203 @@ group = "12. Color por persona y frase del día";
   saveSet(s, "lun-tricep", "samuel", 2, 30, 10);
   ok("Desmarcar y volver a completar no lo repite", s.$("#toast").textContent.includes("guardada"), s.$("#toast").textContent);
   ok("Sin errores de consola", d.errors.length + d2.errors.length + s.errors.length === 0, [...d.errors, ...d2.errors, ...s.errors].join("\n"));
+}
+
+// =====================================================================
+group = "13. Nayaira: 4ª persona, nivel principiante y extras";
+{
+  const d = device();
+  eq("PEOPLE con las 4 personas", d.ev("PEOPLE"), ["samuel", "anderson", "lorena", "nayaira"]);
+  eq("Docs de Supabase de Nayaira", d.ev("[docPath('w','nayaira'),docPath('c','nayaira'),docPath('s','nayaira')]"), ["w/nayaira", "c/nayaira", "s/" + d.ev("TODAY") + "~nayaira"]);
+  eq("Nivel por defecto en cfg", d.ev("D.g.nivel"), { samuel: "intermedio", anderson: "intermedio", lorena: "principiante", nayaira: "principiante" });
+  eq("Botón de tema solo con ícono y con nombre accesible", [d.$("#themeBtn").textContent, !!d.$("#themeBtn").getAttribute("aria-label")], ["◐", true]);
+  ok("Selector de nombre con scroll horizontal si no cabe", /\.who-switch\{[^}]*overflow-x:auto/.test(RAW));
+
+  // Cambiar a Nayaira
+  d.$('#who button[data-p="nayaira"]').click();
+  ok("Cambiar a Nayaira: data-me, botón activo y saludo", d.w.document.documentElement.getAttribute("data-me") === "nayaira" && d.$('#who button[data-p="nayaira"]').getAttribute("aria-pressed") === "true" && d.$("#toast").textContent === "¡Vamos, Nayaira! 💚");
+  d.ev("current='lun';REC=TODAY;renderDay()");
+  const lunIds = d.ev("DAYS.find(x=>x.key==='lun').ex.map(e=>e.id)");
+  ok("Fila propia de Nayaira en cada tarjeta del lunes", lunIds.every(id => d.$(`.ex[data-id="${id}"] .srow[data-p="nayaira"]`)));
+  ok("Su fila va primero y marcada (tú)", d.$('.ex[data-id="lun-banca"] .prow').classList.contains("me") && d.$('.ex[data-id="lun-banca"] .prow .pname').textContent.includes("Nayaira (tú)"));
+
+  // Principiante: variantes de BEGINNER
+  ok("BEGINNER reemplaza a LOR", d.ev("typeof BEGINNER==='object'&&typeof LOR==='undefined'"));
+  const prow = (id, p) => d.$$(`.ex[data-id="${id}"] .prow`).find(r => r.querySelector(`.srow[data-p="${p}"]`));
+  eq("Principiante: press banca → 3 × 10–12", prow("lun-banca", "nayaira").querySelector(".preps").textContent, "3 × 10–12");
+  ok("Principiante: nota con la variante en máquina", prow("lun-banca", "nayaira").querySelector(".pnote").textContent.includes("Press de pecho en máquina"));
+  eq("Principiante: banca en máquina, sin calculadora de discos", d.ev("[typeOf(ALLEX.find(e=>e.id==='lun-banca'),'nayaira'),plateCalc(ALLEX.find(e=>e.id==='lun-banca'),'nayaira','kg',60)]"), ["mach", null]);
+
+  // Historial antes de cambiar de nivel
+  saveSet(d, "lun-banca", "nayaira", 0, 30, 12);
+  eq("Serie de Nayaira guardada en kg", d.ev("D.s.nayaira['lun-banca'][0]"), { kg: 30, reps: 12, u: "kg" });
+
+  // Cambiar a intermedio desde Mi gym
+  const box = d.$("#gymBox");
+  ok("Mi gym tiene la sección Nivel con las 4 personas", box.querySelectorAll("#gNivel .seg").length === 4);
+  box.querySelector('#gNivel .seg[data-p="nayaira"] button[data-n="intermedio"]').click();
+  box.querySelector("#gSave").click();
+  eq("Nivel guardado en cfg", d.ev("D.g.nivel.nayaira"), "intermedio");
+  eq("cfg local guarda el nivel", JSON.parse(d.w.localStorage.getItem("g2")).nivel.nayaira, "intermedio");
+  eq("Intermedio: press banca → 4 × 6–8", prow("lun-banca", "nayaira").querySelector(".preps").textContent, "4 × 6–8");
+  ok("Intermedio: sin nota de variante", !prow("lun-banca", "nayaira").querySelector(".pnote"));
+  eq("Intermedio: barra con calculadora de discos", d.ev("plateCalc(ALLEX.find(e=>e.id==='lun-banca'),'nayaira','kg',62.5).txt"), "Por lado: 20 + 1,25");
+  eq("Cambiar de nivel no borra el historial", d.ev("D.w.nayaira['lun-banca'].h.slice(-1)[0].s[0]"), [30, 12]);
+  eq("Lorena sigue en principiante", d.ev("[D.g.nivel.lorena,typeOf(ALLEX.find(e=>e.id==='lun-banca'),'lorena')]"), ["principiante", "mach"]);
+  // Volver a principiante
+  d.ev("setCfg(Object.assign({},D.g,{nivel:Object.assign({},D.g.nivel,{nayaira:'principiante'}),at:new Date().toISOString()}));renderAll()");
+  eq("De vuelta a principiante: 3 × 10–12", prow("lun-banca", "nayaira").querySelector(".preps").textContent, "3 × 10–12");
+
+  // Incremento máximo para principiantes
+  const prev = daysAgo(d, 7);
+  const setH = (p, id, sets, extra = "") => d.ev(`D.w.${p}['${id}']=Object.assign({h:[{d:'${prev}',s:${JSON.stringify(sets)}}]}${extra});`);
+  const meta = (p, id, k = 0) => d.ev(`(()=>{const m=metaFor(ALLEX.find(e=>e.id==='${id}'),'${p}',${k},[]);return [m.v,m.u,m.reps,m.tag];})()`);
+  setH("nayaira", "jue-hip", [[40, 12]]);
+  eq("Principiante barra kg: +2,5 kg (no +5)", meta("nayaira", "jue-hip"), [42.5, "kg", 10, "up"]);
+  setH("nayaira", "jue-hip", [[95, 12, "lb"]], ",{u:'lb'}");
+  eq("Principiante barra lb: +5 lb", meta("nayaira", "jue-hip"), [100, "lb", 10, "up"]);
+  setH("nayaira", "mie-peck", [[5, 15, "placas"]], ",{u:'placas'}");
+  eq("Principiante placas: +1 placa", meta("nayaira", "mie-peck"), [6, "placas", 12, "up"]);
+  setH("nayaira", "mar-sentadilla", [[12, 12]]);
+  eq("Principiante goblet (mancuerna, salto 2): 12 → 14", meta("nayaira", "mar-sentadilla"), [14, "kg", 10, "up"]);
+  d.ev("setCfg(Object.assign({},D.g,{mach:{'mie-peck':{w:5,u:'kg',b:5}}}))");
+  setH("nayaira", "mie-peck", [[20, 15]]);
+  eq("Principiante máquina con placas de 5 kg: +1 placa (5 kg)", meta("nayaira", "mie-peck"), [25, "kg", 12, "up"]);
+  setH("samuel", "jue-hip", [[40, 12]]);
+  eq("Intermedio en la misma barra: +5 kg", meta("samuel", "jue-hip"), [45, "kg", 8, "up"]);
+  setH("nayaira", "jue-hip", [[40, 12]]);
+  d.ev("current='jue';renderDay()");
+  ok("Regla de la tarjeta dice +2,5 kg para principiante", prow("jue-hip", "nayaira").textContent.includes("sube +2,5 kg"), prow("jue-hip", "nayaira").querySelector(".rule:last-of-type")?.textContent);
+
+  // Guardar en lb y placas desde la tarjeta
+  d.ev(`D.w.nayaira={};current='mie';renderDay()`);
+  setUnit(d, "mie-remo", "nayaira", "lb");
+  saveSet(d, "mie-remo", "nayaira", 0, 60, 12);
+  eq("Nayaira lb: historial [60, 12, 'lb']", d.ev("D.w.nayaira['mie-remo'].h.slice(-1)[0].s[0]"), [60, 12, "lb"]);
+  setUnit(d, "mie-laterales", "nayaira", "placas");
+  saveSet(d, "mie-laterales", "nayaira", 0, 2, 15);
+  eq("Nayaira placas: historial [2, 15, 'placas']", d.ev("D.w.nayaira['mie-laterales'].h.slice(-1)[0].s[0]"), [2, 15, "placas"]);
+  const m2 = d.$('.ex[data-id="mie-remo"] .srow[data-p="nayaira"][data-k="1"] .mset').textContent;
+  ok("Meta de la serie 2 sigue la serie 1 en lb", m2.includes("60 lb"), m2);
+
+  // Extras con only en arreglo
+  d.ev("current='sab';renderDay()");
+  const whoIn = id => d.$$(`.ex[data-id="${id}"] .srow[data-k="0"]`).map(r => r.dataset.p).sort();
+  eq("sab-abd: Lorena y Nayaira", whoIn("sab-abd"), ["lorena", "nayaira"]);
+  eq("sab-pecho: solo Anderson", whoIn("sab-pecho"), ["anderson"]);
+  eq("peopleOf acepta arreglo y string", d.ev("[peopleOf(ALLEX.find(e=>e.id==='sab-abd')),peopleOf(ALLEX.find(e=>e.id==='sab-pecho'))]"), [["lorena", "nayaira"], ["anderson"]]);
+  ok("sab-abd con nota de glúteo para las dos", ["lorena", "nayaira"].every(p => ((prow("sab-abd", p).querySelector(".pnote") || {}).textContent || "").includes("glúteo medio")));
+
+  // Otra hora: textos individuales y sin post-turno
+  d.ev("current='lun';renderDay()");
+  const why = () => d.$$("#dayView .phase-why").map(x => x.textContent).join(" | ");
+  ok("Nayaira: sin textos de turnos de grupo", !/turnos de tres|háganlos|Sigan/.test(why()), why());
+  ok("Nayaira: textos individuales de fase", why().includes("Respeta el descanso completo entre series"));
+  ok("Nayaira: sin casilla de post-turno", !d.$("#postT"));
+  eq("Barras de progreso: las 4 personas", d.$$("#dayView .progress .bar").length, 4);
+  ok("Barra resaltada (tú) es la de Nayaira", !!d.$("#dayView .progress .row.me #prog-nayaira") && d.$("#prog-nayaira").textContent.startsWith("Nayaira (tú)") && !d.$("#prog-samuel").textContent.includes("(tú)"));
+  d.$('#who button[data-p="samuel"]').click();
+  d.ev("current='lun';renderDay()");
+  ok("Samuel: siguen los turnos de grupo y el post-turno", why().includes("turnos de tres") && !!d.$("#postT"));
+  ok("Samuel: la barra (tú) pasa a Samuel", d.$("#prog-samuel").textContent.startsWith("Samuel (tú)") && !d.$("#prog-nayaira").textContent.includes("(tú)"));
+  d.ev("D.s.lorena=Object.assign({},D.s.lorena,{_post:true});renderDay()");
+  eq("Post-turno no recorta a Nayaira", d.ev("[setsOf(ALLEX.find(e=>e.id==='lun-curl'),'nayaira'),skipped(ALLEX.find(e=>e.id==='lun-curl'),'nayaira'),frasesDe('nayaira')===MOTIVA.nayaira.frases]"), [3, false, true]);
+  ok("Post-turno sí recorta a Lorena", d.ev("skipped(ALLEX.find(e=>e.id==='lun-curl'),'lorena')"));
+  d.ev("D.s.lorena=Object.assign({},D.s.lorena,{_post:false});renderDay()");
+
+  // Comida y Plan en construcción
+  d.$('#who button[data-p="nayaira"]').click();
+  const wip = d.$("#v-food .wip");
+  ok("Comida de Nayaira: en construcción", !!wip && wip.querySelector("h3").textContent === "Plan personalizado en construcción");
+  eq("Lista de datos que faltan", wip && wip.querySelectorAll("li").length, 11);
+  ok("Lista incluye intolerancias y horario de entreno", !!wip && /Intolerancias/.test(wip.textContent) && /Horario de entreno/.test(wip.textContent));
+  ok("Plan de Nayaira: en construcción y con Mi gym", !!d.$("#v-plan .wip") && !!d.$("#v-plan #gymBox #gSave") && !d.$("#v-plan .macros"));
+  ok("FOOD.nayaira y PLAN.nayaira listos para llenar", d.ev("['kcal','lead','macros','meals','swaps','extraTitle','extra','market'].every(k=>k in FOOD.nayaira)&&['diag','tips','adjust'].every(k=>k in PLAN.nayaira)"));
+  d.ev("FOOD.nayaira.kcal='1.700';FOOD.nayaira.meals=[{t:'7:00',h:'Desayuno',i:['2 huevos']}];PLAN.nayaira.diag=[['Objetivo','1.700 kcal']];renderFood();renderPlan()");
+  ok("Al llenar FOOD/PLAN se muestran sin tocar el render", !d.$("#v-food .wip") && d.$("#v-food h1").textContent === "1.700 kcal" && !d.$("#v-plan .wip") && !!d.$("#v-plan .macros"));
+  d.ev("FOOD.nayaira.kcal='';FOOD.nayaira.meals=[];PLAN.nayaira.diag=[];renderAll()");
+  d.$('#who button[data-p="samuel"]').click();
+  ok("Samuel conserva su comida y plan", !d.$("#v-food .wip") && !d.$("#v-plan .wip"));
+
+  // Frases y chistes
+  eq("MOTIVA.nayaira: 5 frases (3 con escena) y 3 chistes", d.ev("[MOTIVA.nayaira.frases.length,MOTIVA.nayaira.frases.filter(f=>f.s).length,MOTIVA.nayaira.chistes.length]"), [5, 3, 3]);
+  d.$('#who button[data-p="nayaira"]').click();
+  d.ev("current='lun';renderDay()");
+  ok("Frase del día de Nayaira", d.$("#frase .fw").textContent === "Frase del día · Nayaira" && d.ev("MOTIVA.nayaira.frases.map(f=>f.t)").includes(d.$("#frase .fq").textContent));
+  let scene = null;
+  for (let i = 0; i < 6 && !scene; i++) { const a = d.$("#frase .fb a"); if (a) scene = a.href; else d.$('#frase [data-f="otra"]').click(); }
+  ok("Escena de Nayaira es búsqueda de YouTube", !!scene && scene.startsWith("https://www.youtube.com/results?search_query=") && d.ev(`MOTIVA.nayaira.frases.some(f=>f.s&&'${scene}'.endsWith(encodeURIComponent(f.s)))`), scene);
+  d.$('#frase [data-f="chiste"]').click();
+  ok("Chiste de Nayaira", d.ev("MOTIVA.nayaira.chistes").some(c => d.$("#frase .fj").textContent === "😄 " + c));
+
+  // Semana y Progreso
+  d.ev("weekWho='all';renderWeek()");
+  eq("Semana: botón 'Todos' + 4 nombres", d.$$("#v-week .seg button").map(b => b.textContent), ["Todos", "Samuel", "Anderson", "Lorena", "Nayaira"]);
+  ok("Semana 'Todos' incluye a Nayaira", d.$$("#v-week .wsum .macro b").some(b => b.textContent.includes("Nayaira")));
+  d.ev("renderProgress()");
+  eq("Progreso: ranking con 4 tarjetas en 2 columnas", [d.$$("#v-prog .duo")[0].children.length, d.$$("#v-prog .duo")[0].style.gridTemplateColumns.replace(/s/g, "")], [4, "repeat(2,1fr)"]);
+  d.ev(`progDay='mie';renderProgress()`);
+  ok("Nayaira en 'Cuánto subimos en cada serie'", d.$$("#v-prog .gwho").some(x => x.textContent.startsWith("Nayaira")));
+  d.ev(`D.w.nayaira={};D.w.nayaira['lun-banca']={f:20,fd:'${prev}',v:25,d:'${prev}',h:[{d:'${prev}',s:[[25,10]]}]};renderProgress()`);
+  ok("Sin peso corporal: no muestra Infinity ni NaN", !/Infinity|NaN/.test(d.$("#v-prog").textContent));
+  ok("Nayaira entra al ranking de % de mejora", d.$$("#v-prog .duo")[0].textContent.includes("+25.0%"), d.$$("#v-prog .duo")[0].textContent);
+
+  // Sesión completa
+  d.ev(`D.w.nayaira={};D.s.nayaira={};current='lun';renderDay();DAYS.find(x=>x.key==='lun').ex.forEach(e=>{const n=setsOf(e,'nayaira');D.s.nayaira[e.id]=Array.from({length:n},()=>({kg:10,reps:10,u:'kg'}));});D.s.nayaira['lun-tricep'][2]=null;renderDay()`);
+  saveSet(d, "lun-tricep", "nayaira", 2, 15, 12);
+  eq("Toast de sesión completa de Nayaira", d.$("#toast").textContent, "Nayaira: Sesión cerrada. Rapunzel ya salió de la torre. 💚");
+  ok("Texto visible sin 'los tres'", !/los tres/i.test(d.w.document.body.textContent));
+
+  // cfg viejo sin nivel o con nivel inválido
+  eq("cfg sin nivel → por defecto", d.ev("normCfg({bar:{kg:20}}).nivel.nayaira"), "principiante");
+  eq("cfg con nivel inválido → por defecto", d.ev("normCfg({nivel:{nayaira:'pro',samuel:'principiante'}}).nivel"), { samuel: "principiante", anderson: "intermedio", lorena: "principiante", nayaira: "principiante" });
+  ok("Sin errores de consola", d.errors.length === 0, d.errors.join("\n"));
+}
+
+// =====================================================================
+group = "14. Nayaira en export/import y Supabase";
+{
+  const a = device();
+  a.ev("current='mar';renderDay()");
+  setUnit(a, "mar-prensa", "nayaira", "lb");
+  saveSet(a, "mar-prensa", "nayaira", 0, 90, 12);
+  a.ev(`D.c.nayaira={e:[{d:TODAY,p:58.5,c:70}]};persist('c','nayaira')`);
+  a.ev("setCfg(Object.assign({},D.g,{nivel:Object.assign({},D.g.nivel,{nayaira:'intermedio'}),at:new Date().toISOString()}));persist('g')");
+  const html = a.ev("buildExport()");
+  ok("Export lleva a Nayaira (w, c y nivel)", /"nayaira":\{"mar-prensa"/.test(html) && /"nayaira":\{"e":\[/.test(html) && /"nivel":\{[^}]*"nayaira":"intermedio"/.test(html));
+  const b = device();
+  b.ev(`mergeIn(readSeed(${JSON.stringify(html)}))`);
+  eq("Import: series de Nayaira en lb", b.ev("D.w.nayaira['mar-prensa'].h.slice(-1)[0].s[0]"), [90, 12, "lb"]);
+  eq("Import: mediciones y nivel de Nayaira", b.ev("[D.c.nayaira.e[0].p,D.g.nivel.nayaira]"), [58.5, "intermedio"]);
+  eq("Import guarda local w2:nayaira", JSON.parse(b.w.localStorage.getItem("w2:nayaira"))["mar-prensa"].u, "lb");
+  // Archivo viejo de 3 personas
+  const old = { v: 2, at: "2026-01-01T00:00:00Z", w: { samuel: { "lun-banca": { v: 50, d: "2026-01-01", f: 50, fd: "2026-01-01", h: [{ d: "2026-01-01", s: [[50, 8]] }] } } }, c: { samuel: { e: [] } } };
+  const c = device();
+  c.ev(`mergeIn(${JSON.stringify(old)})`);
+  eq("Archivo viejo de 3 personas: Nayaira queda vacía sin error", c.ev("[Object.keys(D.w.nayaira).length,D.c.nayaira.e.length,D.w.samuel['lun-banca'].v]"), [0, 0, 50]);
+
+  const server = makeServer();
+  const A = device({ server }), B = device({ server });
+  await sleep(80);
+  A.$('#who button[data-p="nayaira"]').click();
+  A.ev("current='jue';renderDay()"); B.ev("current='jue';renderDay()");
+  saveSet(A, "jue-hip", "nayaira", 0, 30, 12);
+  await sleep(60);
+  const today = A.ev("TODAY");
+  eq("Upsert s/<fecha>~nayaira", server.rows.get(`s/${today}~nayaira`) && server.rows.get(`s/${today}~nayaira`)["jue-hip"][0], { kg: 30, reps: 12, u: "kg" });
+  eq("Upsert w/nayaira", server.rows.get("w/nayaira") && server.rows.get("w/nayaira")["jue-hip"].h.slice(-1)[0].s[0], [30, 12]);
+  A.ev("renderProgress()");
+  A.$("#cPeso").value = "58"; A.$("#cSave").click();
+  await sleep(60);
+  eq("Upsert c/nayaira", server.rows.get("c/nayaira") && server.rows.get("c/nayaira").e[0].p, 58);
+  await sleep(2000);
+  eq("Realtime: el otro celular recibe la serie de Nayaira", B.ev("D.s.nayaira['jue-hip'][0]"), { kg: 30, reps: 12, u: "kg" });
+  ok("Realtime: la fila de Nayaira aparece guardada", !!B.$('.ex[data-id="jue-hip"] .srow.done[data-p="nayaira"][data-k="0"]'));
+  eq("Realtime: medición de Nayaira", B.ev("D.c.nayaira.e[0].p"), 58);
+  const C = device({ server });
+  await sleep(120);
+  eq("Celular nuevo carga a Nayaira", C.ev("[D.w.nayaira['jue-hip'].h.length,D.s.nayaira['jue-hip'][0].kg,D.c.nayaira.e[0].p]"), [1, 30, 58]);
+  ok("Sin errores de consola", a.errors.length + b.errors.length + c.errors.length + A.errors.length + B.errors.length + C.errors.length === 0, [...a.errors, ...b.errors, ...c.errors, ...A.errors, ...B.errors, ...C.errors].join("\n"));
 }
 
 // ---- Resumen ----

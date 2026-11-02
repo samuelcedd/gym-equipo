@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Plan de entreno · Samuel, Anderson y Lorena</title>
+<title>Plan de entreno · Samuel, Anderson, Lorena y Nayaira</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,23 +20,24 @@
   --body:"Barlow","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   --nav-h:64px;
   /* Color de cada persona; --me es el de quien está activa (contraste AA ≥ 5:1 con --me-ink) */
-  --c-samuel:#1F5FAD; --c-anderson:#C2410C; --c-lorena:#7B3FA0;
+  --c-samuel:#1F5FAD; --c-anderson:#C2410C; --c-lorena:#7B3FA0; --c-nayaira:#0F766E;
   --me:var(--c-samuel); --me-ink:#FFFFFF;
   transition:--me .2s ease;
 }
 :root[data-me="anderson"]{--me:var(--c-anderson)}
 :root[data-me="lorena"]{--me:var(--c-lorena)}
+:root[data-me="nayaira"]{--me:var(--c-nayaira)}
 @property --me{syntax:"<color>";inherits:true;initial-value:#1F5FAD}
 *,*::before,*::after{box-sizing:inherit}
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --bg:#14171C; --surface:#1D2128; --surface-2:#252A33; --ink:#EEF1F5; --muted:#9AA3B0; --line:#333944; --p-white:#E6E6E6; --done:#2FB36A;
-    --c-samuel:#6BA2E8; --c-anderson:#FF8A4C; --c-lorena:#C39BE0; --me-ink:#14171C;
+    --c-samuel:#6BA2E8; --c-anderson:#FF8A4C; --c-lorena:#C39BE0; --c-nayaira:#4FD1C5; --me-ink:#14171C;
   }
 }
 :root[data-theme="dark"]{
   --bg:#14171C; --surface:#1D2128; --surface-2:#252A33; --ink:#EEF1F5; --muted:#9AA3B0; --line:#333944; --p-white:#E6E6E6; --done:#2FB36A;
-  --c-samuel:#6BA2E8; --c-anderson:#FF8A4C; --c-lorena:#C39BE0; --me-ink:#14171C;
+  --c-samuel:#6BA2E8; --c-anderson:#FF8A4C; --c-lorena:#C39BE0; --c-nayaira:#4FD1C5; --me-ink:#14171C;
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
 html,body{margin:0}
@@ -49,9 +50,9 @@ p{margin:0}
 .muted{color:var(--muted)}
 
 /* Header */
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
 .top .who{font-weight:600;color:var(--muted);font-size:15px}
-.theme-btn{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px}
+.theme-btn{flex:0 0 auto;background:var(--surface);border:1px solid var(--line);border-radius:999px;width:40px;height:40px;padding:0;font-size:18px;line-height:1}
 
 /* Plates */
 .plates{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 12px;margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none}
@@ -146,8 +147,9 @@ p{margin:0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
 /* Pareja */
-.who-switch{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
-.who-switch button{border:0;background:none;border-radius:999px;padding:6px 10px;font-weight:600;font-size:14px;color:var(--muted)}
+.who-switch{display:flex;min-width:0;overflow-x:auto;scrollbar-width:none;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
+.who-switch::-webkit-scrollbar{display:none}
+.who-switch button{flex:0 0 auto;border:0;background:none;border-radius:999px;padding:6px 10px;font-weight:600;font-size:14px;color:var(--muted)}
 .who-switch button[aria-pressed="true"]{background:var(--me);color:var(--me-ink)}
 .sync{font-size:13px;color:var(--muted);margin:-4px 0 10px}
 .sync.ro{color:#B4232F;font-weight:600}
@@ -270,6 +272,10 @@ p{margin:0}
 .frase .fb{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;position:relative}
 .frase .fb button,.frase .fb a{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:999px;padding:6px 12px;font-weight:600;font-size:14px;text-decoration:none;line-height:1.2}
 .recbar.past{border:2px solid var(--p-yellow);background:color-mix(in srgb,var(--p-yellow) 12%,var(--surface))}
+.progress .row.me{color:var(--me)}
+.wip{border-left:6px solid var(--me)}
+.wip ul{columns:2;column-gap:18px}
+.wip li{break-inside:avoid}
 </style>
 </head>
 <body>
@@ -279,8 +285,9 @@ p{margin:0}
       <button type="button" data-p="samuel">Samuel</button>
       <button type="button" data-p="anderson">Anderson</button>
       <button type="button" data-p="lorena">Lorena</button>
+      <button type="button" data-p="nayaira">Nayaira</button>
     </div>
-    <button class="theme-btn" id="themeBtn" type="button">Tema</button>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Cambiar tema claro u oscuro" title="Cambiar tema">◐</button>
   </div>
   <p class="sync" id="sync"></p>
   <section class="view" id="v-train">
@@ -385,14 +392,14 @@ const DAYS=[
  {id:"sab-piernas",n:"Elevaciones de piernas acostado",s:3,r:"12–15",rest:60,steps:["Acuéstate boca arriba con las manos bajo los glúteos.","Pega la zona lumbar al piso.","Sube las piernas estiradas hasta 90°.","Baja lento sin que los talones toquen el piso."]},
  {id:"sab-lateral",n:"Plancha lateral",s:3,r:"30–45 s por lado",rest:45,steps:["Apóyate en el antebrazo, con el codo bajo el hombro.","Sube la cadera hasta formar una línea recta de pies a cabeza.","Aguanta sin dejar caer la cadera.","Cambia de lado."]},
  {id:"sab-pecho",n:"Press de pecho en máquina",s:3,r:"10–12",rest:90,only:"anderson",na:"Solo Anderson, por la prioridad de pecho. Samuel sigue con las laterales.",steps:["Ajusta el asiento para que las agarraderas queden a la altura de la mitad del pecho.","Espalda pegada al respaldo y escápulas juntas.","Empuja al frente sin bloquear los codos.","Regresa lento hasta sentir el estiramiento del pecho."]},
- {id:"sab-abd",n:"Abducción de cadera en máquina",s:3,r:"15–20",rest:60,only:"lorena",steps:["Siéntate con la espalda apoyada y las piernas por dentro de los soportes.","Abre las piernas hacia afuera empujando con la parte externa de las rodillas.","Sostén 1 segundo abierta.","Cierra lento sin dejar que las placas choquen."]},
+ {id:"sab-abd",n:"Abducción de cadera en máquina",s:3,r:"15–20",rest:60,only:["lorena","nayaira"],nt:"Extra de glúteo medio para Lorena y Nayaira.",steps:["Siéntate con la espalda apoyada y las piernas por dentro de los soportes.","Abre las piernas hacia afuera empujando con la parte externa de las rodillas.","Sostén 1 segundo abierta.","Cierra lento sin dejar que las placas choquen."]},
  {id:"sab-latpolea",n:"Elevaciones laterales en polea",s:3,r:"12–15",rest:60,steps:["Ponte de lado a la polea baja y agarra el estribo con la mano más lejana.","Sube el brazo hacia el lado hasta la altura del hombro.","Baja lento.","Termina un lado y cambia."]},
  {id:"sab-posterior",n:"Deltoides posterior en máquina",s:3,r:"15",rest:60,steps:["Siéntate mirando hacia la máquina con las manos a la altura de los hombros.","Abre los brazos hacia atrás con los codos un poco doblados.","Aprieta la parte de atrás del hombro 1 segundo.","Regresa controlado."]},
  {id:"sab-curl",n:"Curl alterno con mancuernas",s:3,r:"10–12 por brazo",rest:60,steps:["De pie, codos pegados al cuerpo.","Sube una mancuerna girando la palma hacia arriba.","Aprieta arriba y baja lento.","Alterna los brazos."]},
  {id:"sab-tricep",n:"Tríceps sobre la cabeza en polea",s:3,r:"10–12",rest:60,steps:["De espaldas a la polea con la cuerda detrás de la cabeza.","Codos apuntando al frente y fijos.","Extiende los brazos hacia arriba y adelante.","Regresa hasta estirar bien el tríceps."]},
  {id:"sab-cardio",n:"Cardio suave",s:1,r:"20–25 min",rest:0,cardio:true,steps:["Bicicleta o caminadora inclinada a ritmo cómodo.","Debes poder conversar sin problema.","Guarda energía para el partido de mañana."]}
 ]},
-{key:"dom",short:"Dom",name:"Domingo",title:"Fútbol y recuperación",sub:"Samuel y Anderson: 1 hora de fútbol. Lorena: recuperación activa en el gym.",c:"var(--p-grey)",ci:"#fff",kg:"⚽",rest:{h:"Domingo",items:["Desayuna con carbohidratos 1,5 a 2 horas antes (arepa, banano, pan).","Calienta 10 minutos: trote suave, movilidad de cadera y algunos sprints cortos.","Lleva al menos 1 litro de agua al partido.","Anderson: incluye 2–3 aceleraciones progresivas en el calentamiento para cuidar el isquiotibial.","Lorena: recuperación activa en el gym: 20 minutos de caminadora suave, 15 minutos de estiramientos y turco o sauna si quieres.","Después del partido: comida con proteína y carbohidratos, como pollo con arroz.","Buen momento para hacer el meal prep de la semana."]}}
+{key:"dom",short:"Dom",name:"Domingo",title:"Fútbol y recuperación",sub:"Samuel y Anderson: 1 hora de fútbol. Lorena: recuperación activa en el gym. Nayaira: descanso o recuperación.",c:"var(--p-grey)",ci:"#fff",kg:"⚽",rest:{h:"Domingo",items:["Desayuna con carbohidratos 1,5 a 2 horas antes (arepa, banano, pan).","Calienta 10 minutos: trote suave, movilidad de cadera y algunos sprints cortos.","Lleva al menos 1 litro de agua al partido.","Anderson: incluye 2–3 aceleraciones progresivas en el calentamiento para cuidar el isquiotibial.","Lorena: recuperación activa en el gym: 20 minutos de caminadora suave, 15 minutos de estiramientos y turco o sauna si quieres.","Nayaira: descanso total o recuperación suave: 20–30 minutos de caminata y 10 minutos de estiramientos de cadera y piernas.","Después del partido: comida con proteína y carbohidratos, como pollo con arroz.","Buen momento para hacer el meal prep de la semana."]}}
 ];
 
 
@@ -403,21 +410,30 @@ const PH={
  "jue-hip":"P","jue-bulgara":"P","jue-hack":"S","jue-femoral":"A","jue-pant":"A","jue-colgado":"C",
  "sab-rueda":"CP","sab-crunch":"CP","sab-piernas":"CP","sab-lateral":"CP","sab-pecho":"A","sab-latpolea":"A","sab-posterior":"A","sab-curl":"A","sab-tricep":"A","sab-cardio":"K"
 };
+// w: texto para el grupo que entrena junto; s: versión individual para quien entrena a otra hora
 const PHL={
- P:{t:"Ejercicios principales",w:"Van primero porque son los más pesados y los que más músculo construyen. En grupo: turnos de tres en la misma estación; mientras uno hace su serie, los otros dos descansan, cambian discos y uno hace de apoyo."},
- S:{t:"Ejercicios secundarios",w:"Complementan a los principales con un poco menos de peso y más repeticiones. Sigan con turnos de tres."},
- A:{t:"Aislamiento",w:"Un solo músculo a la vez. Como el descanso es corto, háganlos al mismo tiempo, cada uno con sus mancuernas o en máquinas vecinas."},
- C:{t:"Core",w:"Al final, porque el abdomen los estabiliza en los ejercicios pesados y no conviene cansarlo antes. Háganlo al mismo tiempo."},
- CP:{t:"Core primero",w:"Hoy el abdomen es la prioridad, así que va primero, con más energía. No hay ejercicios pesados que lo necesiten fresco."},
- K:{t:"Cardio",w:"Siempre de último: si lo hacen antes, les quita fuerza para las pesas. Máquinas vecinas y a conversar."}
+ P:{t:"Ejercicios principales",w:"Van primero porque son los más pesados y los que más músculo construyen. En grupo: turnos de tres en la misma estación; mientras uno hace su serie, los otros dos descansan, cambian discos y uno hace de apoyo.",s:"Van primero porque son los más pesados y los que más músculo construyen. Respeta el descanso completo entre series: el temporizador arranca solo al guardar."},
+ S:{t:"Ejercicios secundarios",w:"Complementan a los principales con un poco menos de peso y más repeticiones. Sigan con turnos de tres.",s:"Complementan a los principales con un poco menos de peso y más repeticiones. Respeta el descanso completo entre series."},
+ A:{t:"Aislamiento",w:"Un solo músculo a la vez. Como el descanso es corto, háganlos al mismo tiempo, cada uno con sus mancuernas o en máquinas vecinas.",s:"Un solo músculo a la vez, con descanso corto. Si una máquina está ocupada, cambia el orden dentro de este bloque."},
+ C:{t:"Core",w:"Al final, porque el abdomen los estabiliza en los ejercicios pesados y no conviene cansarlo antes. Háganlo al mismo tiempo.",s:"Al final, porque el abdomen te estabiliza en los ejercicios pesados y no conviene cansarlo antes."},
+ CP:{t:"Core primero",w:"Hoy el abdomen es la prioridad, así que va primero, con más energía. No hay ejercicios pesados que lo necesiten fresco.",s:"Hoy el abdomen es la prioridad, así que va primero, con más energía. No hay ejercicios pesados que lo necesiten fresco."},
+ K:{t:"Cardio",w:"Siempre de último: si lo hacen antes, les quita fuerza para las pesas. Máquinas vecinas y a conversar.",s:"Siempre de último: si lo haces antes, te quita fuerza para las pesas. Ritmo en el que puedas hablar."}
 };
-const BEFORE=["Coman el pre-entreno 30 a 45 minutos antes: 1 banano y café.","Un vaso de agua y un termo de 750 ml cada uno.","Creatina: 5 g Samuel, 3–5 g Anderson, 3 g Lorena si decide tomarla.","Samuel abre esta app y revisan los pesos de la semana pasada de los tres.","Lorena: si viene de turno, marquen el modo post-turno."];
-const AFTER=["Estiren suave 5 minutos los músculos que trabajaron.","Revisen que quedaron anotados los pesos de los tres.","Desayuno post-entreno dentro de la siguiente hora (pestaña Comida).","Quien completó todas las series en el tope del rango, sube el peso la próxima vez."];
+const BEFORE=["Coman el pre-entreno 30 a 45 minutos antes: 1 banano y café.","Un vaso de agua y un termo de 750 ml cada uno.","Creatina: 5 g Samuel, 3–5 g Anderson, 3 g Lorena si decide tomarla.","Samuel abre esta app y revisan los pesos de la semana pasada del equipo.","Lorena: si viene de turno, marquen el modo post-turno."];
+const AFTER=["Estiren suave 5 minutos los músculos que trabajaron.","Revisen que quedaron anotados los pesos de todos los que entrenaron.","Desayuno post-entreno dentro de la siguiente hora (pestaña Comida).","Quien completó todas las series en el tope del rango, sube el peso la próxima vez."];
+const BEFORE_SOLO=["Come algo liviano 30 a 45 minutos antes: 1 banano o una fruta.","Un vaso de agua y un termo de 750 ml.","Abre esta app y revisa tus pesos de la semana pasada: la meta de cada serie ya está lista.","Entrenas a otra hora, pero tus series cuentan igual para el equipo."];
+const AFTER_SOLO=["Estira suave 5 minutos los músculos que trabajaste.","Revisa que quedaron anotadas todas tus series.","Come una comida con proteína dentro de la siguiente hora.","Si completaste todas las series en el tope del rango, sube el peso la próxima vez."];
 
-const PEOPLE=["samuel","anderson","lorena"];
-const PNAME={samuel:"Samuel",anderson:"Anderson",lorena:"Lorena"};
-const BASE={samuel:{peso:78,cintura:86},anderson:{peso:86,cintura:null},lorena:{peso:64,cintura:null}};
-const LOR={
+const PEOPLE=["samuel","anderson","lorena","nayaira"];
+const PNAME={samuel:"Samuel",anderson:"Anderson",lorena:"Lorena",nayaira:"Nayaira"};
+const BASE={samuel:{peso:78,cintura:86},anderson:{peso:86,cintura:null},lorena:{peso:64,cintura:null},nayaira:{peso:null,cintura:null}};
+// Entrenan la misma rutina pero a otra hora: ven los textos individuales en vez de los turnos de grupo
+const SOLO=["nayaira"];
+const solo=p=>SOLO.includes(p);
+const NIVELES=["principiante","intermedio"];
+const NIVEL0={samuel:"intermedio",anderson:"intermedio",lorena:"principiante",nayaira:"principiante"};
+// Variantes y rangos para quien tenga nivel "principiante" en Mi gym
+const BEGINNER={
  "lun-banca":{s:3,r:"10–12",alt:"Press de pecho en máquina",n:"Principiante: las primeras 4–6 semanas en máquina para aprender el movimiento con seguridad."},
  "lun-remo":{s:3,r:"10–12",alt:"Remo en máquina con apoyo de pecho",n:"Protege la espalda baja mientras aprendes."},
  "lun-militar":{r:"10–12",n:"Empieza con mancuernas livianas y técnica perfecta."},
@@ -431,8 +447,7 @@ const LOR={
  "jue-hip":{s:3,r:"10–12",n:"Tu ejercicio clave de glúteo. Si el gym tiene máquina de hip thrust, úsala."},
  "jue-bulgara":{alt:"Zancada estática con apoyo",n:"Sostente de una máquina para el equilibrio."},
  "jue-colgado":{alt:"Elevaciones de piernas acostada"},
- "sab-rueda":{r:"20–30 s",alt:"Plancha frontal",n:"La rueda es avanzada; primero construye base con la plancha."},
- "sab-abd":{n:"Solo Lorena: trabajo extra de glúteo medio."}
+ "sab-rueda":{r:"20–30 s",alt:"Plancha frontal",n:"La rueda es avanzada; primero construye base con la plancha."}
 };
 const POST_OK=["P","S"];
 
@@ -494,8 +509,20 @@ lorena:{
  extraTitle:"Regla 80/20: antojos sin culpa",
  extra:["Frituras: hazlas en air fryer (papas, alitas, empanadas al horno).","Hamburguesa o pizza: 1 vez por semana; ese día, almuerzo más liviano.","Postre diario permitido: yogur griego con cacao y fruta, o 2 cuadritos de chocolate oscuro.","En la guardia: evita la máquina de dulces llevando tu comida 3 y un snack de proteína.","Café en el turno: sí, pero el último antes de las 3 am para poder dormir al llegar."],
  market:null
+},
+// Pendiente: llenar con sus datos. Mientras kcal o meals estén vacíos se muestra "Plan personalizado en construcción"
+nayaira:{
+ kcal:"",lead:"",
+ macros:[],
+ meals:[],
+ swaps:[],
+ extraTitle:"",extra:[],
+ market:null
 }
 };
+// Datos que faltan para armar el plan de alguien con FOOD/PLAN vacío
+const FALTA=["Edad","Peso","Estatura","Experiencia entrenando","Objetivo","Lesiones o molestias","Alimentos que le gustan","Alimentos que no le gustan","Intolerancias","Comidas al día","Horario de entreno"];
+const foodListo=p=>!!(FOOD[p]&&FOOD[p].kcal&&FOOD[p].meals.length);
 
 const PLAN={
 samuel:{
@@ -533,11 +560,18 @@ lorena:{
   {h:"Suplementos",t:"Opcionales: creatina 3 g diarios y proteína en polvo para la guardia si no alcanzas los 120 g."}
  ],
  adjust:["Revisa la tendencia de 2–3 semanas; los turnos pueden mover el peso por retención de líquidos.","Si no hay cambios en 3 semanas: revisa los antojos del 80/20 antes de bajar calorías.","Si te sientes sin energía en los entrenos: suma 100 kcal de carbohidratos en la comida 1."]
+},
+// Pendiente: llenar con sus datos (mismo formato que los demás). Mientras diag esté vacío se muestra "en construcción"
+nayaira:{
+ diag:[],
+ tips:[],
+ adjust:[]
 }
 };
-const PROGRESS_INC=["Press banca y remo con barra: +2,5 kg.","Sentadilla, peso muerto rumano y hip thrust: +5 kg (Anderson en rumano y Lorena en todo: +2,5 kg).","Mancuernas: el siguiente par que tenga el gym (salto configurado en Mi gym).","Máquinas y poleas: 1 placa (+2,5 kg); prensa, hack y pantorrilla: 1–2 placas (+5 kg).","En libras: barra de tren superior +5 lb, tren inferior +10 lb, mancuernas +5 lb y máquinas +10 lb o 1 placa si está configurada. Anderson en rumano y Lorena en todo: el salto más pequeño posible.","En placas: +1 placa.","Abdomen y planchas: +2 repeticiones o +5 segundos."];
-const PROGRESS=["Trabajen dentro del rango de repeticiones dejando 1–2 repeticiones en reserva.","Anoten el peso de cada uno en cada ejercicio.","Quien complete todas las series en el tope del rango, sube 2,5–5 kg la siguiente sesión (Anderson en rumano: máximo 2,5 kg; Lorena: 1–2,5 kg o el siguiente nivel de la máquina).","Con el peso nuevo se vuelve a la parte baja del rango.","Cada 6–8 semanas, semana de descarga los tres juntos: mismos ejercicios con la mitad de las series."];
-const PAIR=["Misma rutina, mismos días y mismo orden. Cada uno con su peso, sus series y, cuando aplica, su variante del ejercicio.","Ejercicios principales y secundarios: turnos de tres en la misma estación. Con 2–3 minutos de descanso, cada uno descansa mientras los otros dos hacen su serie.","Lorena usa máquina o mancuernas en algunos básicos: cuando la estación es distinta, ella hace su serie en paralelo y no tiene que esperar turno.","Aislamiento, core y cardio: al mismo tiempo, en máquinas vecinas o con mancuernas propias.","Press banca, sentadilla e inclinado: uno de los que descansa se para detrás como apoyo.","Los primeros meses, Samuel y Anderson revisan la técnica de Lorena: espalda recta, rango completo y control.","Compitan por porcentaje de mejora, no por kilos: así es justo aunque pesen y lleven tiempos distintos. Ojo: al ser principiante, Lorena va a subir rápido al inicio.","Si alguien no puede ir, los demás entrenan igual. Nadie se salta un día por esperar.","Samuel registra a los tres en su celular durante la sesión."];
+const planListo=p=>!!(PLAN[p]&&PLAN[p].diag.length);
+const PROGRESS_INC=["Press banca y remo con barra: +2,5 kg.","Sentadilla, peso muerto rumano y hip thrust: +5 kg (Anderson en rumano y principiantes en todo: +2,5 kg).","Mancuernas: el siguiente par que tenga el gym (salto configurado en Mi gym).","Máquinas y poleas: 1 placa (+2,5 kg); prensa, hack y pantorrilla: 1–2 placas (+5 kg).","En libras: barra de tren superior +5 lb, tren inferior +10 lb, mancuernas +5 lb y máquinas +10 lb o 1 placa si está configurada. Anderson en rumano: el salto más pequeño posible.","Principiantes (nivel en Mi gym): máximo +2,5 kg, +5 lb o 1 placa por vez, en todos los ejercicios.","En placas: +1 placa.","Abdomen y planchas: +2 repeticiones o +5 segundos."];
+const PROGRESS=["Trabajen dentro del rango de repeticiones dejando 1–2 repeticiones en reserva.","Anoten el peso de cada uno en cada ejercicio.","Quien complete todas las series en el tope del rango, sube 2,5–5 kg la siguiente sesión (Anderson en rumano: máximo 2,5 kg; principiantes: máximo 2,5 kg o el siguiente nivel de la máquina).","Con el peso nuevo se vuelve a la parte baja del rango.","Cada 6–8 semanas, semana de descarga todo el equipo: mismos ejercicios con la mitad de las series."];
+const PAIR=["Misma rutina, mismos días y mismo orden. Cada uno con su peso, sus series y, cuando aplica, su variante del ejercicio.","Samuel, Anderson y Lorena entrenan juntos. Nayaira hace la misma rutina a otra hora y registra sus series en su celular: suman igual en el progreso del equipo.","Ejercicios principales y secundarios: turnos de tres en la misma estación. Con 2–3 minutos de descanso, cada uno descansa mientras los otros dos hacen su serie.","Quien está en nivel principiante usa máquina o mancuernas en algunos básicos: cuando la estación es distinta, hace su serie en paralelo y no tiene que esperar turno.","Aislamiento, core y cardio: al mismo tiempo, en máquinas vecinas o con mancuernas propias.","Press banca, sentadilla e inclinado: uno de los que descansa se para detrás como apoyo.","Los primeros meses, Samuel y Anderson revisan la técnica de Lorena: espalda recta, rango completo y control. Nayaira puede grabar una serie con el celular y mostrarla al equipo.","Compitan por porcentaje de mejora, no por kilos: así es justo aunque pesen y lleven tiempos distintos. Ojo: los principiantes van a subir rápido al inicio.","Si alguien no puede ir, los demás entrenan igual. Nadie se salta un día por esperar.","Durante la sesión, Samuel registra en su celular a quienes entrenan con él."];
 
 /* ---------- Motivación por persona (editable) ----------
    frases: {t: texto, s: búsqueda de la escena en YouTube (opcional)}
@@ -603,6 +637,23 @@ lorena:{
   {t:"Baymax diría: tu nivel de cansancio es alto. Haz lo básico y recupera."},
   {t:"Hoy no se buscan récords: se busca cuidarte."}
  ]
+},
+nayaira:{
+ hola:"¡Vamos, Nayaira! 💚",
+ frases:[
+  {t:"Rapunzel pasó años en la torre y un día decidió salir. Tu mejor versión empieza con la primera serie.",s:"Enredados Rapunzel sale de la torre escena"},
+  {t:"Luisa, de Encanto, carga todo con fuerza; tú vas construyendo la tuya, kilo a kilo.",s:"Encanto Luisa escena"},
+  {t:"Judy Hopps no era la más grande de la academia, pero sí la más constante.",s:"Zootopia Judy Hopps academia escena"},
+  {t:"Entrenar a otra hora no te saca del equipo: cada serie que guardas suma en el ranking."},
+  {t:"Glúteo que se entrena con progresión, crece. Glúteo que solo se mira en el espejo, espera."}
+ ],
+ chistes:[
+  "Nayaira entrena a otra hora para que los primos no le copien la técnica.",
+  "Jueves de hip thrust: la escalera del TransMilenio ya sabe quién manda.",
+  "La abductora y Nayaira tienen un trato: ella la usa los sábados y la máquina no se queja."
+ ],
+ fin:["Sesión cerrada. Rapunzel ya salió de la torre. 💚"],
+ post:[]
 }
 };
 
@@ -622,11 +673,11 @@ const clone=o=>JSON.parse(JSON.stringify(o||{}));
 const LB=0.4536;
 const UNITS=["kg","lb","placas"];
 const ULBL={kg:"kg",lb:"lb",placas:"placa"};
-const CFG0={pref:{},bar:{kg:20,lb:45},ez:{kg:10,lb:25},plates:{kg:[25,20,15,10,5,2.5,1.25],lb:[45,35,25,10,5,2.5]},db:{kg:{min:2,max:50,step:2},lb:{min:5,max:120,step:5}},mach:{},own:{}};
+const CFG0={pref:{},bar:{kg:20,lb:45},ez:{kg:10,lb:25},plates:{kg:[25,20,15,10,5,2.5,1.25],lb:[45,35,25,10,5,2.5]},db:{kg:{min:2,max:50,step:2},lb:{min:5,max:120,step:5}},mach:{},own:{},nivel:NIVEL0};
 const pos=v=>typeof v==="number"&&isFinite(v)&&v>0;
 function normCfg(g){
  g=g||{};const o=clone(CFG0);
- PEOPLE.forEach(p=>{const u=(g.pref||{})[p];if(u==="kg"||u==="lb")o.pref[p]=u;});
+ PEOPLE.forEach(p=>{const u=(g.pref||{})[p];if(u==="kg"||u==="lb")o.pref[p]=u;const nv=(g.nivel||{})[p];if(NIVELES.includes(nv))o.nivel[p]=nv;});
  ["bar","ez"].forEach(b=>["kg","lb"].forEach(u=>{const v=(g[b]||{})[u];if(pos(v))o[b][u]=v;}));
  ["kg","lb"].forEach(u=>{
   const pl=(g.plates||{})[u];if(Array.isArray(pl)){const l=[...new Set(pl.filter(pos))].sort((a,b)=>b-a);if(l.length)o.plates[u]=l;}
@@ -687,7 +738,7 @@ async function doExport(){
  try{
   if(window.claude&&typeof window.claude.use==="function"){
    const dl=await window.claude.use("downloads");
-   if(dl){await dl.save({filename,data:html});shareMsg="Archivo listo. Envíalo por WhatsApp a Anderson y Lorena.";renderProgress();return;}
+   if(dl){await dl.save({filename,data:html});shareMsg="Archivo listo. Envíalo por WhatsApp al resto del equipo.";renderProgress();return;}
   }
   const file=new File([html],filename,{type:"text/html"});
   if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"Progreso del equipo"});shareMsg="Compartido.";renderProgress();return;}
@@ -779,7 +830,7 @@ function renderWho(){
  document.querySelectorAll("#who button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===me));
  const sy=document.getElementById("sync");
  sy.className="sync"+(mode==="ro"?" ro":"");
- sy.textContent=mode==="sync"?"Progreso compartido: se guarda para los tres.":mode==="ro"?"Solo lectura: Samuel registra el progreso de los tres desde su celular.":"Guardado en este celular.";
+ sy.textContent=mode==="sync"?"Progreso compartido: se guarda para el equipo.":mode==="ro"?"Solo lectura: Samuel registra el progreso del equipo desde su celular.":"Guardado en este celular.";
 }
 document.querySelectorAll("#who button").forEach(b=>b.onclick=()=>{const was=me;me=b.dataset.p;store.set("me",me);if(weekWho!=="all")weekWho=me;renderAll();if(me!==was)toast(MOTIVA[me].hola);});
 
@@ -810,12 +861,21 @@ const dayView=document.getElementById("dayView");
 const fmtRest=s=>s>=60?Math.floor(s/60)+":"+pad(s%60)+" min":s+" s";
 const VQ={"mie-dominadas":"jalón al pecho agarre neutro","mie-peck":"peck deck pecho","jue-hack":"hack squat","sab-piernas":"elevaciones de piernas acostado abdomen","sab-pecho":"press de pecho en máquina"};
 const vidUrl=e=>"https://www.youtube.com/results?search_query="+encodeURIComponent((VQ[e.id]||e.n)+" técnica correcta");
-const xo=(e,p)=>p==="anderson"?{s:e.sa,r:e.ra,n:e.na}:p==="lorena"?(LOR[e.id]||{}):{};
+const isBeg=p=>D.g.nivel[p]==="principiante";
+// Ajustes de cada persona en un ejercicio: los de Anderson (sa, ra, na), la nota común (nt) y, si es principiante, BEGINNER
+const xo=(e,p)=>{
+ const o={};
+ if(p==="anderson"){if(e.sa)o.s=e.sa;if(e.ra)o.r=e.ra;if(e.na)o.n=e.na;}
+ if(e.nt&&!o.n)o.n=e.nt;
+ return isBeg(p)?Object.assign(o,BEGINNER[e.id]||{}):o;
+};
+// only: una persona ("anderson") o varias (["lorena","nayaira"])
+const doesEx=(e,p)=>!e.only||(Array.isArray(e.only)?e.only.includes(p):e.only===p);
 const postMode=()=>REC===TODAY&&!!(D.s.lorena&&D.s.lorena._post);
 const setsOf=(e,p)=>{const n=xo(e,p).s||e.s;return p==="lorena"&&postMode()?Math.min(2,n):n;};
 const repsOf=(e,p)=>xo(e,p).r||e.r;
 const skipped=(e,p)=>p==="lorena"&&postMode()&&!POST_OK.includes(PH[e.id]);
-const peopleOf=e=>PEOPLE.filter(p=>(!e.only||e.only===p)&&!skipped(e,p));
+const peopleOf=e=>PEOPLE.filter(p=>doesEx(e,p)&&!skipped(e,p));
 const ordered=()=>[me,...PEOPLE.filter(p=>p!==me)];
 // Series de la fecha que se registra: hoy salen de D.s; un día pasado, del historial de esa fecha
 function doneOf(p,id){
@@ -866,7 +926,7 @@ function celebrar(d,p,antes){
 }
 
 function card(e,i){
- const rows=ordered().filter(p=>!e.only||e.only===p).map(p=>{
+ const rows=ordered().filter(p=>doesEx(e,p)).map(p=>{
   if(skipped(e,p))return `<div class="prow${p===me?" me":""}"><div class="pname"><span>${PNAME[p]}</span></div><p class="skip">Modo post-turno: hoy no.</p></div>`;
   const n=setsOf(e,p),done=doneOf(p,e.id),x=xo(e,p);
   const dis=readOnly?" disabled":"";
@@ -920,7 +980,7 @@ const LTYPE={"lun-banca":"mach","lun-remo":"mach","mar-sentadilla":"db","mar-rum
 const IKG={bb_up:2.5,bb_low:5,bb_small:2.5,db:2,db_small:1,mach:2.5,mach_big:5,cable:2.5,bw:0};
 const ILB={bb_up:5,bb_low:10,bb_small:5,db:5,db_small:5,mach:10,mach_big:10,cable:10,bw:0};
 const ILBL={bb_up:"barra",bb_low:"barra",bb_small:"barra",db:"siguiente par de mancuernas",db_small:"siguiente par de mancuernas",mach:"1 placa",mach_big:"1–2 placas",cable:"1 placa",bw:""};
-const typeOf=(e,p)=>(p==="lorena"&&LTYPE[e.id])||ITYPE[e.id]||"mach";
+const typeOf=(e,p)=>(isBeg(p)&&LTYPE[e.id])||ITYPE[e.id]||"mach";
 const isBar=t=>t.startsWith("bb_");
 const isDb=t=>t.startsWith("db");
 const isMach=t=>t==="mach"||t==="mach_big"||t==="cable";
@@ -995,8 +1055,9 @@ function incOf(e,p,u){
  const min=smallestInc(e,t,u);let v;
  if(u==="placas")v=1;
  else{const base=(u==="lb"?ILB:IKG)[t];v=isMach(t)&&machCfg(e.id)?Math.max(1,Math.round(base/min))*min:Math.max(1,Math.ceil(base/min-1e-9))*min;}
- // Anderson en rumano y Lorena en todo: el salto más pequeño posible
- if((p==="anderson"&&e.id==="mar-rumano")||p==="lorena")v=min;
+ // Anderson en rumano: el salto más pequeño posible. Principiantes: máximo 2,5 kg, 5 lb o 1 placa (o el mínimo posible si es mayor)
+ if(p==="anderson"&&e.id==="mar-rumano")v=min;
+ if(isBeg(p)){const cap=u==="placas"?1:u==="lb"?5:2.5;v=Math.min(v,Math.max(min,Math.floor(cap/min+1e-9)*min));}
  return {t:t,v:r2(v),lbl:u==="placas"?"":ILBL[t],u:u};
 }
 const rng=(e,p)=>{const n=(String(repsOf(e,p)).match(/\d+/g)||["8"]).map(Number);return {lo:n[0],hi:n[1]||n[0],sec:/\bs\b/.test(repsOf(e,p))};};
@@ -1093,8 +1154,9 @@ function renderDay(){
   h+=`<div class="card"><h3>${esc(d.rest.h)}</h3><ul>${d.rest.items.map(i=>`<li>${esc(i)}</li>`).join("")}</ul></div>`;
   dayView.innerHTML=h;renderFrase();return;
  }
- if(REC===TODAY)h+=`<label class="post"><input type="checkbox" id="postT"${postMode()?" checked":""}${readOnly?" disabled":""}> Lorena viene de turno nocturno</label><p class="phase-why">${postMode()?"Modo post-turno: Lorena hace solo los ejercicios principales y secundarios, 2 series cada uno, sin buscar récords. Si durmió menos de 4 horas, mejor que descanse.":"Márcalo los días en que Lorena llega de la guardia: su sesión se recorta para que recupere."}</p>`;
- h+=`<div class="progress bars2">${ordered().map(p=>`<div class="row"><span id="prog-${p}"></span></div><div class="bar"><i id="bar-${p}"></i></div>`).join("")}</div>`;
+ // El modo post-turno es solo de Lorena; quien entrena a otra hora no lo ve
+ if(REC===TODAY&&!solo(me))h+=`<label class="post"><input type="checkbox" id="postT"${postMode()?" checked":""}${readOnly?" disabled":""}> Lorena viene de turno nocturno</label><p class="phase-why">${postMode()?"Modo post-turno: Lorena hace solo los ejercicios principales y secundarios, 2 series cada uno, sin buscar récords. Si durmió menos de 4 horas, mejor que descanse.":"Márcalo los días en que Lorena llega de la guardia: su sesión se recorta para que recupere."}</p>`;
+ h+=`<div class="progress bars2">${ordered().map(p=>`<div class="row${p===me?" me":""}"><span>${dot(p)}<span id="prog-${p}"></span></span></div><div class="bar"><i id="bar-${p}"></i></div>`).join("")}</div>`;
  const groups=[];d.ex.forEach(e=>{const p=PH[e.id]||"A";let g=groups[groups.length-1];if(!g||g.p!==p){g={p:p,ex:[]};groups.push(g)}g.ex.push(e)});
  const mins=e=>e.cardio?parseInt(e.r,10):Math.round(Math.max(...peopleOf(e).map(p=>setsOf(e,p)))*(e.rest+45)/60);
  let total=15;
@@ -1103,11 +1165,12 @@ function renderDay(){
  ov.push(`<li><b>Al terminar</b> (5 min)</li>`);
  h+=`<h2 class="sec-title">Orden de la sesión</h2><div class="warm"><ol class="steps">${ov.join("")}</ol><p class="tip" style="margin:8px 0 0 26px">Duración aproximada: ${total} minutos.</p></div>`;
  let n=1;
- h+=`<h2 class="sec-title">Paso ${n++}: Antes de llegar</h2><div class="warm"><ul style="margin:0;padding-left:22px">${BEFORE.map(x=>`<li style="margin:6px 0">${esc(x)}</li>`).join("")}</ul></div>`;
+ const ind=solo(me),why=g=>ind?PHL[g.p].s:PHL[g.p].w;
+ h+=`<h2 class="sec-title">Paso ${n++}: Antes de llegar</h2><div class="warm"><ul style="margin:0;padding-left:22px">${(ind?BEFORE_SOLO:BEFORE).map(x=>`<li style="margin:6px 0">${esc(x)}</li>`).join("")}</ul></div>`;
  h+=`<h2 class="sec-title">Paso ${n++}: Calentamiento</h2><div class="warm"><ol class="steps">${d.warm.map(w=>`<li>${esc(w)}</li>`).join("")}</ol></div>`;
  let idx=0;
- groups.forEach(g=>{h+=`<h2 class="sec-title">Paso ${n++}: ${PHL[g.p].t}</h2><p class="phase-why">${PHL[g.p].w}</p>`;g.ex.forEach(e=>{h+=card(e,idx++)})});
- h+=`<h2 class="sec-title">Paso ${n++}: Al terminar</h2><div class="warm"><ul style="margin:0;padding-left:22px">${AFTER.map(x=>`<li style="margin:6px 0">${esc(x)}</li>`).join("")}</ul></div>`;
+ groups.forEach(g=>{h+=`<h2 class="sec-title">Paso ${n++}: ${PHL[g.p].t}</h2><p class="phase-why">${why(g)}</p>`;g.ex.forEach(e=>{h+=card(e,idx++)})});
+ h+=`<h2 class="sec-title">Paso ${n++}: Al terminar</h2><div class="warm"><ul style="margin:0;padding-left:22px">${(ind?AFTER_SOLO:AFTER).map(x=>`<li style="margin:6px 0">${esc(x)}</li>`).join("")}</ul></div>`;
  h+=`<p class="foot">Al terminar cada serie escribe el peso (en kg, lb o número de placa, según elijas junto a tu nombre) y las repeticiones y toca Guardar: queda en el registro y el descanso arranca solo. La próxima sesión verás lo que hiciste la última vez. Para anotar una sesión pasada, cambia la fecha en "Registrar para", arriba.</p>`;
  dayView.innerHTML=h;
  renderFrase();
@@ -1184,7 +1247,7 @@ function updateProgress(d){
   let total=0,done=0;
   d.ex.forEach(e=>{if(!peopleOf(e).includes(p)||(e.cardio&&REC!==TODAY))return;const arr=doneOf(p,e.id);const n=setsOf(e,p);total+=n;for(let j=0;j<n;j++)if(arr[j])done++;});
   const t=document.getElementById("prog-"+p),b=document.getElementById("bar-"+p);
-  if(t)t.textContent=PNAME[p]+": "+(done===total?"¡sesión completa!":done+" de "+total+" series");
+  if(t)t.textContent=PNAME[p]+(p===me?" (tú)":"")+": "+(done===total?"¡sesión completa!":done+" de "+total+" series");
   if(b)b.style.width=(total?done/total*100:0)+"%";
  });
  d.ex.forEach(e=>{
@@ -1254,7 +1317,7 @@ function renderWeek(){
  document.getElementById("v-week").innerHTML=`
  <div class="hero" style="border-color:var(--p-red)"><div class="dname">Registro semanal</div><h1>${weekOff===0?"Esta semana":weekOff===-1?"Semana pasada":"Semana"}</h1><p class="sub">Día por día: peso corporal y todas las series guardadas.</p></div>
  <div class="wk-nav"><button type="button" id="wkPrev" aria-label="Semana anterior">‹</button><b>${label}</b><button type="button" id="wkNext" aria-label="Semana siguiente"${weekOff>=0?" disabled":""}>›</button></div>
- <div class="seg" role="group" aria-label="Ver registro de">${["all",...PEOPLE].map(k=>`<button type="button" data-w="${k}" aria-pressed="${weekWho===k}">${k==="all"?"Los tres":PNAME[k]}</button>`).join("")}</div>
+ <div class="seg" role="group" aria-label="Ver registro de">${["all",...PEOPLE].map(k=>`<button type="button" data-w="${k}" aria-pressed="${weekWho===k}">${k==="all"?"Todos":PNAME[k]}</button>`).join("")}</div>
  <div class="wsum">${sums}</div>
  <p class="phase-why">Pésense en ayunas, después de ir al baño, al menos 3 días por semana. El peso promedio y el volumen se comparan con la semana anterior: lo que importa es la tendencia, no un día suelto.</p>
  ${days||`<div class="card"><p class="muted">No hay series guardadas en esta semana.</p></div>`}`;
@@ -1272,8 +1335,17 @@ function renderWeek(){
 
 /* ---------- Comida ---------- */
 const ul=a=>`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`;
+// Tarjeta para quien aún no tiene plan: lista de datos que faltan
+const wipHTML=p=>`<div class="card wip"><h3>Plan personalizado en construcción</h3><p style="margin:0 0 8px">Para armar el plan de ${PNAME[p]} faltan estos datos:</p>${ul(FALTA)}<p class="tip" style="margin:10px 0 0">Mientras tanto, entrena con la rutina del equipo en la pestaña Entreno.</p></div>`;
 function renderFood(){
  const F=FOOD[me];
+ if(!foodListo(me)){
+  document.getElementById("v-food").innerHTML=`
+  <div class="hero mine"><div class="dname">Alimentación de ${PNAME[me]}</div><h1>En construcción</h1><p class="sub">El plan de comida se arma cuando estén los datos.</p></div>
+  ${wipHTML(me)}
+  <p class="foot">Toca un nombre arriba para ver la alimentación de cada uno.</p>`;
+  return;
+ }
  document.getElementById("v-food").innerHTML=`
  <div class="hero mine"><div class="dname">Alimentación de ${PNAME[me]}</div><h1>${F.kcal} kcal</h1><p class="sub">${esc(F.lead)}</p></div>
  <div class="macros">${F.macros.map(m=>`<div class="macro"><b>${m[0]}</b><span>${m[1]}</span></div>`).join("")}</div>
@@ -1314,7 +1386,7 @@ function gainOf(e,x){
 function growthHTML(){
  const d=DAYS.find(x=>x.key===gDay());
  const cards=d.ex.filter(e=>!e.cardio).map(e=>{
-  const blocks=PEOPLE.filter(p=>!e.only||e.only===p).map(p=>{
+  const blocks=PEOPLE.filter(p=>doesEx(e,p)).map(p=>{
    const h=(((D.w[p]||{})[e.id]||{}).h||[]).filter(x=>(x.s||[]).some(Boolean));
    if(!h.length)return "";
    const R=rng(e,p),bw=incOf(e,p).t==="bw"?(R.sec?"s":"r"):"";
@@ -1347,7 +1419,7 @@ function renderProgress(){
  const dis=readOnly?" disabled":"";
  document.getElementById("v-prog").innerHTML=`
  <div class="hero mine"><div class="dname">Progreso a la par</div><h1>El equipo</h1><p class="sub">${esc(lead)}</p></div>
- <div class="duo" style="grid-template-columns:repeat(3,1fr)">${PEOPLE.map(p=>`<div class="macro"><b style="font-size:24px">${avg[p]===null?"—":(avg[p]>=0?"+":"")+avg[p].toFixed(1)+"%"}</b><span>${dot(p)}${PNAME[p]}: mejora de fuerza</span></div>`).join("")}</div>
+ <div class="duo" style="grid-template-columns:repeat(2,1fr)">${PEOPLE.map(p=>`<div class="macro"><b style="font-size:24px">${avg[p]===null?"—":(avg[p]>=0?"+":"")+avg[p].toFixed(1)+"%"}</b><span>${dot(p)}${PNAME[p]}: mejora de fuerza</span></div>`).join("")}</div>
  <div class="duo" style="margin-top:10px;grid-template-columns:1fr">${PEOPLE.map(p=>`<div class="macro"><b style="font-size:20px">${waist(p)}</b><span>${dot(p)}${PNAME[p]}: cintura</span></div>`).join("")}</div>
  <h2 class="sec-title">Cuánto subimos en cada serie</h2>
  <p class="phase-why">Inicio es la primera vez que se registró esa serie; Actual, la última sesión. Total es lo que ha subido desde el inicio y Semana, el cambio frente a la sesión anterior del mismo día.</p>
@@ -1355,7 +1427,7 @@ function renderProgress(){
  ${growthHTML()}
  <h2 class="sec-title">Ejercicios principales</h2>
  <p class="phase-why">Primer peso anotado → peso actual, cada uno en su unidad; el % de mejora se calcula en kg. Entre paréntesis, kilos levantados por cada kilo de peso corporal, para compararse de forma justa.</p>
- ${mains.map(e=>`<div class="lift"><h3>${esc(e.n)}</h3>${PEOPLE.map(p=>{const x=D.w[p][e.id];if(!x||x.v===undefined||x.v===null)return `<div class="r"><span>${dot(p)}${PNAME[p]}</span><span class="muted">sin datos</span></div>`;const g=gainOf(e,x),vk=toKg(x.v,x.vu,e);return `<div class="r"><span>${dot(p)}${PNAME[p]}</span><span>${esc(fmtLoad(x.f,x.fu))} → ${esc(fmtLoad(x.v,x.vu))} <span class="${g>0?"up":""}">${g>0?"+"+g.toFixed(0)+"%":""}</span>${vk!==null?` <span class="muted">(${(vk/bw(p)).toFixed(2)})</span>`:""}</span></div>`}).join("")}</div>`).join("")}
+ ${mains.map(e=>`<div class="lift"><h3>${esc(e.n)}</h3>${PEOPLE.map(p=>{const x=D.w[p][e.id];if(!x||x.v===undefined||x.v===null)return `<div class="r"><span>${dot(p)}${PNAME[p]}</span><span class="muted">sin datos</span></div>`;const g=gainOf(e,x),vk=toKg(x.v,x.vu,e),pc=bw(p);return `<div class="r"><span>${dot(p)}${PNAME[p]}</span><span>${esc(fmtLoad(x.f,x.fu))} → ${esc(fmtLoad(x.v,x.vu))} <span class="${g>0?"up":""}">${g>0?"+"+g.toFixed(0)+"%":""}</span>${vk!==null&&pc?` <span class="muted">(${(vk/pc).toFixed(2)})</span>`:""}</span></div>`}).join("")}</div>`).join("")}
  <h2 class="sec-title">Mediciones de ${PNAME[me]}</h2>
  <div class="card">
   <p class="phase-why" style="margin:0 0 10px">Peso en ayunas (promedio de la semana) y cintura a la altura del ombligo. Una vez por semana.</p>
@@ -1369,10 +1441,10 @@ function renderProgress(){
  </div>
  <h2 class="sec-title">Compartir progreso</h2>
  <div class="card">
-  <p class="phase-why" style="margin:0 0 4px">Descarga una copia de esta app con el progreso de los tres y envíala por WhatsApp. Se abre en cualquier navegador, sin cuenta, y cada uno puede seguir registrando en su copia.</p>
+  <p class="phase-why" style="margin:0 0 4px">Descarga una copia de esta app con el progreso del equipo y envíala por WhatsApp. Se abre en cualquier navegador, sin cuenta, y cada uno puede seguir registrando en su copia.</p>
   <button type="button" class="btn" id="expBtn">Descargar app con el progreso</button>
   <label class="btn btn2${readOnly?" dis":""}">Importar progreso de otro archivo<input type="file" id="impFile" accept=".html,.htm,.json" hidden${readOnly?" disabled":""}></label>
-  <p class="phase-why" style="margin:10px 0 0">Para juntar todo: cuando Anderson o Lorena registren en su copia, que te devuelvan su archivo y lo importas aquí. Se queda el dato más reciente de cada ejercicio y se suman las mediciones.</p>
+  <p class="phase-why" style="margin:10px 0 0">Para juntar todo: cuando alguien del equipo registre en su copia, que te devuelva su archivo y lo importas aquí. Se queda el dato más reciente de cada ejercicio y se suman las mediciones.</p>
   ${shareMsg?`<p class="tip" style="margin:8px 0 0;color:var(--ink);font-weight:600">${esc(shareMsg)}</p>`:""}
  </div>
  <p class="foot">Cambia de persona arriba para registrar las mediciones de cada uno.</p>`;
@@ -1399,8 +1471,11 @@ const LOADED_EX=ALLEX.filter(e=>LOADED.includes(e.id));
 function gymHTML(){
  const g=D.g,dis=readOnly?" disabled":"";
  const num=(id,v,lbl)=>`<label>${lbl}<input type="number" inputmode="decimal" step="any" min="0" id="${id}" value="${esc(v)}"${dis}></label>`;
- const mname=e=>{const lalt=(LOR[e.id]||{}).alt;return isMach(ITYPE[e.id]||"mach")?e.n:`${e.n} (Lorena: ${lalt||"máquina"})`;};
+ const mname=e=>{const lalt=(BEGINNER[e.id]||{}).alt;return isMach(ITYPE[e.id]||"mach")?e.n:`${e.n} (principiantes: ${lalt||"máquina"})`;};
  return `<div class="card gym">
+  <h3>Nivel</h3>
+  <p class="phase-why" style="margin:0 0 4px">Principiante usa variantes en máquina o mancuernas, rangos más altos y sube máximo 2,5 kg (5 lb o 1 placa) por vez. El historial se conserva al cambiar.</p>
+  <div id="gNivel">${PEOPLE.map(p=>`<div class="prefrow"><span>${PNAME[p]}</span><div class="seg" role="group" aria-label="Nivel de ${PNAME[p]}" data-p="${p}">${NIVELES.map(nv=>`<button type="button" data-n="${nv}" aria-pressed="${g.nivel[p]===nv}"${dis}>${nv[0].toUpperCase()+nv.slice(1)}</button>`).join("")}</div></div>`).join("")}</div>
   <h3>Unidad preferida</h3>
   <p class="phase-why" style="margin:0 0 4px">Es la unidad con la que arranca cada ejercicio. En cada tarjeta se puede cambiar por ejercicio.</p>
   <div id="gPref">${PEOPLE.map(p=>`<div class="prefrow"><span>${PNAME[p]}</span><div class="seg" data-p="${p}">${["kg","lb"].map(u=>`<button type="button" data-u="${u}" aria-pressed="${(g.pref[p]||"kg")===u}"${dis}>${u}</button>`).join("")}</div></div>`).join("")}</div>
@@ -1425,37 +1500,38 @@ function gymHTML(){
   <p class="phase-why" style="margin:0 0 4px">En estas se anota solo el peso de los discos. Opcional: el peso propio de la máquina (trineo o plataforma), para sumarlo más adelante.</p>
   <div id="gOwn">${LOADED_EX.map(e=>`<div class="mrow" data-id="${e.id}"><div class="nm">${esc(e.n)}</div><div class="form two"><label>Peso propio (kg)<input type="number" inputmode="decimal" step="any" min="0" class="ow" value="${g.own[e.id]?esc(g.own[e.id]):""}" placeholder="sin dato"${dis}></label></div></div>`).join("")}</div>
   <button type="button" class="btn" id="gSave"${dis}>Guardar Mi gym</button>
-  <p class="phase-why" style="margin:8px 0 0">Se guarda para los tres y viaja en el archivo de progreso.</p>
+  <p class="phase-why" style="margin:8px 0 0">Se guarda para el equipo y viaja en el archivo de progreso.</p>
  </div>`;
 }
 function bindGym(box){
  box.addEventListener("input",()=>{gymDirty=true;});
- box.querySelectorAll("#gPref .seg button").forEach(b=>b.onclick=()=>{gymDirty=true;b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));});
+ box.querySelectorAll("#gPref .seg button,#gNivel .seg button").forEach(b=>b.onclick=()=>{gymDirty=true;b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));});
  box.querySelector("#gSave").onclick=()=>{
   if(readOnly)return;
   const val=id=>parseFloat(box.querySelector("#"+id).value);
   const g={pref:{},bar:{kg:val("gBarKg"),lb:val("gBarLb")},ez:{kg:val("gEzKg"),lb:val("gEzLb")},
    plates:{kg:parseList(box.querySelector("#gPlKg").value),lb:parseList(box.querySelector("#gPlLb").value)},
    db:{kg:{min:val("gDbKgMin"),max:val("gDbKgMax"),step:val("gDbKgStep")},lb:{min:val("gDbLbMin"),max:val("gDbLbMax"),step:val("gDbLbStep")}},
-   mach:{},own:{},at:new Date().toISOString()};
+   mach:{},own:{},nivel:{},at:new Date().toISOString()};
+  box.querySelectorAll("#gNivel .seg").forEach(s=>{const b=s.querySelector('[aria-pressed="true"]');if(b)g.nivel[s.dataset.p]=b.dataset.n;});
   box.querySelectorAll("#gOwn .mrow").forEach(r=>{const v=parseFloat(r.querySelector(".ow").value);if(pos(v))g.own[r.dataset.id]=v;});
   box.querySelectorAll("#gPref .seg").forEach(s=>{const b=s.querySelector('[aria-pressed="true"]');if(b)g.pref[s.dataset.p]=b.dataset.u;});
   box.querySelectorAll("#gMach .mrow").forEach(r=>{const w=parseFloat(r.querySelector(".mw").value),b=parseFloat(r.querySelector(".mb").value);if(pos(w))g.mach[r.dataset.id]={w:w,u:r.querySelector(".mu").value,b:pos(b)?b:w};});
   setCfg(g);gymDirty=false;persist("g");
   if(document.activeElement)document.activeElement.blur();
-  renderAll();toast("Mi gym guardado para los tres");
+  renderAll();toast("Mi gym guardado para el equipo");
  };
 }
 
 /* ---------- Plan ---------- */
 function renderPlan(){
- const P=PLAN[me];
+ const P=PLAN[me],listo=planListo(me);
  // Si hay cambios sin guardar en Mi gym, se conserva el formulario tal cual al volver a pintar
  const keepGym=gymDirty&&document.getElementById("gymBox");
  const week=DAYS.map(d=>`<li><b>${d.name}:</b> ${esc(d.title)}</li>`).join("");
  document.getElementById("v-plan").innerHTML=`
- <div class="hero mine"><div class="dname">Plan de ${PNAME[me]}</div><h1>Recomposición</h1><p class="sub">Bajar grasa y ganar músculo, entrenando en equipo.</p></div>
- <div class="macros">${P.diag.map(m=>`<div class="macro"><b style="font-size:22px">${m[1]}</b><span>${m[0]}</span></div>`).join("")}</div>
+ <div class="hero mine"><div class="dname">Plan de ${PNAME[me]}</div><h1>${listo?"Recomposición":"En construcción"}</h1><p class="sub">${listo?"Bajar grasa y ganar músculo, entrenando en equipo.":"Misma rutina del equipo desde ya; los números personales llegan con sus datos."}</p></div>
+ ${listo?`<div class="macros">${P.diag.map(m=>`<div class="macro"><b style="font-size:22px">${m[1]}</b><span>${m[0]}</span></div>`).join("")}</div>`:wipHTML(me)}
  <h2 class="sec-title">Cómo entrenar juntos</h2><div class="card">${ul(PAIR)}</div>
  <h2 class="sec-title">La semana</h2><div class="card"><ul>${week}</ul></div>
  <h2 class="sec-title">Cuánto subir en cada serie</h2>
@@ -1464,9 +1540,9 @@ function renderPlan(){
  <div class="card"><ol class="steps" style="--day:var(--p-blue)">${PROGRESS.map(x=>`<li>${esc(x)}</li>`).join("")}</ol></div>
  <h2 class="sec-title">Mi gym</h2>
  <div id="gymBox"></div>
- <h2 class="sec-title">Hábitos de ${PNAME[me]}</h2>
- ${P.tips.map(t=>`<div class="card"><h3>${esc(t.h)}</h3><p>${esc(t.t)}</p></div>`).join("")}
- <h2 class="sec-title">Ajustes</h2><div class="card">${ul(P.adjust)}</div>
+ ${P.tips.length?`<h2 class="sec-title">Hábitos de ${PNAME[me]}</h2>
+ ${P.tips.map(t=>`<div class="card"><h3>${esc(t.h)}</h3><p>${esc(t.t)}</p></div>`).join("")}`:""}
+ ${P.adjust.length?`<h2 class="sec-title">Ajustes</h2><div class="card">${ul(P.adjust)}</div>`:""}
  <p class="foot">Guía general. Si aparece un dolor o molestia que no se va, consúltalo con un profesional de la salud.</p>`;
  const box=document.getElementById("gymBox");
  if(keepGym)box.replaceWith(keepGym);

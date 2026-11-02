@@ -1,4 +1,4 @@
-# App del gym · Samuel, Anderson y Lorena
+# App del gym · Samuel, Anderson, Lorena y Nayaira
 
 App de un solo archivo (`index.html`, sin build). Los datos se guardan en Supabase y se sincronizan en vivo entre los celulares.
 
@@ -15,11 +15,12 @@ App de un solo archivo (`index.html`, sin build). Los datos se guardan en Supaba
 3. En 1–2 minutos queda en: `https://TU_USUARIO.github.io/gym-equipo/`
 
 ## 3. Usar
-- Manda el link a Anderson y Lorena. Cada uno elige su nombre arriba.
-- Arriba debe decir **"Progreso compartido: se guarda para los tres"**.
+- Manda el link a Anderson, Lorena y Nayaira. Cada uno elige su nombre arriba.
+- Nayaira hace la misma rutina a otra hora: al elegir su nombre, los textos de la sesión son individuales y no ve el modo post-turno (que es solo de Lorena).
+- Arriba debe decir **"Progreso compartido: se guarda para el equipo"**.
 - **Unidades**: en cada ejercicio, junto al nombre de cada persona, se elige `kg | lb | placas`.
   Si cambias de unidad con historial, la meta se convierte sola (1 lb = 0,4536 kg) a una carga que se pueda armar.
-- **Plan → Mi gym** (compartido para los tres): unidad preferida de cada uno, peso de las barras,
+- **Plan → Mi gym** (compartido para el equipo): nivel de cada uno (principiante o intermedio), unidad preferida, peso de las barras,
   discos disponibles, rango y salto de las mancuernas, y cuánto pesa cada placa en las máquinas.
   Con esto la app calcula los discos por lado ("Por lado: 20 + 5 + 1,25") y convierte placas a kg para el volumen.
 - Para pasar lo que ya registraste: en la versión vieja, Progreso → *Descargar app con el progreso*;
@@ -36,3 +37,5 @@ App de un solo archivo (`index.html`, sin build). Los datos se guardan en Supaba
   no compartas el link fuera del equipo. No pongas nunca la `service_role` en el repo.
 - Proyectos gratis de Supabase se pausan tras 7 días sin uso; si pasa, entra al panel y dale *Restore*.
 - Los datos viejos (sin unidad) se leen como kg; no hay que migrar nada.
+- **Nivel principiante**: variantes en máquina o mancuernas, rangos más altos y subidas de máximo 2,5 kg (5 lb o 1 placa). Al cambiar el nivel se conserva el historial.
+- El plan de comida y hábitos de Nayaira está pendiente: se llena en `FOOD.nayaira` y `PLAN.nayaira` dentro de `index.html`; mientras estén vacíos la app muestra los datos que faltan.
