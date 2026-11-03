@@ -468,7 +468,7 @@ group = "12. Color por persona y frase del día";
   const lum = h => { const c = [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255).map(v => v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
   const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
   const light = block(/:root\{([\s\S]*?)\n\}/), darkMq = block(/:root:not\(\[data-theme="light"\]\)\{([\s\S]*?)\}/), darkAttr = block(/:root\[data-theme="dark"\]\{([\s\S]*?)\}/);
-  const EXP = { samuel: ["#1F5FAD", "#6BA2E8"], anderson: ["#C2410C", "#FF8A4C"], lorena: ["#7B3FA0", "#C39BE0"], nayaira: ["#0F766E", "#4FD1C5"] };
+  const EXP = { samuel: ["#1F5FAD", "#6BA2E8"], anderson: ["#C2410C", "#FF8A4C"], lorena: ["#7B3FA0", "#C39BE0"], nayaira: ["#0F766E", "#4FD1C5"], alejandro: ["#9F1239", "#FB7185"] };
   for (const [p, [cl, cd]] of Object.entries(EXP)) {
     eq(`Token ${p} en claro y en los dos bloques oscuros`, [tok(light, "c-" + p), tok(darkMq, "c-" + p), tok(darkAttr, "c-" + p)].map(x => x && x.toUpperCase()), [cl, cd, cd]);
     const rl = ratio(tok(light, "me-ink") || "#FFFFFF", cl), rd = ratio(tok(darkMq, "me-ink"), cd), ra = ratio(tok(darkAttr, "me-ink"), cd);
@@ -479,13 +479,13 @@ group = "12. Color por persona y frase del día";
 
   const d = device();
   eq("Al cargar, data-me = persona guardada", d.w.document.documentElement.getAttribute("data-me"), "samuel");
-  for (const p of ["anderson", "lorena", "nayaira", "samuel"]) {
+  for (const p of ["anderson", "lorena", "nayaira", "alejandro", "samuel"]) {
     d.$(`#who button[data-p="${p}"]`).click();
     ok(`Cambiar a ${p}: data-me y saludo`, d.w.document.documentElement.getAttribute("data-me") === p && d.$("#toast").textContent === d.ev(`MOTIVA.${p}.hola`), d.$("#toast").textContent);
   }
   ok("Hero de Comida, Progreso y Plan con el color de la persona", ["#v-food", "#v-prog", "#v-plan"].every(s => d.$(s + " .hero").classList.contains("mine")));
   d.ev("weekWho='all';renderWeek()");
-  eq("Semana 'Todos': un punto de color por persona en el resumen", d.$$("#v-week .wsum .dot").map(x => x.getAttribute("style")), ["--dc:var(--c-samuel)", "--dc:var(--c-anderson)", "--dc:var(--c-lorena)", "--dc:var(--c-nayaira)"]);
+  eq("Semana 'Todos': un punto de color por persona en el resumen", d.$$("#v-week .wsum .dot").map(x => x.getAttribute("style")), ["--dc:var(--c-samuel)", "--dc:var(--c-anderson)", "--dc:var(--c-lorena)", "--dc:var(--c-nayaira)", "--dc:var(--c-alejandro)"]);
   ok("Progreso: puntos de color junto a cada nombre", d.$$("#v-prog .dot").length >= 9);
   ok("La fila (tú) y el botón Guardar usan la clase de la persona activa", !!d.$(".prow.me .sv"));
 
@@ -539,7 +539,7 @@ group = "12. Color por persona y frase del día";
 group = "13. Nayaira: 4ª persona, nivel principiante y extras";
 {
   const d = device();
-  eq("PEOPLE con las 4 personas", d.ev("PEOPLE"), ["samuel", "anderson", "lorena", "nayaira"]);
+  eq("PEOPLE incluye a Nayaira", d.ev("PEOPLE.slice(0,4)"), ["samuel", "anderson", "lorena", "nayaira"]);
   eq("Docs de Supabase de Nayaira", d.ev("[docPath('w','nayaira'),docPath('c','nayaira'),docPath('s','nayaira')]"), ["w/nayaira", "c/nayaira", "s/" + d.ev("TODAY") + "~nayaira"]);
   eq("Nivel por defecto en cfg", d.ev("D.g.nivel"), { samuel: "intermedio", anderson: "intermedio", lorena: "principiante", nayaira: "principiante" });
   eq("Botón de tema solo con ícono y con nombre accesible", [d.$("#themeBtn").textContent, !!d.$("#themeBtn").getAttribute("aria-label")], ["◐", true]);
@@ -664,10 +664,10 @@ group = "13. Nayaira: 4ª persona, nivel principiante y extras";
 
   // Semana y Progreso
   d.ev("weekWho='all';renderWeek()");
-  eq("Semana: botón 'Todos' + 4 nombres", d.$$("#v-week .seg button").map(b => b.textContent), ["Todos", "Samuel", "Anderson", "Lorena", "Nayaira"]);
+  eq("Semana: botón 'Todos' + nombres", d.$$("#v-week .seg button").map(b => b.textContent), ["Todos", "Samuel", "Anderson", "Lorena", "Nayaira", "Alejandro"]);
   ok("Semana 'Todos' incluye a Nayaira", d.$$("#v-week .wsum .macro b").some(b => b.textContent.includes("Nayaira")));
   d.ev("renderProgress()");
-  eq("Progreso: ranking con 4 tarjetas en 2 columnas", [d.$$("#v-prog .duo")[0].children.length, d.$$("#v-prog .duo")[0].style.gridTemplateColumns.replace(/s/g, "")], [4, "repeat(2,1fr)"]);
+  eq("Progreso: ranking con 5 tarjetas en 2 columnas", [d.$$("#v-prog .duo")[0].children.length, d.$$("#v-prog .duo")[0].style.gridTemplateColumns.replace(/\s/g, "")], [5, "repeat(2,1fr)"]);
   d.ev(`progDay='mie';renderProgress()`);
   ok("Nayaira en 'Cuánto subimos en cada serie'", d.$$("#v-prog .gwho").some(x => x.textContent.startsWith("Nayaira")));
   d.ev(`D.w.nayaira={};D.w.nayaira['lun-banca']={f:20,fd:'${prev}',v:25,d:'${prev}',h:[{d:'${prev}',s:[[25,10]]}]};renderProgress()`);
@@ -729,6 +729,266 @@ group = "14. Nayaira en export/import y Supabase";
   const C = device({ server });
   await sleep(120);
   eq("Celular nuevo carga a Nayaira", C.ev("[D.w.nayaira['jue-hip'].h.length,D.s.nayaira['jue-hip'][0].kg,D.c.nayaira.e[0].p]"), [1, 30, 58]);
+  ok("Sin errores de consola", a.errors.length + b.errors.length + c.errors.length + A.errors.length + B.errors.length + C.errors.length === 0, [...a.errors, ...b.errors, ...c.errors, ...A.errors, ...B.errors, ...C.errors].join("\n"));
+}
+
+// =====================================================================
+group = "15. Alejandro: rutina juvenil propia";
+{
+  const d = device();
+  const ex = id => `ALLEX.find(e=>e.id==='${id}')`;
+  eq("PEOPLE con 5 personas", d.ev("PEOPLE"), ["samuel", "anderson", "lorena", "nayaira", "alejandro"]);
+  eq("Docs de Supabase de Alejandro", d.ev("[docPath('w','alejandro'),docPath('c','alejandro'),docPath('s','alejandro')]"), ["w/alejandro", "c/alejandro", "s/" + d.ev("TODAY") + "~alejandro"]);
+  eq("cfg/gym: junior por defecto solo Alejandro", d.ev("[D.g.junior,isJunior('samuel'),isJunior('alejandro')]"), [{ alejandro: true }, false, true]);
+  eq("cfg viejo sin junior → Alejandro junior", d.ev("normCfg({bar:{kg:20}}).junior.alejandro"), true);
+  eq("routineOf: equipo para todos, propia para Alejandro", d.ev("[routineOf('samuel')===DAYS,routineOf('nayaira')===DAYS,routineOf('alejandro')===DAYS_ALEJANDRO,rkey('lorena'),rkey('alejandro')]"), [true, true, true, "equipo", "alejandro"]);
+  const aleIds = d.ev("DAYS_ALEJANDRO.flatMap(x=>(x.ex||[]).map(e=>e.id))");
+  ok("Todos los ids con prefijo ale- y sin repetir", aleIds.length === 21 && aleIds.every(i => i.startsWith("ale-")) && new Set(aleIds).size === aleIds.length, aleIds.join(","));
+  ok("PH e ITYPE definidos para sus ids (ITYPE salvo cardio)", d.ev(`DAYS_ALEJANDRO.flatMap(x=>x.ex||[]).every(e=>PH[e.id]&&(e.cardio||ITYPE[e.id]))`));
+  eq("Fases según la tabla", d.ev("['ale-pressmaq','ale-inclinado','ale-cruces','ale-crunchpolea','ale-cardio','ale-rumano','ale-prensa'].map(i=>PH[i])"), ["P", "S", "A", "C", "K", "P", "S"]);
+  eq("Tipos según la tabla", d.ev("['ale-pressmaq','ale-inclinado','ale-cruces','ale-curl','ale-colgado','ale-prensa','ale-crunchmaq'].map(i=>ITYPE[i])"), ["mach", "db", "cable", "db_small", "bw", "mach_big", "mach"]);
+  ok("Reutiliza pasos del equipo (press en máquina = sab-pecho)", d.ev("ALLEX.find(e=>e.id==='ale-pressmaq').steps===TEAMEX['sab-pecho'].steps&&ALLEX.find(e=>e.id==='ale-prensa').steps===TEAMEX['mar-prensa'].steps"));
+  ok("Pasos propios de 3–4 líneas cuando no existe", d.ev("DAYS_ALEJANDRO.flatMap(x=>x.ex||[]).every(e=>e.steps.length>=3&&e.steps.length<=4)"));
+  ok("Video del ejercicio del equipo cuando es el mismo", d.ev(`vidUrl(${ex("ale-pressmaq")})`).endsWith(encodeURIComponent("press de pecho en máquina técnica correcta")));
+  eq("Opcionales: face pull, rumano y tríceps", d.ev("DAYS_ALEJANDRO.flatMap(x=>x.ex||[]).filter(e=>e.opt).map(e=>e.id)"), ["ale-face", "ale-rumano", "ale-tricep"]);
+
+  // Cambiar a Alejandro
+  d.$('#who button[data-p="alejandro"]').click();
+  ok("Cambiar a Alejandro: data-me y saludo", d.w.document.documentElement.getAttribute("data-me") === "alejandro" && d.$("#toast").textContent === "¡Vamos, Patrón! ⚔️");
+  eq("Discos de días con SU rutina", d.$$("#plates .plate").map(b => b.getAttribute("aria-label")), ["Lunes: Pecho y bíceps", "Martes: Core y cardio", "Miércoles: Espalda y hombros", "Jueves: Descanso activo", "Viernes: Pierna", "Sábado: Torso general y abdomen", "Domingo: Descanso"]);
+  d.ev("current='lun';REC=TODAY;renderDay()");
+  eq("Hero con su día", d.$("#dayView .hero h1").textContent, "Pecho y bíceps");
+  eq("Apodo debajo del nombre en su hero", d.$("#dayView .hero .nick").textContent, "Alejandro · “El Patrón”");
+  ok("Nivel de poder y barra de XP en su hero", d.$("#dayView .hero .power").textContent.startsWith("Nivel de poder: 1 ⚔️") && !!d.$("#dayView .hero .xbar i"));
+  eq("Tarjetas: solo su rutina", d.$$("#dayView .ex").map(c => c.dataset.id), ["ale-pressmaq", "ale-inclinado", "ale-cruces", "ale-curl"]);
+  ok("En cada tarjeta solo aparece su fila", d.$$("#dayView .srow").every(r => r.dataset.p === "alejandro") && d.$$("#dayView .ex").every(c => c.querySelectorAll(".prow").length === 1));
+  ok("Banner de adulto visible", d.$("#dayView .jr").textContent.includes("Entrena siempre con un adulto cerca. Técnica perfecta antes de subir peso."));
+  eq("Calentamiento de hombro el lunes", d.$$("#dayView .sec-title").map(x => x.textContent)[2], "Paso 2: Calentamiento de hombro");
+  ok("Calentamiento de hombro con bici y banda (sin registro de pesos)", /5 minutos de bicicleta suave/.test(d.$$("#dayView .warm")[2].textContent) && /Dislocaciones con banda: 2 × 12/.test(d.$$("#dayView .warm")[2].textContent) && !d.$$("#dayView .warm")[2].querySelector("input"));
+  const why = () => d.$$("#dayView .phase-why").map(x => x.textContent).join(" | ");
+  ok("Textos de fase individuales, sin turnos de grupo ni post-turno", !/turnos de tres|háganlos|Sigan/.test(why()) && !d.$("#postT"));
+  ok("Antes de llegar: con un adulto y sin suplementos", /adulto/.test(d.$("#dayView").textContent) && !/creatina|suplement|kcal|déficit/i.test(d.$("#dayView").textContent));
+  eq("Barras de progreso: solo la suya", d.$$("#dayView .progress .bar").length, 1);
+  ok("Notas de la tabla visibles en su fila", d.$('.ex[data-id="ale-curl"] .pnote').textContent.includes("Bajada lenta de 3 segundos."));
+  for (const [k, warm] of [["mar", false], ["mie", true], ["vie", false], ["sab", true]]) {
+    d.ev(`current='${k}';renderDay()`);
+    ok(`Calentamiento de hombro ${warm ? "sí" : "no"} el ${k}`, d.$$("#dayView .sec-title").some(x => x.textContent.includes("Calentamiento de hombro")) === warm);
+  }
+  d.ev("current='jue';renderDay()");
+  ok("Jueves: descanso activo, core opcional y sin banner", d.$("#dayView .card").textContent.includes("Hoy juegas, caminas o haces deporte suave. Core opcional.") && !!d.$("#core") && !d.$("#dayView .jr"));
+  d.ev("current='dom';renderDay()");
+  ok("Domingo: descanso", d.$("#dayView .card").textContent.includes("Recuperar también es entrenar: duerme bien, come rico y diviértete."));
+
+  // Volver a Samuel: todo igual que antes
+  d.$('#who button[data-p="samuel"]').click();
+  d.ev("current='lun';renderDay()");
+  ok("Samuel ve la rutina del equipo", d.$("#dayView .hero h1").textContent === "Torso A" && d.$$("#plates .plate")[0].getAttribute("aria-label") === "Lunes: Torso A");
+  ok("Alejandro no aparece en las tarjetas del equipo", !d.$('#dayView .srow[data-p="alejandro"]') && !d.$('#dayView [id="prog-alejandro"]'));
+  ok("Equipo: 4 barras, sin core ni banner ni XP", d.$$("#dayView .progress .bar").length === 4 && !d.$("#core") && !d.$("#dayView .jr") && !d.$("#dayView .power"));
+  ok("Equipo: siguen los turnos de grupo", why().includes("turnos de tres"));
+
+  // Opcionales
+  d.$('#who button[data-p="alejandro"]').click();
+  d.ev("current='mie';renderDay()");
+  const face = d.$('.ex[data-id="ale-face"]');
+  ok("Opcional: borde punteado, etiqueta y botón Ocultar", face.classList.contains("opt") && face.querySelector(".optlbl").textContent === "Opcional recomendado" && face.querySelector(".optbtn").textContent === "Ocultar");
+  eq("Con el opcional visible: 11 series", d.$("#prog-alejandro").textContent, "Alejandro (tú): 0 de 11 series");
+  face.querySelector(".optbtn").click();
+  eq("Ocultar guarda en cfg/gym → hide", d.ev("D.g.hide"), { alejandro: ["ale-face"] });
+  ok("Oculto: tarjeta compacta con Mostrar", d.$('.ex[data-id="ale-face"]').classList.contains("hid") && d.$('.ex[data-id="ale-face"] .optbtn').textContent === "Mostrar" && !d.$('.ex[data-id="ale-face"] .srow'));
+  eq("Oculto: no cuenta en el progreso", d.$("#prog-alejandro").textContent, "Alejandro (tú): 0 de 9 series");
+  ok("Oculto: no sale en el orden de la sesión", !d.$$("#dayView .warm")[0].textContent.includes("Face pull"));
+  d.ev(`['ale-remo','ale-jalon','ale-laterales'].forEach(id=>{D.s.alejandro[id]=[1,2,3].map(()=>({kg:10,reps:12,u:'kg'}));});renderDay()`);
+  ok("Sesión completa sin el opcional oculto", d.ev("sesionCompleta(routineOf('alejandro').find(x=>x.key==='mie'),'alejandro')"));
+  d.$('.ex[data-id="ale-face"] .optbtn').click();
+  ok("Mostrar lo devuelve y vuelve a contar", !d.$('.ex[data-id="ale-face"]').classList.contains("hid") && d.$("#prog-alejandro").textContent.includes("9 de 11"));
+  d.ev("D.s.alejandro={};renderDay()");
+
+  // Reglas junior en metaFor
+  const prev = daysAgo(d, 7);
+  const setH = (id, sets, extra = "") => d.ev(`D.w.alejandro['${id}']=Object.assign({h:[{d:'${prev}',s:${JSON.stringify(sets)}}]}${extra});`);
+  const meta = (id, k = 0, done = "[]") => d.ev(`(()=>{const m=metaFor(${ex(id)},'alejandro',${k},${done});return [m.v,m.u,m.reps,m.tag];})()`);
+  const metaTxt = (id, k = 0) => d.ev(`metaFor(${ex(id)},'alejandro',${k},[]).txt`);
+  setH("ale-pressmaq", [[30, 12], [30, 12], [30, 11]]);
+  eq("No sube si no TODAS las series llegaron al tope", meta("ale-pressmaq", 0), [30, "kg", 12, "same"]);
+  ok("Meta con 'deja 2 repeticiones en reserva'", /deja 2 repeticiones en reserva/i.test(metaTxt("ale-pressmaq", 0)), metaTxt("ale-pressmaq", 0));
+  setH("ale-pressmaq", [[30, 12], [30, 12], [30, 12]]);
+  eq("Todas al tope: sube máximo +2,5 kg en máquina", meta("ale-pressmaq", 0), [32.5, "kg", 10, "up"]);
+  ok("Texto de subida con reserva", /Todas tus series .* llegaron a 12/.test(metaTxt("ale-pressmaq", 0)) && /deja 2 repeticiones en reserva/i.test(metaTxt("ale-pressmaq", 0)));
+  setH("ale-prensa", [[100, 15], [100, 15], [100, 15]]);
+  eq("Prensa (normal +5): junior +2,5 kg", meta("ale-prensa", 0), [102.5, "kg", 12, "up"]);
+  setH("ale-inclinado", [[12, 12], [12, 12], [12, 12]]);
+  eq("Mancuernas: el par siguiente (salto 2)", meta("ale-inclinado", 0), [14, "kg", 10, "up"]);
+  d.ev("setCfg(Object.assign({},D.g,{db:{kg:{min:1,max:40,step:1},lb:D.g.db.lb}}))");
+  eq("Mancuernas con salto de 1 kg: +1 kg", meta("ale-inclinado", 0), [13, "kg", 10, "up"]);
+  d.ev("setCfg(Object.assign({},D.g,{db:{kg:{min:2,max:50,step:2},lb:D.g.db.lb}}))");
+  setH("ale-remo", [[100, 12, "lb"], [100, 12, "lb"], [100, 12, "lb"]], ",{u:'lb'}");
+  eq("lb: máximo +5 lb", meta("ale-remo", 0), [105, "lb", 10, "up"]);
+  setH("ale-cruces", [[5, 15, "placas"], [5, 15, "placas"], [5, 15, "placas"]], ",{u:'placas'}");
+  eq("placas: +1 placa", meta("ale-cruces", 0), [6, "placas", 12, "up"]);
+  d.ev("delete D.w.alejandro['ale-jalon']");
+  eq("En la sesión: serie muy liviana no sube de golpe", meta("ale-jalon", 1, "[{kg:30,reps:20,u:'kg'}]"), [30, "kg", 12, "same"]);
+  eq("En la sesión: serie pesada sí puede bajar", meta("ale-jalon", 1, "[{kg:30,reps:6,u:'kg'}]")[3], "down");
+  d.ev("current='lun';renderDay()");
+  ok("Regla de la tarjeta: cuando TODAS lleguen al tope", d.$('.ex[data-id="ale-pressmaq"] .prow').textContent.includes("cuando todas las series lleguen a 12 reps con técnica perfecta, la próxima vez suben +2,5 kg"));
+  eq("Intermedio del equipo sigue con su salto normal", d.ev(`incOf(${ex("mar-prensa")},'samuel','kg').v`), 5);
+
+  // Máquinas compartidas con el equipo, calculadora y Mi gym
+  d.ev("setCfg(Object.assign({},D.g,{mach:{'sab-pecho':{w:5,u:'kg',b:5}}}))");
+  eq("Press en máquina usa la config de la máquina del equipo", d.ev(`toKg(3,'placas',${ex("ale-pressmaq")})`), 15);
+  eq("Calculadora de discos: no aplica a sus máquinas; el equipo sigue igual", d.ev(`[plateCalc(${ex("ale-pressmaq")},'alejandro','kg',30),plateCalc(${ex("lun-banca")},'samuel','kg',60).txt]`), [null, "Por lado: 20"]);
+  ok("Prensa: anota solo los discos (máquina cargada)", d.ev(`isLoaded(${ex("ale-prensa")})`));
+  const gym = d.$("#gymBox");
+  ok("Mi gym: sin duplicar sus máquinas compartidas, con las propias marcadas", !gym.querySelector('.mrow[data-id="ale-pressmaq"]') && gym.querySelector('.mrow[data-id="ale-crunchmaq"] .nm').textContent === "Crunch en máquina (Alejandro)");
+  eq("Mi gym: nivel solo para los adultos", gym.querySelectorAll("#gNivel .seg").length, 4);
+  d.ev("setCfg(Object.assign({},D.g,{hide:{alejandro:['ale-rumano']}}));renderAll()");
+  d.$("#gymBox #gSave").click();
+  eq("Guardar Mi gym conserva junior y opcionales ocultos", d.ev("[D.g.junior.alejandro,D.g.hide.alejandro]"), [true, ["ale-rumano"]]);
+  d.ev("setCfg(Object.assign({},D.g,{hide:{},mach:{}}));renderAll()");
+
+  // Guardar en kg, lb y placas desde la tarjeta + XP
+  d.ev("D.w.alejandro={};D.s.alejandro={};current='lun';renderDay()");
+  saveSet(d, "ale-pressmaq", "alejandro", 0, 30, 12);
+  eq("kg: historial [30, 12]", d.ev("D.w.alejandro['ale-pressmaq'].h.slice(-1)[0].s[0]"), [30, 12]);
+  eq("XP: serie dentro del rango = +10", d.ev("[D.w.alejandro._xp.t,xpTotal('alejandro')]"), [10, 10]);
+  saveSet(d, "ale-pressmaq", "alejandro", 1, 30, 20);
+  eq("XP: serie fuera del rango no suma", d.ev("D.w.alejandro._xp.t"), 10);
+  setUnit(d, "ale-inclinado", "alejandro", "lb");
+  saveSet(d, "ale-inclinado", "alejandro", 0, 25, 10);
+  eq("lb: historial [25, 10, 'lb']", d.ev("D.w.alejandro['ale-inclinado'].h.slice(-1)[0].s[0]"), [25, 10, "lb"]);
+  setUnit(d, "ale-cruces", "alejandro", "placas");
+  saveSet(d, "ale-cruces", "alejandro", 0, 3, 15);
+  eq("placas: historial [3, 15, 'placas']", d.ev("D.w.alejandro['ale-cruces'].h.slice(-1)[0].s[0]"), [3, 15, "placas"]);
+  ok("Meta de la serie 2 sigue la serie 1 en placas", d.$('.ex[data-id="ale-cruces"] .srow[data-p="alejandro"][data-k="1"] .mset').textContent.includes("Placa 3"));
+  eq("XP acumulado: 3 series dentro del rango", d.ev("D.w.alejandro._xp.t"), 30);
+  d.$('.ex[data-id="ale-pressmaq"] .srow[data-p="alejandro"][data-k="0"] .sv').click();
+  eq("Desmarcar una serie descuenta su XP", d.ev("D.w.alejandro._xp.t"), 20);
+  // Sesión completa: +50 XP y toast
+  d.ev("D.w.alejandro={};D.s.alejandro={};renderDay()");
+  const lun = d.ev("routineOf('alejandro').find(x=>x.key==='lun').ex.map(e=>e.id)");
+  for (const id of lun) for (let k = 0; k < 3; k++) if (!(id === "ale-curl" && k === 2)) saveSet(d, id, "alejandro", k, 10, 12);
+  eq("Antes de cerrar: 11 series × 10 XP", d.ev("D.w.alejandro._xp.t"), 110);
+  saveSet(d, "ale-curl", "alejandro", 2, 10, 12);
+  eq("Sesión completa: +10 y +50 XP", d.ev("D.w.alejandro._xp.t"), 170);
+  eq("Toast de misión cumplida", d.$("#toast").textContent, "Alejandro: ¡Misión cumplida! +50 XP ⚔️");
+  // Subir de nivel
+  d.ev(`D.w.alejandro._xp={t:495,d:{'2026-01-05':495}};D.w.alejandro['ale-curl']={};D.s.alejandro['ale-curl']=[];renderDay()`);
+  ok("Hero: nivel 1 con 495 XP", d.$("#dayView .power").textContent.startsWith("Nivel de poder: 1 ⚔️") && d.$("#dayView .power small").textContent === "495 / 500 XP");
+  saveSet(d, "ale-curl", "alejandro", 0, 8, 12);
+  eq("Toast especial al subir de nivel", d.$("#toast").textContent, "¡Subiste de nivel! Ahora eres nivel 2 ⚔️");
+  ok("Hero: nivel 2", d.$("#dayView .power").textContent.startsWith("Nivel de poder: 2 ⚔️"));
+  d.ev("delete D.w.alejandro._xp");
+  eq("Sin _xp: se recalcula desde el historial (10 series, sesión sin cerrar)", d.ev("xpTotal('alejandro')"), 100);
+  eq("Niveles cada 500 XP", d.ev("[lvlOf(0),lvlOf(499),lvlOf(500),lvlOf(3000)]"), [1, 1, 2, 7]);
+  ok("Solo junior gana XP", d.ev("xpUpdate('samuel',TODAY,0)") === 0 && d.ev("D.w.samuel._xp") === undefined);
+
+  // Activación de core
+  d.ev("D.w.alejandro={};D.s.alejandro={};coreOpen=true;current='mar';renderDay()");
+  const core = d.$("#core");
+  ok("Core: tarjeta colapsable con 3 ejercicios", core.tagName === "DETAILS" && core.querySelectorAll(".ci").length === 3 && /Vacío abdominal en 4 puntos: 3 × 10–15 s/.test(core.textContent) && /Dead bug: 2 × 8 por lado/.test(core.textContent) && /Plancha: 2 × 20–30 s/.test(core.textContent));
+  ok("Core: opcional y no en ayunas", /no en ayunas/.test(core.textContent) && /opcional/i.test(core.querySelector("summary").textContent));
+  eq("Core: racha 0", d.$("#core summary > small").textContent, "Racha de core: 0 días");
+  d.$('#core [data-t="2"]').click();
+  ok("Core: temporizador de la plancha", !d.$("#timer").hidden && d.$("#tLabel").textContent === "Core: Plancha" && d.$("#tTime").textContent === "0:30");
+  d.$("#tSkip").click();
+  const tick = i => { const c = d.$(`#core [data-c="${i}"]`); c.checked = true; c.dispatchEvent(new d.w.Event("change")); };
+  tick(0); tick(1);
+  eq("Core: guarda el checklist en s/<fecha>~alejandro → _core", d.ev("D.s.alejandro._core"), [true, true, false]);
+  eq("Core incompleto: sin XP ni día de racha", d.ev("[xpTotal('alejandro'),coreDays('alejandro').length]"), [0, 0]);
+  tick(2);
+  eq("Core completo: +5 XP y día guardado", d.ev("[D.w.alejandro._xp.t,coreDays('alejandro')]"), [5, [d.ev("TODAY")]]);
+  eq("Racha de core: 1 día", d.$("#core summary > small").textContent, "Racha de core: 1 día");
+  d.ev(`D.w.alejandro._core={d:[${JSON.stringify(daysAgo(d, 2))},${JSON.stringify(daysAgo(d, 1))},TODAY]};renderDay()`);
+  eq("Racha de core: 3 días seguidos", d.$("#core summary > small").textContent, "Racha de core: 3 días");
+  d.ev(`D.w.alejandro._core={d:[${JSON.stringify(daysAgo(d, 3))},${JSON.stringify(daysAgo(d, 1))}]};D.s.alejandro._core=[];renderDay()`);
+  eq("La racha sigue si hoy aún no lo hace, y se corta con un día sin core", d.$("#core summary > small").textContent, "Racha de core: 1 día");
+
+  // Semana y Progreso
+  d.ev("D.w.alejandro={};D.s.alejandro={};current='lun';renderDay()");
+  saveSet(d, "ale-pressmaq", "alejandro", 0, 30, 12);
+  d.ev("weekWho='all';weekOff=0;renderWeek()");
+  ok("Semana 'Todos' incluye a Alejandro con sus ejercicios", d.$$("#v-week .wday .who").some(x => x.textContent === "Alejandro") && d.$("#v-week").textContent.includes("Press de pecho en máquina"));
+  ok("Semana: sin fila de peso corporal para él", !d.$('#v-week .bw[data-p="alejandro"]') && !!d.$('#v-week .bw[data-p="samuel"]'));
+  ok("Semana: su resumen sin peso promedio", !d.$$("#v-week .wsum .macro").find(m => m.textContent.includes("Alejandro")).textContent.includes("Peso promedio"));
+  d.ev("weekWho='alejandro';renderWeek()");
+  ok("Semana solo de él: sin texto de pesarse", !/Pésense|peso corporal/.test(d.$("#v-week .phase-why").textContent));
+  d.ev(`D.w.alejandro['ale-pressmaq']=Object.assign({},D.w.alejandro['ale-pressmaq'],{f:20,fd:'${prev}'});progDay=null;renderProgress()`);
+  ok("Progreso: sin cintura, mediciones ni peso corporal", !d.$("#cSave") && !/cintura|Mediciones de|peso corporal/i.test(d.$("#v-prog").textContent));
+  eq("Progreso: días de SU rutina", d.$$("#gDays button").map(b => b.textContent), ["Lun", "Mar", "Mié", "Vie", "Sáb"]);
+  ok("Progreso: 'Cuánto subimos' con sus ejercicios", d.$$("#v-prog .lift h3").some(h => h.textContent === "Press de pecho en máquina") && d.$$("#v-prog .gwho").every(x => x.textContent.startsWith("Alejandro")));
+  ok("Progreso: está en el ranking por % de fuerza", d.$$("#v-prog .duo")[0].children.length === 5 && d.$$("#v-prog .duo")[0].textContent.includes("+50.0%Alejandro: mejora de fuerza"));
+  d.$('#who button[data-p="samuel"]').click();
+  ok("Equipo: Alejandro no aparece en cintura ni en ejercicios principales", !d.$$("#v-prog .duo")[1].textContent.includes("Alejandro") && !d.$$("#v-prog .lift .r").some(r => r.textContent.includes("Alejandro")));
+  ok("Equipo: ranking también lo muestra por % de fuerza", d.$$("#v-prog .duo")[0].textContent.includes("Alejandro: mejora de fuerza"));
+  eq("Equipo: días de la rutina del equipo", d.$$("#gDays button").map(b => b.textContent), ["Lun", "Mar", "Mié", "Jue", "Sáb"]);
+
+  // Comida y Plan
+  d.$('#who button[data-p="alejandro"]').click();
+  eq("Comida: 'Comer para crecer y rendir'", d.$("#v-food h1").textContent, "Comer para crecer y rendir");
+  eq("Comida: 6 pautas", d.$$("#v-food li").length, 6);
+  ok("Comida: sin calorías ni dietas; suplementos solo para prohibirlos", !/kcal|calor|déficit|macros/i.test(d.$("#v-food").textContent) && d.$("#v-food").textContent.includes("Sin proteína en polvo, creatina, quemadores ni ningún suplemento, salvo que lo indique un pediatra."));
+  eq("Plan: 'Reglas del gym junior' con 5 reglas", [d.$$("#v-plan .sec-title")[0].textContent, d.$$("#v-plan .card")[0].querySelectorAll("li").length], ["Reglas del gym junior", 5]);
+  ok("Plan: duerme 9 horas y nunca con dolor", /Duerme 9 horas/.test(d.$("#v-plan").textContent) && /Nunca entrenes con dolor/.test(d.$("#v-plan").textContent));
+  ok("Plan: sin calorías, déficit ni suplementos; con Mi gym", !/kcal|déficit|creatina|suplement/i.test(d.$("#v-plan").textContent.replace(d.$("#gymBox").textContent, "")) && !!d.$("#v-plan #gSave"));
+  ok("Plan y Comida con apodo", d.$("#v-plan .hero .nick").textContent.includes("El Patrón") && d.$("#v-food .hero .nick").textContent.includes("El Patrón"));
+  ok("Plan del equipo sigue igual", (() => { d.$('#who button[data-p="samuel"]').click(); const t = d.$("#v-plan").textContent; d.$('#who button[data-p="alejandro"]').click(); return t.includes("Cómo entrenar juntos") && t.includes("Torso A"); })());
+
+  // Frases y chistes
+  eq("MOTIVA.alejandro: 5 frases (4 con escena), 4 chistes y cierre", d.ev("[MOTIVA.alejandro.frases.length,MOTIVA.alejandro.frases.filter(f=>f.s).length,MOTIVA.alejandro.chistes.length,MOTIVA.alejandro.fin[0]]"), [5, 4, 4, "¡Misión cumplida! +50 XP ⚔️"]);
+  d.ev("current='lun';renderDay()");
+  ok("Frase del día de Alejandro", d.$("#frase .fw").textContent === "Frase del día · Alejandro" && d.ev("MOTIVA.alejandro.frases.map(f=>f.t)").includes(d.$("#frase .fq").textContent));
+  let scene = null;
+  for (let i = 0; i < 6 && !scene; i++) { const a = d.$("#frase .fb a"); if (a) scene = a.href; else d.$('#frase [data-f="otra"]').click(); }
+  ok("Escena: búsqueda de YouTube", !!scene && scene.startsWith("https://www.youtube.com/results?search_query=") && d.ev(`MOTIVA.alejandro.frases.some(f=>f.s&&'${scene}'.endsWith(encodeURIComponent(f.s)))`), scene);
+  d.$('#frase [data-f="chiste"]').click();
+  ok("Chiste de Alejandro", d.ev("MOTIVA.alejandro.chistes").some(c => d.$("#frase .fj").textContent === "😄 " + c));
+
+  // Contraste de su color
+  const css = RAW.match(/<style>([\s\S]*?)<\/style>/)[1];
+  ok("Selector de nombres con scroll horizontal y 5 botones", /\.who-switch\{[^}]*overflow-x:auto/.test(css) && d.$$("#who button").length === 5);
+  ok("Sin errores de consola", d.errors.length === 0, d.errors.join("\n"));
+}
+
+// =====================================================================
+group = "16. Alejandro en export/import y Supabase";
+{
+  const a = device();
+  a.$('#who button[data-p="alejandro"]').click();
+  a.ev("current='vie';renderDay()");
+  saveSet(a, "ale-sentadilla", "alejandro", 0, 12, 12);
+  a.ev(`D.w.alejandro._core={d:['2026-10-01',TODAY]};persist('w','alejandro')`);
+  a.$('.ex[data-id="ale-rumano"] .optbtn').click();
+  const html = a.ev("buildExport()");
+  ok("Export lleva sus series, XP, core, junior y ocultos", /"alejandro":\{"ale-sentadilla"/.test(html) && /"_xp":\{"t":\d+/.test(html) && /"_core":\{"d":\["2026-10-01"/.test(html) && /"junior":\{"alejandro":true\}/.test(html) && /"hide":\{"alejandro":\["ale-rumano"\]\}/.test(html));
+  const b = device();
+  b.ev(`D.w.alejandro={_xp:{t:40,d:{'2026-09-01':40}},_core:{d:['2026-09-01']}}`);
+  b.ev(`mergeIn(readSeed(${JSON.stringify(html)}))`);
+  eq("Import: series de Alejandro", b.ev("D.w.alejandro['ale-sentadilla'].h.slice(-1)[0].s[0]"), [12, 12]);
+  eq("Import: une los días de core", b.ev("D.w.alejandro._core.d"), ["2026-09-01", "2026-10-01", b.ev("TODAY")]);
+  eq("Import: une el XP por fecha y recalcula el total", b.ev("[D.w.alejandro._xp.d['2026-09-01'],D.w.alejandro._xp.t]"), [40, 40 + a.ev("D.w.alejandro._xp.t")]);
+  eq("Import: cfg con junior y ocultos", b.ev("[D.g.junior.alejandro,D.g.hide.alejandro]"), [true, ["ale-rumano"]]);
+  const old = { v: 2, at: "2026-01-01T00:00:00Z", w: { samuel: { "lun-banca": { v: 50, d: "2026-01-01", f: 50, fd: "2026-01-01", h: [{ d: "2026-01-01", s: [[50, 8]] }] } } } };
+  const c = device();
+  c.ev(`mergeIn(${JSON.stringify(old)})`);
+  eq("Archivo viejo sin Alejandro: queda vacío sin error", c.ev("[Object.keys(D.w.alejandro).length,xpTotal('alejandro')]"), [0, 0]);
+
+  const server = makeServer();
+  const A = device({ server }), B = device({ server });
+  await sleep(80);
+  A.$('#who button[data-p="alejandro"]').click(); B.$('#who button[data-p="alejandro"]').click();
+  A.ev("current='lun';coreOpen=true;renderDay()"); B.ev("current='lun';renderDay()");
+  saveSet(A, "ale-pressmaq", "alejandro", 0, 30, 12);
+  for (const i of [0, 1, 2]) { const ch = A.$(`#core [data-c="${i}"]`); ch.checked = true; ch.dispatchEvent(new A.w.Event("change")); }
+  await sleep(80);
+  const today = A.ev("TODAY");
+  eq("Upsert s/<fecha>~alejandro con serie y core", server.rows.get(`s/${today}~alejandro`) && [server.rows.get(`s/${today}~alejandro`)["ale-pressmaq"][0], server.rows.get(`s/${today}~alejandro`)._core], [{ kg: 30, reps: 12, u: "kg" }, [true, true, true]]);
+  eq("Upsert w/alejandro con historial, _xp y _core", server.rows.get("w/alejandro") && [server.rows.get("w/alejandro")["ale-pressmaq"].h.slice(-1)[0].s[0], server.rows.get("w/alejandro")._xp.t, server.rows.get("w/alejandro")._core.d], [[30, 12], 15, [today]]);
+  await sleep(2000);
+  eq("Realtime: el otro celular recibe serie, XP y core", B.ev("[D.s.alejandro['ale-pressmaq'][0].kg,D.w.alejandro._xp.t,D.s.alejandro._core]"), [30, 15, [true, true, true]]);
+  ok("Realtime: su fila aparece guardada y el nivel en el hero", !!B.$('.ex[data-id="ale-pressmaq"] .srow.done[data-p="alejandro"][data-k="0"]') && B.$("#dayView .power small").textContent === "15 / 500 XP");
+  const C = device({ server });
+  await sleep(120);
+  eq("Celular nuevo carga a Alejandro", C.ev("[D.w.alejandro['ale-pressmaq'].h.length,D.s.alejandro._core.length,coreDays('alejandro').length]"), [1, 3, 1]);
   ok("Sin errores de consola", a.errors.length + b.errors.length + c.errors.length + A.errors.length + B.errors.length + C.errors.length === 0, [...a.errors, ...b.errors, ...c.errors, ...A.errors, ...B.errors, ...C.errors].join("\n"));
 }
 

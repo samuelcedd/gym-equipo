@@ -1,4 +1,4 @@
-# App del gym · Samuel, Anderson, Lorena y Nayaira
+# App del gym del equipo · Samuel, Anderson, Lorena, Nayaira y Alejandro
 
 App de un solo archivo (`index.html`, sin build). Los datos se guardan en Supabase y se sincronizan en vivo entre los celulares.
 
@@ -15,8 +15,9 @@ App de un solo archivo (`index.html`, sin build). Los datos se guardan en Supaba
 3. En 1–2 minutos queda en: `https://TU_USUARIO.github.io/gym-equipo/`
 
 ## 3. Usar
-- Manda el link a Anderson, Lorena y Nayaira. Cada uno elige su nombre arriba.
+- Manda el link a Anderson, Lorena, Nayaira y Alejandro. Cada uno elige su nombre arriba.
 - Nayaira hace la misma rutina a otra hora: al elegir su nombre, los textos de la sesión son individuales y no ve el modo post-turno (que es solo de Lorena).
+- **Alejandro (14 años)** tiene su propia rutina juvenil (`DAYS_ALEJANDRO`): técnica primero, nada al fallo, sin calorías, suplementos ni seguimiento de peso corporal. Ve solo su rutina, un aviso de entrenar con un adulto, la activación de core opcional con racha y su "Nivel de poder" (XP). Los ejercicios marcados como opcionales se pueden ocultar.
 - Arriba debe decir **"Progreso compartido: se guarda para el equipo"**.
 - **Unidades**: en cada ejercicio, junto al nombre de cada persona, se elige `kg | lb | placas`.
   Si cambias de unidad con historial, la meta se convierte sola (1 lb = 0,4536 kg) a una carga que se pueda armar.

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Plan de entreno · Samuel, Anderson, Lorena y Nayaira</title>
+<title>Plan de entreno del equipo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,24 +20,25 @@
   --body:"Barlow","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   --nav-h:64px;
   /* Color de cada persona; --me es el de quien está activa (contraste AA ≥ 5:1 con --me-ink) */
-  --c-samuel:#1F5FAD; --c-anderson:#C2410C; --c-lorena:#7B3FA0; --c-nayaira:#0F766E;
+  --c-samuel:#1F5FAD; --c-anderson:#C2410C; --c-lorena:#7B3FA0; --c-nayaira:#0F766E; --c-alejandro:#9F1239;
   --me:var(--c-samuel); --me-ink:#FFFFFF;
   transition:--me .2s ease;
 }
 :root[data-me="anderson"]{--me:var(--c-anderson)}
 :root[data-me="lorena"]{--me:var(--c-lorena)}
 :root[data-me="nayaira"]{--me:var(--c-nayaira)}
+:root[data-me="alejandro"]{--me:var(--c-alejandro)}
 @property --me{syntax:"<color>";inherits:true;initial-value:#1F5FAD}
 *,*::before,*::after{box-sizing:inherit}
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --bg:#14171C; --surface:#1D2128; --surface-2:#252A33; --ink:#EEF1F5; --muted:#9AA3B0; --line:#333944; --p-white:#E6E6E6; --done:#2FB36A;
-    --c-samuel:#6BA2E8; --c-anderson:#FF8A4C; --c-lorena:#C39BE0; --c-nayaira:#4FD1C5; --me-ink:#14171C;
+    --c-samuel:#6BA2E8; --c-anderson:#FF8A4C; --c-lorena:#C39BE0; --c-nayaira:#4FD1C5; --c-alejandro:#FB7185; --me-ink:#14171C;
   }
 }
 :root[data-theme="dark"]{
   --bg:#14171C; --surface:#1D2128; --surface-2:#252A33; --ink:#EEF1F5; --muted:#9AA3B0; --line:#333944; --p-white:#E6E6E6; --done:#2FB36A;
-  --c-samuel:#6BA2E8; --c-anderson:#FF8A4C; --c-lorena:#C39BE0; --c-nayaira:#4FD1C5; --me-ink:#14171C;
+  --c-samuel:#6BA2E8; --c-anderson:#FF8A4C; --c-lorena:#C39BE0; --c-nayaira:#4FD1C5; --c-alejandro:#FB7185; --me-ink:#14171C;
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
 html,body{margin:0}
@@ -147,7 +148,7 @@ p{margin:0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
 /* Pareja */
-.who-switch{display:flex;min-width:0;overflow-x:auto;scrollbar-width:none;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
+.who-switch{position:relative;display:flex;min-width:0;overflow-x:auto;scrollbar-width:none;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
 .who-switch::-webkit-scrollbar{display:none}
 .who-switch button{flex:0 0 auto;border:0;background:none;border-radius:999px;padding:6px 10px;font-weight:600;font-size:14px;color:var(--muted)}
 .who-switch button[aria-pressed="true"]{background:var(--me);color:var(--me-ink)}
@@ -276,6 +277,30 @@ p{margin:0}
 .wip{border-left:6px solid var(--me)}
 .wip ul{columns:2;column-gap:18px}
 .wip li{break-inside:avoid}
+/* Rutina juvenil: opcionales, banner de adulto, core y nivel de poder */
+.ex.opt{border:2px dashed var(--line)}
+.optbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 10px}
+.optlbl{display:inline-block;border:1px dashed var(--muted);border-radius:6px;padding:2px 8px;font-size:13px;font-weight:700;color:var(--muted)}
+.optbtn{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600}
+.ex.hid{border:2px dashed var(--line);background:none}
+.ex.hid .ex-head{align-items:center;justify-content:space-between;padding:10px 14px}
+.ex.hid h3{font-size:18px;color:var(--muted)}
+.jr{background:var(--surface);border:2px solid var(--me);border-radius:12px;padding:10px 14px;margin:0 0 14px;font-weight:700;font-size:15px}
+.core{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin:0 0 14px}
+.core summary{cursor:pointer;padding:10px 14px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:8px;list-style:none}
+.core summary::-webkit-details-marker{display:none}
+.core summary small{font-weight:600;color:var(--muted)}
+.core summary > small{white-space:nowrap}
+.core .cb{padding:0 14px 12px}
+.core .ci{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding:8px 0}
+.core .ci label{flex:1;display:flex;align-items:center;gap:10px;font-size:15px}
+.core .ci input{width:22px;height:22px;accent-color:var(--me)}
+.core .ci button{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-weight:700;font-size:14px}
+.nick{font-family:var(--display);font-weight:700;font-size:18px;color:var(--me);margin-top:2px}
+.power{margin-top:8px;font-weight:700;font-size:15px}
+.power .xbar{height:8px;background:var(--surface-2);border-radius:999px;margin-top:4px;overflow:hidden;max-width:260px}
+.power .xbar i{display:block;height:100%;background:var(--me)}
+.power small{font-weight:600;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -286,6 +311,7 @@ p{margin:0}
       <button type="button" data-p="anderson">Anderson</button>
       <button type="button" data-p="lorena">Lorena</button>
       <button type="button" data-p="nayaira">Nayaira</button>
+      <button type="button" data-p="alejandro">Alejandro</button>
     </div>
     <button class="theme-btn" id="themeBtn" type="button" aria-label="Cambiar tema claro u oscuro" title="Cambiar tema">◐</button>
   </div>
@@ -403,32 +429,113 @@ const DAYS=[
 ];
 
 
+/* ---------- Rutina juvenil de Alejandro (14 años) ----------
+   ref: ejercicio del equipo del que se toman los pasos, el video y la configuración de máquina en Mi gym.
+   opt: "Opcional recomendado" (se puede ocultar). nt: nota visible en su fila. */
+const WARM_HOMBRO=[
+ "5 minutos de bicicleta suave.",
+ "Rotación externa en polea o banda liviana: 2 × 12.",
+ "Abducción lateral con banda liviana: 2 × 12.",
+ "Rotación interna en polea o banda liviana: 2 × 12.",
+ "Dislocaciones con banda: 2 × 12."
+];
+const WARM_ALE_CORE=[
+ "5 minutos de bicicleta suave.",
+ "Gato-vaca y rotaciones de cadera: 10 de cada uno.",
+ "Plancha frontal de 20 segundos para activar el abdomen."
+];
+const WARM_ALE_PIERNA=[
+ "5 minutos de bicicleta o caminadora a ritmo suave.",
+ "Balanceos de pierna adelante-atrás y laterales: 10 por lado.",
+ "Sentadilla con peso corporal: 15 repeticiones lentas.",
+ "Una serie de aproximación de sentadilla goblet con una mancuerna liviana: 10 repeticiones."
+];
+const DAYS_ALEJANDRO=[
+{key:"lun",short:"Lun",name:"Lunes",title:"Pecho y bíceps",sub:"Máquina y mancuernas: técnica perfecta, sin llegar al fallo.",c:"var(--p-red)",ci:"#fff",kg:"25",warm:WARM_HOMBRO,warmT:"Calentamiento de hombro",ex:[
+ {id:"ale-pressmaq",n:"Press de pecho en máquina",s:3,r:"10–12",rest:90,ref:"sab-pecho"},
+ {id:"ale-inclinado",n:"Press inclinado con mancuernas",s:3,r:"10–12",rest:90,ref:"mie-inclinado"},
+ {id:"ale-cruces",n:"Aperturas en polea",s:3,r:"12–15",rest:60,steps:["Pon las poleas a la altura de los hombros y agarra un estribo en cada mano.","Da un paso al frente con el pecho alto y los codos un poco doblados.","Junta las manos al frente a la altura del pecho y aprieta 1 segundo.","Abre lento hasta sentir el estiramiento, sin llevar los brazos más atrás de los hombros."]},
+ {id:"ale-curl",n:"Curl de bíceps con mancuernas",s:3,r:"10–12",rest:60,ref:"sab-curl",nt:"Bajada lenta de 3 segundos."}
+]},
+{key:"mar",short:"Mar",name:"Martes",title:"Core y cardio",sub:"Abdomen fuerte y un buen rato de cardio o deporte.",c:"var(--p-blue)",ci:"#fff",kg:"20",warm:WARM_ALE_CORE,ex:[
+ {id:"ale-crunchpolea",n:"Crunch en polea alta, arrodillado",s:3,r:"12–15",rest:60,ref:"sab-crunch"},
+ {id:"ale-colgado",n:"Elevaciones de piernas colgado",s:3,r:"8–12",rest:60,ref:"jue-colgado",nt:"Sin balanceo. Si cuesta, hazlas con rodillas dobladas."},
+ {id:"ale-russian",n:"Giros rusos (sin disco o disco liviano)",s:3,r:"12 por lado",rest:45,steps:["Siéntate en el piso con las rodillas dobladas y los talones apoyados.","Inclina el torso un poco hacia atrás con la espalda recta.","Gira el torso de lado a lado llevando las manos (o el disco) junto a la cadera.","Muévete lento y controlado; cuenta un giro por cada lado."]},
+ {id:"ale-cardio",n:"Cardio moderado o deporte (fútbol, bici)",s:1,r:"30–40 min",rest:0,cardio:true,steps:["Caminadora, bici o elíptica a ritmo moderado: puedes hablar en frases cortas.","También vale jugar fútbol, montar bici o nadar.","Lleva agua y para si te mareas o algo duele."]}
+]},
+{key:"mie",short:"Mié",name:"Miércoles",title:"Espalda y hombros",sub:"Espalda ancha y hombros sanos.",c:"var(--p-yellow)",ci:"#1A1E26",kg:"15",warm:WARM_HOMBRO,warmT:"Calentamiento de hombro",ex:[
+ {id:"ale-remo",n:"Remo en máquina",s:3,r:"10–12",rest:90,steps:["Ajusta el asiento para que las agarraderas queden a la altura del pecho y apoya el pecho en el respaldo.","Agarra con la espalda recta y los hombros abajo.","Jala llevando los codos hacia atrás y aprieta las escápulas 1 segundo.","Regresa lento hasta estirar los brazos."]},
+ {id:"ale-jalon",n:"Jalón al pecho agarre amplio",s:3,r:"10–12",rest:90,ref:"lun-jalon"},
+ {id:"ale-laterales",n:"Elevaciones laterales",s:3,r:"12–15",rest:60,ref:"mie-laterales"},
+ {id:"ale-face",n:"Face pull",s:2,r:"15",rest:60,ref:"mie-face",opt:true,nt:"Recomendado: cuida los hombros y mejora la postura."}
+]},
+{key:"jue",short:"Jue",name:"Jueves",title:"Descanso activo",sub:"Moverse sin pesas.",c:"var(--p-grey)",ci:"#fff",kg:"",rest:{h:"Descanso activo",items:["Hoy juegas, caminas o haces deporte suave. Core opcional."]}},
+{key:"vie",short:"Vie",name:"Viernes",title:"Pierna",sub:"Piernas fuertes, con mancuernas y máquinas.",c:"var(--p-green)",ci:"#fff",kg:"10",warm:WARM_ALE_PIERNA,ex:[
+ {id:"ale-sentadilla",n:"Sentadilla goblet con mancuerna",s:3,r:"10–12",rest:120,nt:"Cuando hagas 3 × 12 con técnica perfecta varias semanas, pasa a sentadilla hack o con barra, siempre con un adulto.",steps:["Sostén una mancuerna vertical pegada al pecho, con los codos hacia abajo.","Pies un poco más abiertos que los hombros y puntas un poco hacia afuera.","Baja sentándote entre los talones con el pecho alto, hasta donde mantengas la espalda recta.","Sube empujando con todo el pie y aprieta glúteos arriba."]},
+ {id:"ale-rumano",n:"Peso muerto rumano con mancuernas",s:3,r:"10–12",rest:90,ref:"mar-rumano",opt:true,nt:"Recomendado: trabaja glúteo y femoral, que tu rutina no tenía."},
+ {id:"ale-prensa",n:"Prensa de piernas",s:3,r:"12–15",rest:90,ref:"mar-prensa"},
+ {id:"ale-ext",n:"Extensión de cuádriceps",s:3,r:"12–15",rest:60,ref:"mar-ext"},
+ {id:"ale-femoral",n:"Curl femoral acostado",s:3,r:"12–15",rest:60,ref:"mar-femoral"}
+]},
+{key:"sab",short:"Sáb",name:"Sábado",title:"Torso general y abdomen",sub:"Un poco de todo el torso y abdomen para cerrar la semana.",c:"var(--p-white)",ci:"#1A1E26",kg:"5",warm:WARM_HOMBRO,warmT:"Calentamiento de hombro",ex:[
+ {id:"ale-pressrec",n:"Press de pecho en máquina",s:3,r:"10–12",rest:90,ref:"sab-pecho"},
+ {id:"ale-tiron",n:"Remo o jalón",s:3,r:"10–12",rest:90,steps:["Elige la máquina de remo o la de jalón, según cuál esté libre.","Pecho alto y hombros abajo, lejos de las orejas.","Lleva los codos hacia atrás (remo) o hacia las costillas (jalón) y aprieta la espalda 1 segundo.","Regresa lento, sin soltar el peso de golpe."]},
+ {id:"ale-tricep",n:"Tríceps en polea",s:3,r:"12–15",rest:60,ref:"lun-tricep",opt:true,nt:"Recomendado: el tríceps es la mayor parte del brazo."},
+ {id:"ale-crunchmaq",n:"Crunch en máquina",s:3,r:"12–15",rest:60,steps:["Ajusta el asiento y agarra las manijas o apoya los brazos en los soportes.","Exhala y enrolla el torso llevando el pecho hacia la cadera.","Aprieta el abdomen 1 segundo abajo.","Regresa lento sin dejar que las placas choquen."]}
+]},
+{key:"dom",short:"Dom",name:"Domingo",title:"Descanso",sub:"Día libre.",c:"var(--p-grey)",ci:"#fff",kg:"",rest:{h:"Descanso",items:["Recuperar también es entrenar: duerme bien, come rico y diviértete."]}}
+];
+// Pasos tomados del ejercicio del equipo cuando el movimiento ya existe
+const TEAMEX=Object.fromEntries(DAYS.flatMap(d=>d.ex||[]).map(e=>[e.id,e]));
+DAYS_ALEJANDRO.forEach(d=>(d.ex||[]).forEach(e=>{if(e.ref&&!e.steps)e.steps=TEAMEX[e.ref].steps;}));
+// Rutina por persona: todos usan la del equipo salvo quien tenga una propia
+const ROUTINES={equipo:DAYS,alejandro:DAYS_ALEJANDRO};
+const rkey=p=>ROUTINES[p]?p:"equipo";
+const routineOf=p=>ROUTINES[rkey(p)];
+const RID={};
+Object.keys(ROUTINES).forEach(k=>ROUTINES[k].forEach(d=>(d.ex||[]).forEach(e=>{RID[e.id]=k;})));
+// Máquinas de Alejandro que son las mismas del equipo: comparten la configuración de Mi gym
+const MALIAS={};
+DAYS_ALEJANDRO.forEach(d=>(d.ex||[]).forEach(e=>{if(e.ref)MALIAS[e.id]=e.ref;}));
+const mkey=id=>MALIAS[id]||id;
+
 const PH={
  "lun-banca":"P","lun-remo":"P","lun-militar":"S","lun-jalon":"S","lun-curl":"A","lun-tricep":"A",
  "mar-sentadilla":"P","mar-rumano":"P","mar-prensa":"S","mar-ext":"A","mar-femoral":"A","mar-pant":"A","mar-rueda":"C",
  "mie-inclinado":"P","mie-remo":"P","mie-dominadas":"S","mie-peck":"A","mie-laterales":"A","mie-face":"A","mie-cardio":"K",
  "jue-hip":"P","jue-bulgara":"P","jue-hack":"S","jue-femoral":"A","jue-pant":"A","jue-colgado":"C",
- "sab-rueda":"CP","sab-crunch":"CP","sab-piernas":"CP","sab-lateral":"CP","sab-pecho":"A","sab-latpolea":"A","sab-posterior":"A","sab-curl":"A","sab-tricep":"A","sab-cardio":"K"
+ "sab-rueda":"CP","sab-crunch":"CP","sab-piernas":"CP","sab-lateral":"CP","sab-pecho":"A","sab-latpolea":"A","sab-posterior":"A","sab-curl":"A","sab-tricep":"A","sab-cardio":"K",
+ "ale-pressmaq":"P","ale-inclinado":"S","ale-cruces":"A","ale-curl":"A",
+ "ale-crunchpolea":"C","ale-colgado":"C","ale-russian":"C","ale-cardio":"K",
+ "ale-remo":"P","ale-jalon":"S","ale-laterales":"A","ale-face":"A",
+ "ale-sentadilla":"P","ale-rumano":"P","ale-prensa":"S","ale-ext":"A","ale-femoral":"A",
+ "ale-pressrec":"P","ale-tiron":"S","ale-tricep":"A","ale-crunchmaq":"C"
 };
 // w: texto para el grupo que entrena junto; s: versión individual para quien entrena a otra hora
 const PHL={
  P:{t:"Ejercicios principales",w:"Van primero porque son los más pesados y los que más músculo construyen. En grupo: turnos de tres en la misma estación; mientras uno hace su serie, los otros dos descansan, cambian discos y uno hace de apoyo.",s:"Van primero porque son los más pesados y los que más músculo construyen. Respeta el descanso completo entre series: el temporizador arranca solo al guardar."},
  S:{t:"Ejercicios secundarios",w:"Complementan a los principales con un poco menos de peso y más repeticiones. Sigan con turnos de tres.",s:"Complementan a los principales con un poco menos de peso y más repeticiones. Respeta el descanso completo entre series."},
  A:{t:"Aislamiento",w:"Un solo músculo a la vez. Como el descanso es corto, háganlos al mismo tiempo, cada uno con sus mancuernas o en máquinas vecinas.",s:"Un solo músculo a la vez, con descanso corto. Si una máquina está ocupada, cambia el orden dentro de este bloque."},
- C:{t:"Core",w:"Al final, porque el abdomen los estabiliza en los ejercicios pesados y no conviene cansarlo antes. Háganlo al mismo tiempo.",s:"Al final, porque el abdomen te estabiliza en los ejercicios pesados y no conviene cansarlo antes."},
+ C:{t:"Core",w:"Al final, porque el abdomen los estabiliza en los ejercicios pesados y no conviene cansarlo antes. Háganlo al mismo tiempo.",s:"Movimientos lentos y controlados, sin tirones: calidad antes que cantidad."},
  CP:{t:"Core primero",w:"Hoy el abdomen es la prioridad, así que va primero, con más energía. No hay ejercicios pesados que lo necesiten fresco.",s:"Hoy el abdomen es la prioridad, así que va primero, con más energía. No hay ejercicios pesados que lo necesiten fresco."},
  K:{t:"Cardio",w:"Siempre de último: si lo hacen antes, les quita fuerza para las pesas. Máquinas vecinas y a conversar.",s:"Siempre de último: si lo haces antes, te quita fuerza para las pesas. Ritmo en el que puedas hablar."}
 };
 const BEFORE=["Coman el pre-entreno 30 a 45 minutos antes: 1 banano y café.","Un vaso de agua y un termo de 750 ml cada uno.","Creatina: 5 g Samuel, 3–5 g Anderson, 3 g Lorena si decide tomarla.","Samuel abre esta app y revisan los pesos de la semana pasada del equipo.","Lorena: si viene de turno, marquen el modo post-turno."];
 const AFTER=["Estiren suave 5 minutos los músculos que trabajaron.","Revisen que quedaron anotados los pesos de todos los que entrenaron.","Desayuno post-entreno dentro de la siguiente hora (pestaña Comida).","Quien completó todas las series en el tope del rango, sube el peso la próxima vez."];
 const BEFORE_SOLO=["Come algo liviano 30 a 45 minutos antes: 1 banano o una fruta.","Un vaso de agua y un termo de 750 ml.","Abre esta app y revisa tus pesos de la semana pasada: la meta de cada serie ya está lista.","Entrenas a otra hora, pero tus series cuentan igual para el equipo."];
+// Versión juvenil: sin suplementos, con un adulto cerca
+const BEFORE_JR=["Come algo 1 hora antes: fruta, pan o arepa con algo de proteína.","Lleva tu termo de agua.","Ve con un adulto y cuéntale qué vas a entrenar hoy.","Abre esta app: la meta de cada serie ya está lista."];
+const AFTER_JR=["Estira suave 5 minutos.","Revisa que quedaron anotadas tus series: cada una suma XP.","Come algo con proteína y carbohidrato en la siguiente hora.","Si algo te dolió, cuéntaselo a un adulto."];
 const AFTER_SOLO=["Estira suave 5 minutos los músculos que trabajaste.","Revisa que quedaron anotadas todas tus series.","Come una comida con proteína dentro de la siguiente hora.","Si completaste todas las series en el tope del rango, sube el peso la próxima vez."];
 
-const PEOPLE=["samuel","anderson","lorena","nayaira"];
-const PNAME={samuel:"Samuel",anderson:"Anderson",lorena:"Lorena",nayaira:"Nayaira"};
-const BASE={samuel:{peso:78,cintura:86},anderson:{peso:86,cintura:null},lorena:{peso:64,cintura:null},nayaira:{peso:null,cintura:null}};
-// Entrenan la misma rutina pero a otra hora: ven los textos individuales en vez de los turnos de grupo
-const SOLO=["nayaira"];
+const PEOPLE=["samuel","anderson","lorena","nayaira","alejandro"];
+const PNAME={samuel:"Samuel",anderson:"Anderson",lorena:"Lorena",nayaira:"Nayaira",alejandro:"Alejandro"};
+const NICK={alejandro:"El Patrón"};
+const BASE={samuel:{peso:78,cintura:86},anderson:{peso:86,cintura:null},lorena:{peso:64,cintura:null},nayaira:{peso:null,cintura:null},alejandro:{peso:null,cintura:null}};
+// Entrenan por su cuenta (otra hora u otra rutina): ven los textos individuales en vez de los turnos de grupo
+const SOLO=["nayaira","alejandro"];
+// Menores de edad: reglas junior (sin peso corporal, progresión conservadora). Se guarda en cfg/gym → junior
+const JUNIOR0={alejandro:true};
 const solo=p=>SOLO.includes(p);
 const NIVELES=["principiante","intermedio"];
 const NIVEL0={samuel:"intermedio",anderson:"intermedio",lorena:"principiante",nayaira:"principiante"};
@@ -520,6 +627,11 @@ nayaira:{
  market:null
 }
 };
+// Versión juvenil: sin calorías, dietas ni suplementos
+FOOD.alejandro={
+ title:"Comer para crecer y rendir",lead:"Comida de verdad para crecer, entrenar y rendir en el colegio.",
+ rules:["3 comidas y 2 meriendas al día; no te saltes el desayuno, sobre todo los días de gym.","Proteína en cada comida: huevo, pollo, carne, leche o yogur, queso, fríjol o lenteja.","Energía para entrenar: arroz, papa, arepa, pan, pasta, plátano y fruta, sobre todo antes y después del gym.","Frutas y verduras todos los días; agua durante el día y en el entreno.","Dulces y comida rápida: se pueden, pero no todos los días.","Sin proteína en polvo, creatina, quemadores ni ningún suplemento, salvo que lo indique un pediatra."]
+};
 // Datos que faltan para armar el plan de alguien con FOOD/PLAN vacío
 const FALTA=["Edad","Peso","Estatura","Experiencia entrenando","Objetivo","Lesiones o molestias","Alimentos que le gustan","Alimentos que no le gustan","Intolerancias","Comidas al día","Horario de entreno"];
 const foodListo=p=>!!(FOOD[p]&&FOOD[p].kcal&&FOOD[p].meals.length);
@@ -568,10 +680,15 @@ nayaira:{
  adjust:[]
 }
 };
+PLAN.alejandro={
+ title:"Reglas del gym junior",diag:[],tips:[],adjust:[],
+ rules:["Duerme 9 horas: ahí es cuando el músculo crece.","Siempre con un adulto cerca y técnica antes que peso.","Nunca entrenes con dolor; si algo duele, para y avisa.","Calienta siempre y no te saltes los días de descanso.","No compares tu peso con el de los adultos: compara tu progreso contigo mismo."]
+};
+const JR_PROG=["Sube peso solo cuando TODAS las series lleguen al tope del rango con técnica perfecta.","Máximo +2,5 kg por vez (5 lb o 1 placa); en mancuernas, +1 kg o el par siguiente más pequeño.","Deja siempre 2 repeticiones en reserva: nunca al fallo.","Si una serie no sale con buena técnica, repite el peso la próxima vez.","Nivel de poder: cada serie dentro del rango +10 XP, sesión completa +50 XP y cada día de core +5 XP. Cada 500 XP subes un nivel."];
 const planListo=p=>!!(PLAN[p]&&PLAN[p].diag.length);
 const PROGRESS_INC=["Press banca y remo con barra: +2,5 kg.","Sentadilla, peso muerto rumano y hip thrust: +5 kg (Anderson en rumano y principiantes en todo: +2,5 kg).","Mancuernas: el siguiente par que tenga el gym (salto configurado en Mi gym).","Máquinas y poleas: 1 placa (+2,5 kg); prensa, hack y pantorrilla: 1–2 placas (+5 kg).","En libras: barra de tren superior +5 lb, tren inferior +10 lb, mancuernas +5 lb y máquinas +10 lb o 1 placa si está configurada. Anderson en rumano: el salto más pequeño posible.","Principiantes (nivel en Mi gym): máximo +2,5 kg, +5 lb o 1 placa por vez, en todos los ejercicios.","En placas: +1 placa.","Abdomen y planchas: +2 repeticiones o +5 segundos."];
 const PROGRESS=["Trabajen dentro del rango de repeticiones dejando 1–2 repeticiones en reserva.","Anoten el peso de cada uno en cada ejercicio.","Quien complete todas las series en el tope del rango, sube 2,5–5 kg la siguiente sesión (Anderson en rumano: máximo 2,5 kg; principiantes: máximo 2,5 kg o el siguiente nivel de la máquina).","Con el peso nuevo se vuelve a la parte baja del rango.","Cada 6–8 semanas, semana de descarga todo el equipo: mismos ejercicios con la mitad de las series."];
-const PAIR=["Misma rutina, mismos días y mismo orden. Cada uno con su peso, sus series y, cuando aplica, su variante del ejercicio.","Samuel, Anderson y Lorena entrenan juntos. Nayaira hace la misma rutina a otra hora y registra sus series en su celular: suman igual en el progreso del equipo.","Ejercicios principales y secundarios: turnos de tres en la misma estación. Con 2–3 minutos de descanso, cada uno descansa mientras los otros dos hacen su serie.","Quien está en nivel principiante usa máquina o mancuernas en algunos básicos: cuando la estación es distinta, hace su serie en paralelo y no tiene que esperar turno.","Aislamiento, core y cardio: al mismo tiempo, en máquinas vecinas o con mancuernas propias.","Press banca, sentadilla e inclinado: uno de los que descansa se para detrás como apoyo.","Los primeros meses, Samuel y Anderson revisan la técnica de Lorena: espalda recta, rango completo y control. Nayaira puede grabar una serie con el celular y mostrarla al equipo.","Compitan por porcentaje de mejora, no por kilos: así es justo aunque pesen y lleven tiempos distintos. Ojo: los principiantes van a subir rápido al inicio.","Si alguien no puede ir, los demás entrenan igual. Nadie se salta un día por esperar.","Durante la sesión, Samuel registra en su celular a quienes entrenan con él."];
+const PAIR=["Misma rutina, mismos días y mismo orden. Cada uno con su peso, sus series y, cuando aplica, su variante del ejercicio.","Samuel, Anderson y Lorena entrenan juntos. Nayaira hace la misma rutina a otra hora y registra sus series en su celular: suman igual en el progreso del equipo.","Ejercicios principales y secundarios: turnos de tres en la misma estación. Con 2–3 minutos de descanso, cada uno descansa mientras los otros dos hacen su serie.","Quien está en nivel principiante usa máquina o mancuernas en algunos básicos: cuando la estación es distinta, hace su serie en paralelo y no tiene que esperar turno.","Aislamiento, core y cardio: al mismo tiempo, en máquinas vecinas o con mancuernas propias.","Press banca, sentadilla e inclinado: uno de los que descansa se para detrás como apoyo.","Los primeros meses, Samuel y Anderson revisan la técnica de Lorena: espalda recta, rango completo y control. Nayaira puede grabar una serie con el celular y mostrarla al equipo.","Compitan por porcentaje de mejora, no por kilos: así es justo aunque pesen y lleven tiempos distintos. Ojo: los principiantes van a subir rápido al inicio.","Si alguien no puede ir, los demás entrenan igual. Nadie se salta un día por esperar.","Alejandro tiene su propia rutina juvenil: aparece en Semana y en el ranking de fuerza, nunca por peso corporal.","Durante la sesión, Samuel registra en su celular a quienes entrenan con él."];
 
 /* ---------- Motivación por persona (editable) ----------
    frases: {t: texto, s: búsqueda de la escena en YouTube (opcional)}
@@ -654,6 +771,24 @@ nayaira:{
  ],
  fin:["Sesión cerrada. Rapunzel ya salió de la torre. 💚"],
  post:[]
+},
+alejandro:{
+ hola:"¡Vamos, Patrón! ⚔️",
+ frases:[
+  {t:"Meliodas parece tranquilo, pero su fuerza viene de años de entrenamiento. La tuya empieza con técnica perfecta.",s:"Nanatsu no Taizai Meliodas pelea escena"},
+  {t:"Deku no recibió todo de una: entrenó su cuerpo meses para aguantar su poder. Paso a paso.",s:"My Hero Academia Deku entrenamiento playa"},
+  {t:"Rock Lee no tenía ninjutsu y aun así se volvió leyenda por su constancia.",s:"Naruto Rock Lee entrenamiento escena"},
+  {t:"Goku siempre vuelve más fuerte porque entrena, come y descansa. Las tres cosas.",s:"Dragon Ball Goku entrenamiento escena"},
+  {t:"Técnica primero, peso después: así se sube de nivel sin perder vida."}
+ ],
+ chistes:[
+  "Saitama dice que se volvió fuerte con 100 flexiones diarias. No le creas: sigue tu rutina y descansa.",
+  "Meliodas es bajito y pega más que todos: el tamaño no importa, la técnica sí.",
+  "Subir peso sin técnica es como pelear sin tu Sacred Treasure: te va mal.",
+  "Elevaciones colgado: modo Rock Lee activado, pero sin pesas en las piernas."
+ ],
+ fin:["¡Misión cumplida! +50 XP ⚔️"],
+ post:[]
 }
 };
 
@@ -673,11 +808,13 @@ const clone=o=>JSON.parse(JSON.stringify(o||{}));
 const LB=0.4536;
 const UNITS=["kg","lb","placas"];
 const ULBL={kg:"kg",lb:"lb",placas:"placa"};
-const CFG0={pref:{},bar:{kg:20,lb:45},ez:{kg:10,lb:25},plates:{kg:[25,20,15,10,5,2.5,1.25],lb:[45,35,25,10,5,2.5]},db:{kg:{min:2,max:50,step:2},lb:{min:5,max:120,step:5}},mach:{},own:{},nivel:NIVEL0};
+const CFG0={pref:{},bar:{kg:20,lb:45},ez:{kg:10,lb:25},plates:{kg:[25,20,15,10,5,2.5,1.25],lb:[45,35,25,10,5,2.5]},db:{kg:{min:2,max:50,step:2},lb:{min:5,max:120,step:5}},mach:{},own:{},nivel:NIVEL0,junior:JUNIOR0,hide:{}};
 const pos=v=>typeof v==="number"&&isFinite(v)&&v>0;
 function normCfg(g){
  g=g||{};const o=clone(CFG0);
- PEOPLE.forEach(p=>{const u=(g.pref||{})[p];if(u==="kg"||u==="lb")o.pref[p]=u;const nv=(g.nivel||{})[p];if(NIVELES.includes(nv))o.nivel[p]=nv;});
+ PEOPLE.forEach(p=>{const u=(g.pref||{})[p];if(u==="kg"||u==="lb")o.pref[p]=u;const nv=(g.nivel||{})[p];if(NIVELES.includes(nv))o.nivel[p]=nv;
+  const jr=(g.junior||{})[p];if(typeof jr==="boolean")o.junior[p]=jr;
+  const hd=(g.hide||{})[p];if(Array.isArray(hd)){const l=[...new Set(hd.filter(x=>typeof x==="string"))];if(l.length)o.hide[p]=l;}});
  ["bar","ez"].forEach(b=>["kg","lb"].forEach(u=>{const v=(g[b]||{})[u];if(pos(v))o[b][u]=v;}));
  ["kg","lb"].forEach(u=>{
   const pl=(g.plates||{})[u];if(Array.isArray(pl)){const l=[...new Set(pl.filter(pos))].sort((a,b)=>b-a);if(l.length)o.plates[u]=l;}
@@ -701,6 +838,14 @@ function mergeIn(src){
  PEOPLE.forEach(p=>{
   const iw=(src.w||{})[p]||{};
   Object.keys(iw).forEach(id=>{
+   if(id==="_core"||id==="_xp"){
+    const a=D.w[p][id],b=iw[id];if(!b)return;
+    let n;
+    if(id==="_core")n={d:[...new Set([...((a||{}).d||[]),...(b.d||[])])].sort()};
+    else{const m=Object.assign({},(a||{}).d||{});Object.keys(b.d||{}).forEach(k=>{if(!(k in m)||b.d[k]>m[k])m[k]=b.d[k];});n=xpPack(m);}
+    if(JSON.stringify(n)!==JSON.stringify(a)){D.w[p][id]=n;changed.add("w:"+p);}
+    return;
+   }
    const a=D.w[p][id],b=iw[id];if(!b||((b.v===undefined||b.v===null)&&!b.h&&!b.u))return;
    if(!a){D.w[p][id]=b;changed.add("w:"+p);return;}
    const n=Object.assign({},a);
@@ -828,6 +973,9 @@ document.getElementById("themeBtn").onclick=()=>{
 function renderWho(){
  root.setAttribute("data-me",me);
  document.querySelectorAll("#who button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===me));
+ // Con 5 nombres el selector se desplaza de lado: deja visible a la persona activa
+ const sw=document.getElementById("who"),ab=sw.querySelector('[aria-pressed="true"]');
+ if(ab&&(ab.offsetLeft<sw.scrollLeft||ab.offsetLeft+ab.offsetWidth>sw.scrollLeft+sw.clientWidth))sw.scrollLeft=Math.max(0,ab.offsetLeft-24);
  const sy=document.getElementById("sync");
  sy.className="sync"+(mode==="ro"?" ro":"");
  sy.textContent=mode==="sync"?"Progreso compartido: se guarda para el equipo.":mode==="ro"?"Solo lectura: Samuel registra el progreso del equipo desde su celular.":"Guardado en este celular.";
@@ -850,7 +998,7 @@ const todayKey=jsDayToKey[new Date().getDay()];
 let current=todayKey;
 const platesEl=document.getElementById("plates");
 function renderPlates(){
- platesEl.innerHTML=DAYS.map(d=>`<button type="button" class="plate" data-k="${d.key}" aria-pressed="${d.key===current}" aria-label="${d.name}: ${d.title}">
+ platesEl.innerHTML=routineOf(me).map(d=>`<button type="button" class="plate" data-k="${d.key}" aria-pressed="${d.key===current}" aria-label="${d.name}: ${d.title}">
   <span class="disc" style="--c:${d.c};--ci:${d.ci}"><span>${d.kg}</span></span>
   <span class="lbl">${d.short}</span>${d.key===todayKey?'<span class="today">hoy</span>':''}</button>`).join("");
  platesEl.querySelectorAll(".plate").forEach(p=>p.onclick=()=>{current=p.dataset.k;renderPlates();renderDay();});
@@ -860,7 +1008,7 @@ function renderPlates(){
 const dayView=document.getElementById("dayView");
 const fmtRest=s=>s>=60?Math.floor(s/60)+":"+pad(s%60)+" min":s+" s";
 const VQ={"mie-dominadas":"jalón al pecho agarre neutro","mie-peck":"peck deck pecho","jue-hack":"hack squat","sab-piernas":"elevaciones de piernas acostado abdomen","sab-pecho":"press de pecho en máquina"};
-const vidUrl=e=>"https://www.youtube.com/results?search_query="+encodeURIComponent((VQ[e.id]||e.n)+" técnica correcta");
+const vidUrl=e=>{const r=e.ref&&TEAMEX[e.ref];return "https://www.youtube.com/results?search_query="+encodeURIComponent((VQ[e.id]||(r&&(VQ[r.id]||r.n))||e.n)+" técnica correcta");};
 const isBeg=p=>D.g.nivel[p]==="principiante";
 // Ajustes de cada persona en un ejercicio: los de Anderson (sa, ra, na), la nota común (nt) y, si es principiante, BEGINNER
 const xo=(e,p)=>{
@@ -869,13 +1017,16 @@ const xo=(e,p)=>{
  if(e.nt&&!o.n)o.n=e.nt;
  return isBeg(p)?Object.assign(o,BEGINNER[e.id]||{}):o;
 };
-// only: una persona ("anderson") o varias (["lorena","nayaira"])
-const doesEx=(e,p)=>!e.only||(Array.isArray(e.only)?e.only.includes(p):e.only===p);
+// Cada ejercicio es de una rutina; only: una persona ("anderson") o varias (["lorena","nayaira"])
+const doesEx=(e,p)=>RID[e.id]===rkey(p)&&(!e.only||(Array.isArray(e.only)?e.only.includes(p):e.only===p));
+const isJunior=p=>!!D.g.junior[p];
+// Opcional recomendado que la persona ocultó: no se muestra ni cuenta en el progreso del día
+const optHidden=(e,p)=>!!e.opt&&(D.g.hide[p]||[]).includes(e.id);
 const postMode=()=>REC===TODAY&&!!(D.s.lorena&&D.s.lorena._post);
 const setsOf=(e,p)=>{const n=xo(e,p).s||e.s;return p==="lorena"&&postMode()?Math.min(2,n):n;};
 const repsOf=(e,p)=>xo(e,p).r||e.r;
 const skipped=(e,p)=>p==="lorena"&&postMode()&&!POST_OK.includes(PH[e.id]);
-const peopleOf=e=>PEOPLE.filter(p=>doesEx(e,p)&&!skipped(e,p));
+const peopleOf=e=>PEOPLE.filter(p=>doesEx(e,p)&&!skipped(e,p)&&!optHidden(e,p));
 const ordered=()=>[me,...PEOPLE.filter(p=>p!==me)];
 // Series de la fecha que se registra: hoy salen de D.s; un día pasado, del historial de esa fecha
 function doneOf(p,id){
@@ -925,7 +1076,101 @@ function celebrar(d,p,antes){
  return true;
 }
 
+/* ---------- Nivel de poder (XP) y activación de core: solo junior ---------- */
+const XP_LVL=500;
+function xpPack(m){return {t:Object.values(m).reduce((a,v)=>a+v,0),d:m};}
+const coreDays=p=>(((D.w[p]||{})._core)||{}).d||[];
+// ¿Completó en esa fecha todas las series de ese día de su rutina? (el cardio solo se marca el mismo día)
+function sesionEn(p,d,dt){
+ if(!d.ex)return false;
+ let total=0,done=0;
+ d.ex.forEach(e=>{if(!peopleOf(e).includes(p))return;
+  if(e.cardio){if(dt!==TODAY)return;total++;if((D.s[p][e.id]||[])[0])done++;return;}
+  const h=((D.w[p][e.id]||{}).h||[]).find(x=>x.d===dt),n=setsOf(e,p);total+=n;for(let j=0;j<n;j++)if(h&&h.s&&h.s[j])done++;});
+ return total>0&&done===total;
+}
+// XP de una fecha: +10 por serie dentro del rango, +50 por sesión completa, +5 por día de core
+function xpOn(p,dt){
+ let xp=0;
+ routineOf(p).forEach(d=>(d.ex||[]).forEach(e=>{
+  if(e.cardio||!doesEx(e,p))return;
+  const h=((D.w[p][e.id]||{}).h||[]).find(x=>x.d===dt);if(!h)return;
+  const R=rng(e,p);(h.s||[]).forEach(z=>{if(z&&z[1]>=R.lo&&z[1]<=R.hi)xp+=10;});
+ }));
+ // Cuenta cualquier día de su rutina completado en esa fecha (también si repone un día atrasado)
+ routineOf(p).forEach(d=>{if(sesionEn(p,d,dt))xp+=50;});
+ if(coreDays(p).includes(dt))xp+=5;
+ return xp;
+}
+// XP por fecha guardado en w/<persona> → _xp; si falta, se recalcula desde el historial
+function xpMap(p){
+ const x=(D.w[p]||{})._xp;if(x&&x.d)return x.d;
+ const dates=new Set(coreDays(p));
+ routineOf(p).forEach(d=>(d.ex||[]).forEach(e=>((D.w[p][e.id]||{}).h||[]).forEach(h=>dates.add(h.d))));
+ const m={};dates.forEach(dt=>{const v=xpOn(p,dt);if(v)m[dt]=v;});
+ return m;
+}
+const xpTotal=p=>Object.values(xpMap(p)).reduce((a,v)=>a+v,0);
+const lvlOf=xp=>1+Math.floor(xp/XP_LVL);
+const lvlMsg=n=>`¡Subiste de nivel! Ahora eres nivel ${n} ⚔️`;
+// Recalcula el XP de la fecha; devuelve el nivel nuevo si subió (xa: XP total antes del cambio)
+function xpUpdate(p,dt,xa){
+ if(!isJunior(p))return 0;
+ const m=Object.assign({},xpMap(p)),v=xpOn(p,dt);
+ if(v)m[dt]=v;else delete m[dt];
+ const pk=xpPack(m);
+ if(JSON.stringify(pk)!==JSON.stringify(D.w[p]._xp)){D.w[p]._xp=pk;persist("w",p);}
+ return lvlOf(pk.t)>lvlOf(xa)?lvlOf(pk.t):0;
+}
+function powerHTML(p){
+ const xp=xpTotal(p),r=xp%XP_LVL;
+ return `<div class="power">Nivel de poder: ${lvlOf(xp)} ⚔️ <small>${r} / ${XP_LVL} XP</small><div class="xbar" role="progressbar" aria-label="XP para el siguiente nivel" aria-valuemin="0" aria-valuemax="${XP_LVL}" aria-valuenow="${r}"><i style="width:${r/XP_LVL*100}%"></i></div></div>`;
+}
+const nickHTML=p=>NICK[p]?`<p class="nick">${PNAME[p]} · “${esc(NICK[p])}”</p>`:"";
+// Activación de core: opcional, a cualquier hora (no en ayunas). Cumplimiento en s/<fecha>~<persona> → _core
+const CORE=[{n:"Vacío abdominal en 4 puntos",s:3,r:"10–15 s",t:15},{n:"Dead bug",s:2,r:"8 por lado"},{n:"Plancha",s:2,r:"20–30 s",t:30}];
+function coreStreak(p){
+ const set=new Set(coreDays(p)),x=parseD(TODAY);
+ if(!set.has(TODAY))x.setDate(x.getDate()-1);
+ let n=0;while(set.has(isoDay(x))){n++;x.setDate(x.getDate()-1);}
+ return n;
+}
+let coreOpen=false;
+function coreHTML(p){
+ const st=D.s[p]._core||[],hoy=REC===TODAY,n=coreStreak(p),dis=readOnly||!hoy?" disabled":"";
+ return `<details class="core" id="core"${coreOpen?" open":""}><summary><span>Activación de core <small>(opcional)</small></span><small>Racha de core: ${n} ${n===1?"día":"días"}</small></summary><div class="cb">
+  <p class="phase-why" style="margin:0 0 6px">A cualquier hora, pero no en ayunas. Marca cada ejercicio al terminar sus series.${hoy?"":" Se marca el mismo día."}</p>
+  ${CORE.map((c,i)=>`<div class="ci"><label><input type="checkbox" data-c="${i}"${st[i]?" checked":""}${dis}> ${esc(c.n)}: ${c.s} × ${esc(c.r)}</label>${c.t?`<button type="button" data-t="${i}" aria-label="Temporizador de ${c.t} segundos para ${esc(c.n)}">▶ ${c.t} s</button>`:""}</div>`).join("")}
+ </div></details>`;
+}
+function bindCore(p){
+ const el=document.getElementById("core");if(!el)return;
+ el.addEventListener("toggle",()=>{coreOpen=el.open;});
+ el.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{const c=CORE[+b.dataset.t];startTimer(c.t,c.n,"Core: ");});
+ el.querySelectorAll("[data-c]").forEach(ch=>ch.onchange=()=>{
+  if(readOnly||REC!==TODAY)return;
+  const xa=xpTotal(p),arr=CORE.map((_,i)=>!!(D.s[p]._core||[])[i]);
+  arr[+ch.dataset.c]=ch.checked;
+  D.s[p]=Object.assign({},D.s[p],{_core:arr});persist("s",p);
+  const all=arr.every(Boolean),days=new Set(coreDays(p)),had=days.has(TODAY);
+  if(all)days.add(TODAY);else days.delete(TODAY);
+  if(all!==had){D.w[p]._core={d:[...days].sort()};persist("w",p);}
+  const up=xpUpdate(p,TODAY,xa);
+  renderDay();
+  if(up)toast(lvlMsg(up),3500);else if(all&&!had){const k=coreStreak(p);toast(`Core completo: +5 XP. Racha de core: ${k} ${k===1?"día":"días"}`);}
+ });
+}
+// Ocultar o mostrar un ejercicio opcional (preferencia compartida en cfg/gym → hide)
+function toggleHide(p,id){
+ if(readOnly)return;
+ const l=new Set(D.g.hide[p]||[]),oculto=!l.has(id);
+ if(oculto)l.add(id);else l.delete(id);
+ setCfg(Object.assign({},D.g,{hide:Object.assign({},D.g.hide,{[p]:[...l]}),at:new Date().toISOString()}));persist("g");
+ renderAll();toast(oculto?"Opcional oculto: no cuenta en el progreso del día":"Opcional visible de nuevo");
+}
+
 function card(e,i){
+ if(optHidden(e,me))return `<article class="ex hid" data-id="${e.id}"><div class="ex-head"><h3>${esc(e.n)} <span class="optlbl">Opcional oculto</span></h3><button type="button" class="optbtn" data-opt="${e.id}"${readOnly?" disabled":""}>Mostrar</button></div></article>`;
  const rows=ordered().filter(p=>doesEx(e,p)).map(p=>{
   if(skipped(e,p))return `<div class="prow${p===me?" me":""}"><div class="pname"><span>${PNAME[p]}</span></div><p class="skip">Modo post-turno: hoy no.</p></div>`;
   const n=setsOf(e,p),done=doneOf(p,e.id),x=xo(e,p);
@@ -947,21 +1192,21 @@ function card(e,i){
     <label><input type="number" inputmode="${ru==="kg"?"decimal":"numeric"}" step="${ru==="kg"?"0.5":"1"}" min="0" class="ikg" value="${esc(fv)}" placeholder="${ULBL[ru]}" aria-label="${PNAME[p]}, serie ${k+1}, ${UARIA[ru]}"${dis}><span class="u">${ULBL[ru]}</span></label>
     <label><input type="number" inputmode="numeric" step="1" min="0" class="irp" value="${f.reps===undefined||f.reps===null?"":esc(f.reps)}" placeholder="${esc(mm.reps)}" aria-label="${PNAME[p]}, serie ${k+1}, ${unit}"${dis}><span class="u">${unit}</span></label>
     <button type="button" class="sv${ok?" on":""}"${dis}>${ok?"✓ Hecha":"Guardar"}</button></div>`}).join("")}</div>`;
-  const own=LOADED.includes(e.id)?D.g.own[e.id]:null;
+  const own=isLoaded(e)?D.g.own[mkey(e.id)]:null;
   return `<div class="prow${p===me?" me":""}">
    <div class="pname"><span class="pn"><span>${PNAME[p]}${p===me?" <small>(tú)</small>":""}</span>${showU?`<span class="useg" role="group" aria-label="Unidad de ${PNAME[p]}" data-p="${p}">${UNITS.map(x=>`<button type="button" data-u="${x}" aria-pressed="${x===u}"${dis}>${x}</button>`).join("")}</span>`:""}</span><span class="preps">${n} × ${esc(repsOf(e,p))}</span></div>
    ${W.uConfirm===false?`<p class="uconf">⚠ ${showU?`<b>Confirma la unidad en el gym: kg / lb / placas.</b> Ahora está en ${esc(u)}. Si es correcta, tócala arriba; si no, toca la correcta y el registro se corrige sin convertir.`:`<b>Dato por confirmar en el gym.</b> Revisa el registro y confírmalo.`}${showU?"":` <button type="button" class="uok" data-p="${p}"${dis}>Está bien</button>`}</p>`:""}
    ${x.alt||x.n?`<p class="pnote">${x.alt?`Haz: <a href="${vidUrl({id:"",n:x.alt})}" target="_blank" rel="noopener">${esc(x.alt)} ▶</a>. `:""}${x.n?esc(x.n):""}</p>`:""}
-   ${LOADED.includes(e.id)&&showU?`<p class="rule">Anota solo los discos, sin el peso de la máquina${own?` (la máquina pesa ${fmtKg(own)} kg)`:""}.</p>`:""}
+   ${isLoaded(e)&&showU?`<p class="rule">Anota solo los discos, sin el peso de la máquina${own?` (la máquina pesa ${fmtKg(own)} kg)`:""}.</p>`:""}
    ${prev?`<p class="last">Último ${DNAMES[parseD(prev.d).getDay()].toLowerCase()} (${esc(prev.d.slice(5).split("-").reverse().join("/"))}): ${esc(fmtSets(prev))}</p>`:""}
-   ${e.cardio?"":(()=>{const R=rng(e,p);return `<p class="rule">Regla: ${I.t==="bw"?`cuando una serie llegue a ${R.hi}${R.sec?" s":" reps"}, la próxima vez súmale ${R.sec?"5 s":"2 reps"}`:`cuando una serie llegue a ${R.hi} reps, la próxima vez esa serie sube ${fmtInc(I.v,u)}${I.lbl?` (${I.lbl})`:""}`}.</p>`;})()}
+   ${e.cardio?"":(()=>{const R=rng(e,p);return `<p class="rule">Regla: ${isJunior(p)&&I.t!=="bw"?`cuando todas las series lleguen a ${R.hi} reps con técnica perfecta, la próxima vez suben ${fmtInc(I.v,u)}${I.lbl?` (${I.lbl})`:""}. Deja siempre 2 repeticiones en reserva`:I.t==="bw"?`cuando una serie llegue a ${R.hi}${R.sec?" s":" reps"}, la próxima vez súmale ${R.sec?"5 s":"2 reps"}`:`cuando una serie llegue a ${R.hi} reps, la próxima vez esa serie sube ${fmtInc(I.v,u)}${I.lbl?` (${I.lbl})`:""}`}.</p>`;})()}
    ${setRows}
    ${(W.h||[]).length?`<details class="reg"><summary>Registro de ${PNAME[p]}</summary><ul>${(W.h||[]).slice().reverse().map(h=>`<li><b>${esc(h.d.split("-").reverse().join("/"))}:</b> ${esc(fmtSets(h))}</li>`).join("")}</ul></details>`:""}
   </div>`;}).join("");
- return `<article class="ex" data-id="${e.id}">
+ return `<article class="ex${e.opt?" opt":""}" data-id="${e.id}">
   <div class="ex-head"><div class="ex-num">${i+1}</div><div><h3>${esc(e.n)}</h3>
   <div class="meta">${e.rest?`<span class="chip">Descanso ${fmtRest(e.rest)}</span>`:`<span class="chip">${esc(e.r)}</span>`}</div></div></div>
-  <div class="ex-body">${rows}
+  <div class="ex-body">${e.opt?`<div class="optbar"><span class="optlbl">Opcional recomendado</span><button type="button" class="optbtn" data-opt="${e.id}"${readOnly?" disabled":""}>Ocultar</button></div>`:""}${rows}
    ${e.cardio?"":`<a class="video" href="${vidUrl(e)}" target="_blank" rel="noopener">▶ Ver técnica en video</a>`}
    <button type="button" class="howto-btn" aria-expanded="false"><span>Paso a paso</span><span>＋</span></button>
    <div class="howto" hidden><ol class="steps">${e.steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol>${e.tip?`<p class="tip">${esc(e.tip)}</p>`:""}</div>
@@ -973,9 +1218,15 @@ const ITYPE={"lun-banca":"bb_up","lun-remo":"bb_up","lun-militar":"db","lun-jalo
  "mar-sentadilla":"bb_low","mar-rumano":"bb_low","mar-prensa":"mach_big","mar-ext":"mach","mar-femoral":"mach","mar-pant":"mach_big","mar-rueda":"bw",
  "mie-inclinado":"db","mie-remo":"mach","mie-dominadas":"mach","mie-peck":"mach","mie-laterales":"db_small","mie-face":"cable",
  "jue-hip":"bb_low","jue-bulgara":"db","jue-hack":"mach_big","jue-femoral":"mach","jue-pant":"mach_big","jue-colgado":"bw",
- "sab-rueda":"bw","sab-crunch":"cable","sab-piernas":"bw","sab-lateral":"bw","sab-pecho":"mach","sab-abd":"mach","sab-latpolea":"cable","sab-posterior":"mach","sab-curl":"db_small","sab-tricep":"cable"};
+ "sab-rueda":"bw","sab-crunch":"cable","sab-piernas":"bw","sab-lateral":"bw","sab-pecho":"mach","sab-abd":"mach","sab-latpolea":"cable","sab-posterior":"mach","sab-curl":"db_small","sab-tricep":"cable",
+ "ale-pressmaq":"mach","ale-inclinado":"db","ale-cruces":"cable","ale-curl":"db_small",
+ "ale-crunchpolea":"cable","ale-colgado":"bw","ale-russian":"db_small",
+ "ale-remo":"mach","ale-jalon":"mach","ale-laterales":"db_small","ale-face":"cable",
+ "ale-sentadilla":"db","ale-rumano":"db","ale-prensa":"mach_big","ale-ext":"mach","ale-femoral":"mach",
+ "ale-pressrec":"mach","ale-tiron":"mach","ale-tricep":"cable","ale-crunchmaq":"mach"};
 // Máquinas de carga con discos: se anota solo el peso de los discos
 const LOADED=["mar-prensa","jue-hack","mar-pant","jue-pant"];
+const isLoaded=e=>LOADED.includes(mkey(e.id));
 const LTYPE={"lun-banca":"mach","lun-remo":"mach","mar-sentadilla":"db","mar-rumano":"db","mar-rueda":"bw","sab-rueda":"bw","mie-dominadas":"mach","jue-bulgara":"db","jue-colgado":"bw"};
 const IKG={bb_up:2.5,bb_low:5,bb_small:2.5,db:2,db_small:1,mach:2.5,mach_big:5,cable:2.5,bw:0};
 const ILB={bb_up:5,bb_low:10,bb_small:5,db:5,db_small:5,mach:10,mach_big:10,cable:10,bw:0};
@@ -987,7 +1238,7 @@ const isMach=t=>t==="mach"||t==="mach_big"||t==="cable";
 const hasW=z=>!!z&&z[0]!==null&&z[0]!==undefined&&z[0]!=="";
 // Unidad de la persona en ese ejercicio: la elegida en la tarjeta, si no la preferida en Mi gym, si no kg
 const unitOf=(e,p)=>{const u=(D.w[p][e.id]||{}).u;return UNITS.includes(u)?u:(D.g.pref[p]||"kg");};
-const machCfg=id=>D.g.mach[id]||null;
+const machCfg=id=>D.g.mach[mkey(id)]||null;
 const plateLoad=(m,n)=>m.b+(n-1)*m.w;
 // Conversión a kg; null si son placas sin equivalencia configurada
 function toKg(v,u,e){
@@ -1057,7 +1308,8 @@ function incOf(e,p,u){
  else{const base=(u==="lb"?ILB:IKG)[t];v=isMach(t)&&machCfg(e.id)?Math.max(1,Math.round(base/min))*min:Math.max(1,Math.ceil(base/min-1e-9))*min;}
  // Anderson en rumano: el salto más pequeño posible. Principiantes: máximo 2,5 kg, 5 lb o 1 placa (o el mínimo posible si es mayor)
  if(p==="anderson"&&e.id==="mar-rumano")v=min;
- if(isBeg(p)){const cap=u==="placas"?1:u==="lb"?5:2.5;v=Math.min(v,Math.max(min,Math.floor(cap/min+1e-9)*min));}
+ if(isBeg(p)||isJunior(p)){const cap=u==="placas"?1:u==="lb"?5:2.5;v=Math.min(v,Math.max(min,Math.floor(cap/min+1e-9)*min));}
+ if(isJunior(p)&&isDb(t))v=min;
  return {t:t,v:r2(v),lbl:u==="placas"?"":ILBL[t],u:u};
 }
 const rng=(e,p)=>{const n=(String(repsOf(e,p)).match(/\d+/g)||["8"]).map(Number);return {lo:n[0],hi:n[1]||n[0],sec:/\bs\b/.test(repsOf(e,p))};};
@@ -1079,14 +1331,16 @@ function metaFor(e,p,k,done){
  const snap=(v,dir)=>snapLoad(e,p,u,v,dir||0);
  const up=v=>{const n=snap(v+I.v);return n>v+1e-9?n:snap(v,1);};
  const down=(v,target)=>{const n=snap(target);return n<v-1e-9?n:snap(v,-1);};
- const M=(v,reps,tag,txt,cv)=>({v:v,u:u,reps:reps,tag:tag,txt:txt,cv:cv||""});
+ // Junior: siempre con 2 repeticiones en reserva
+ const jr=isJunior(p);
+ const M=(v,reps,tag,txt,cv)=>({v:v,u:u,reps:reps,tag:tag,txt:jr?txt+". Deja 2 repeticiones en reserva":txt,cv:cv||""});
  // Sin historial: guía de la primera vez
  if(!L){
   const prevToday=done.slice(0,k).reverse().find(z=>z&&typeof z==="object");
   const pv=prevToday?conv(prevToday.kg,prevToday.u,u,e):null;
   if(pv!==null&&pv!==undefined){
    if(prevToday.reps<R.lo){const nk=down(pv,pv-I.v);return M(nk,R.lo,"down",`La serie anterior quedó pesada: baja a ${fmtLoad(nk,u)}`);}
-   if(prevToday.reps>R.hi+2){const nk=up(pv);return M(nk,R.lo,"up",`La serie anterior quedó liviana: sube a ${fmtLoad(nk,u)}`);}
+   if(prevToday.reps>R.hi+2&&!jr){const nk=up(pv);return M(nk,R.lo,"up",`La serie anterior quedó liviana: sube a ${fmtLoad(nk,u)}`);}
    return M(snap(pv),R.hi,"same",u==="placas"?"Misma placa que tu serie anterior":"Mismo peso que tu serie anterior");
   }
   if(fresh)return M(null,R.hi,"new",`Meta nueva en ${u==="placas"?"placas":u} (esta máquina no tiene equivalencia de placas en Plan → Mi gym): elige ${u==="placas"?"la placa con la":"un peso con el"} que logres ${R.hi} reps y te sobren 2`);
@@ -1101,6 +1355,12 @@ function metaFor(e,p,k,done){
  if(isBW){
   if(rpL>=R.hi)return M(kgL,rpL+step,"up",`El ${dname} hiciste ${rpL}${R.sec?" s":""}: hoy +${step}${R.sec?" s":" reps"}`,cv);
   return M(kgL,Math.min(R.hi,rpL+step),"up",`El ${dname} hiciste ${rpL}${R.sec?" s":""}: hoy busca ${Math.min(R.hi,rpL+step)}`,cv);
+ }
+ // Junior: sube solo cuando todas las series de la última sesión llegaron al tope del rango
+ if(jr&&rpL>=R.hi){
+  const nS=setsOf(e,p),ls=(last.s||[]).slice(0,nS);
+  if(ls.length<nS||!ls.every(z=>z&&(z[1]||0)>=R.hi))return M(kgL,R.hi,"same",`Esta serie ya llegó a ${R.hi}: mismo peso hasta que todas las series lleguen`,cv);
+  const nk=up(kgL);return M(nk,R.lo,"up",`Todas tus series del ${dname} llegaron a ${R.hi}: sube ${fmtInc(r2(nk-kgL),u)} y haz ${R.lo}–${R.hi} con técnica perfecta`,cv);
  }
  if(rpL>=R.hi){const nk=up(kgL);return M(nk,R.lo,"up",`El ${dname} lograste ${rpL} reps: sube ${fmtInc(r2(nk-kgL),u)}${I.lbl?` (${I.lbl})`:""} y vuelve a ${R.lo}`,cv);}
  if(rpL>=R.lo)return M(kgL,Math.min(R.hi,rpL+1),"same",`Mismo peso: saca 1 rep más que el ${dname} (${rpL} → ${Math.min(R.hi,rpL+1)})`,cv);
@@ -1145,43 +1405,52 @@ function renderRec(){
  const bt=document.getElementById("recToday");if(bt)bt.onclick=()=>set(TODAY);
 }
 function renderDay(){
- const d=DAYS.find(x=>x.key===current);
+ const d=routineOf(me).find(x=>x.key===current),jr=isJunior(me);
  root.style.setProperty("--day",d.c);root.style.setProperty("--day-ink",d.ci);
  const openHow=new Set([...dayView.querySelectorAll(".ex")].filter(c=>{const h=c.querySelector(".howto");return h&&!h.hidden}).map(c=>c.dataset.id));
  renderRec();
- let h=`<div class="hero"><div class="dname">${d.name}</div><h1>${esc(d.title)}</h1><p class="sub">${esc(d.sub)}</p></div><div class="frase" id="frase" aria-live="polite"></div>`;
+ let h=`<div class="hero"><div class="dname">${d.name}</div><h1>${esc(d.title)}</h1><p class="sub">${esc(d.sub)}</p>${jr?nickHTML(me)+powerHTML(me):""}</div>`;
+ // Junior: aviso fijo en los días de entreno y activación de core opcional arriba de cada día
+ if(jr&&d.ex)h+=`<p class="jr" role="note">🛡️ Entrena siempre con un adulto cerca. Técnica perfecta antes de subir peso.</p>`;
+ if(jr)h+=coreHTML(me);
+ h+=`<div class="frase" id="frase" aria-live="polite"></div>`;
  if(d.rest){
   h+=`<div class="card"><h3>${esc(d.rest.h)}</h3><ul>${d.rest.items.map(i=>`<li>${esc(i)}</li>`).join("")}</ul></div>`;
-  dayView.innerHTML=h;renderFrase();return;
+  dayView.innerHTML=h;renderFrase();bindCore(me);return;
  }
  // El modo post-turno es solo de Lorena; quien entrena a otra hora no lo ve
  if(REC===TODAY&&!solo(me))h+=`<label class="post"><input type="checkbox" id="postT"${postMode()?" checked":""}${readOnly?" disabled":""}> Lorena viene de turno nocturno</label><p class="phase-why">${postMode()?"Modo post-turno: Lorena hace solo los ejercicios principales y secundarios, 2 series cada uno, sin buscar récords. Si durmió menos de 4 horas, mejor que descanse.":"Márcalo los días en que Lorena llega de la guardia: su sesión se recorta para que recupere."}</p>`;
- h+=`<div class="progress bars2">${ordered().map(p=>`<div class="row${p===me?" me":""}"><span>${dot(p)}<span id="prog-${p}"></span></span></div><div class="bar"><i id="bar-${p}"></i></div>`).join("")}</div>`;
+ h+=`<div class="progress bars2">${ordered().filter(p=>rkey(p)===rkey(me)).map(p=>`<div class="row${p===me?" me":""}"><span>${dot(p)}<span id="prog-${p}"></span></span></div><div class="bar"><i id="bar-${p}"></i></div>`).join("")}</div>`;
  const groups=[];d.ex.forEach(e=>{const p=PH[e.id]||"A";let g=groups[groups.length-1];if(!g||g.p!==p){g={p:p,ex:[]};groups.push(g)}g.ex.push(e)});
- const mins=e=>e.cardio?parseInt(e.r,10):Math.round(Math.max(...peopleOf(e).map(p=>setsOf(e,p)))*(e.rest+45)/60);
+ const mins=e=>{const pe=peopleOf(e);if(!pe.length)return 0;return e.cardio?parseInt(e.r,10):Math.round(Math.max(...pe.map(p=>setsOf(e,p)))*(e.rest+45)/60);};
  let total=15;
- const ov=[`<li><b>Antes de llegar</b></li>`,`<li><b>Calentamiento</b> (10 min)</li>`];
- groups.forEach(g=>{const m=g.ex.reduce((a,e)=>a+mins(e),0);total+=m;ov.push(`<li><b>${PHL[g.p].t}</b> (${m} min): ${g.ex.map(e=>esc(e.n)).join(", ")}</li>`)});
+ const warmT=d.warmT||"Calentamiento";
+ const ov=[`<li><b>Antes de llegar</b></li>`,`<li><b>${warmT}</b> (10 min)</li>`];
+ groups.forEach(g=>{const vis=g.ex.filter(e=>!optHidden(e,me));if(!vis.length)return;const m=vis.reduce((a,e)=>a+mins(e),0);total+=m;ov.push(`<li><b>${PHL[g.p].t}</b> (${m} min): ${vis.map(e=>esc(e.n)).join(", ")}</li>`)});
  ov.push(`<li><b>Al terminar</b> (5 min)</li>`);
  h+=`<h2 class="sec-title">Orden de la sesión</h2><div class="warm"><ol class="steps">${ov.join("")}</ol><p class="tip" style="margin:8px 0 0 26px">Duración aproximada: ${total} minutos.</p></div>`;
  let n=1;
  const ind=solo(me),why=g=>ind?PHL[g.p].s:PHL[g.p].w;
- h+=`<h2 class="sec-title">Paso ${n++}: Antes de llegar</h2><div class="warm"><ul style="margin:0;padding-left:22px">${(ind?BEFORE_SOLO:BEFORE).map(x=>`<li style="margin:6px 0">${esc(x)}</li>`).join("")}</ul></div>`;
- h+=`<h2 class="sec-title">Paso ${n++}: Calentamiento</h2><div class="warm"><ol class="steps">${d.warm.map(w=>`<li>${esc(w)}</li>`).join("")}</ol></div>`;
+ h+=`<h2 class="sec-title">Paso ${n++}: Antes de llegar</h2><div class="warm"><ul style="margin:0;padding-left:22px">${(jr?BEFORE_JR:ind?BEFORE_SOLO:BEFORE).map(x=>`<li style="margin:6px 0">${esc(x)}</li>`).join("")}</ul></div>`;
+ h+=`<h2 class="sec-title">Paso ${n++}: ${warmT}</h2>${d.warmT?`<p class="phase-why">Con banda liviana, sin registrar pesos.</p>`:""}<div class="warm"><ol class="steps">${d.warm.map(w=>`<li>${esc(w)}</li>`).join("")}</ol></div>`;
  let idx=0;
- groups.forEach(g=>{h+=`<h2 class="sec-title">Paso ${n++}: ${PHL[g.p].t}</h2><p class="phase-why">${why(g)}</p>`;g.ex.forEach(e=>{h+=card(e,idx++)})});
- h+=`<h2 class="sec-title">Paso ${n++}: Al terminar</h2><div class="warm"><ul style="margin:0;padding-left:22px">${(ind?AFTER_SOLO:AFTER).map(x=>`<li style="margin:6px 0">${esc(x)}</li>`).join("")}</ul></div>`;
+ groups.forEach(g=>{h+=`<h2 class="sec-title">Paso ${n++}: ${PHL[g.p].t}</h2><p class="phase-why">${why(g)}</p>`;g.ex.forEach(e=>{h+=optHidden(e,me)?card(e,idx):card(e,idx++)})});
+ h+=`<h2 class="sec-title">Paso ${n++}: Al terminar</h2><div class="warm"><ul style="margin:0;padding-left:22px">${(jr?AFTER_JR:ind?AFTER_SOLO:AFTER).map(x=>`<li style="margin:6px 0">${esc(x)}</li>`).join("")}</ul></div>`;
  h+=`<p class="foot">Al terminar cada serie escribe el peso (en kg, lb o número de placa, según elijas junto a tu nombre) y las repeticiones y toca Guardar: queda en el registro y el descanso arranca solo. La próxima sesión verás lo que hiciste la última vez. Para anotar una sesión pasada, cambia la fecha en "Registrar para", arriba.</p>`;
  dayView.innerHTML=h;
  renderFrase();
+ bindCore(me);
+ dayView.querySelectorAll("[data-opt]").forEach(b=>b.onclick=()=>toggleHide(me,b.dataset.opt));
 
  const pt=document.getElementById("postT");
  if(pt)pt.onchange=()=>{if(readOnly)return;D.s.lorena=Object.assign({},D.s.lorena,{_post:pt.checked});persist("s","lorena");renderDay();};
- dayView.querySelectorAll(".ex").forEach(cardEl=>{
+ dayView.querySelectorAll(".ex:not(.hid)").forEach(cardEl=>{
   const e=d.ex.find(x=>x.id===cardEl.dataset.id);
   cardEl.querySelectorAll("[data-cardio]").forEach(btn=>btn.onclick=()=>{
-   if(readOnly)return;const p=btn.dataset.p,antes=sesionCompleta(d,p),arr=(D.s[p][e.id]||[]).slice();arr[0]=arr[0]?null:{kg:null,reps:null};D.s[p][e.id]=arr;persist("s",p);renderDay();
-   if(arr[0]&&!celebrar(d,p,antes))toast(PNAME[p]+": cardio registrado");
+   if(readOnly)return;const p=btn.dataset.p,antes=sesionCompleta(d,p),xa=xpTotal(p),arr=(D.s[p][e.id]||[]).slice();arr[0]=arr[0]?null:{kg:null,reps:null};D.s[p][e.id]=arr;persist("s",p);
+   const up=xpUpdate(p,TODAY,xa);renderDay();
+   const cel=arr[0]&&celebrar(d,p,antes);
+   if(up)toast(lvlMsg(up),3500);else if(arr[0]&&!cel)toast(PNAME[p]+": cardio registrado");
   });
   cardEl.querySelectorAll(".useg button").forEach(b=>b.onclick=()=>{
    if(readOnly)return;
@@ -1222,16 +1491,18 @@ function renderDay(){
    ik.addEventListener("input",()=>{const c=plateCalc(e,row.dataset.p,row.dataset.u,parseFloat(ik.value));pc.textContent=c?c.txt:"";if(c&&c.warn){const w=document.createElement("em");w.className="pw";w.textContent="⚠ "+c.warn;pc.appendChild(w);}});
    btn.onclick=()=>{
     if(readOnly)return;
-    const p=row.dataset.p,k=+row.dataset.k,ru=row.dataset.u,arr=doneOf(p,e.id).slice(),antes=sesionCompleta(d,p);
-    if(arr[k]){DRAFT[dKey(p,e.id,k)]={kg:conv(arr[k].kg,arr[k].u,unitOf(e,p),e),reps:arr[k].reps};arr[k]=null;setDone(p,e,arr);renderDay();return;}
+    const p=row.dataset.p,k=+row.dataset.k,ru=row.dataset.u,arr=doneOf(p,e.id).slice(),antes=sesionCompleta(d,p),xa=xpTotal(p);
+    if(arr[k]){DRAFT[dKey(p,e.id,k)]={kg:conv(arr[k].kg,arr[k].u,unitOf(e,p),e),reps:arr[k].reps};arr[k]=null;setDone(p,e,arr);xpUpdate(p,REC,xa);renderDay();return;}
     const kgv=parseFloat(ik.value),rpv=parseInt(row.querySelector(".irp").value,10);
     const kg=isNaN(kgv)?null:kgv,reps=isNaN(rpv)?null:rpv;
     if(reps===null){const r=row.querySelector(".irp");r.focus();toast("Escribe las "+(r.nextElementSibling.textContent)+" que hiciste");return;}
     // kg guarda el valor de la carga en la unidad u (kg, lb o número de placa)
     arr[k]={kg:kg,reps:reps,u:ru};delete DRAFT[dKey(p,e.id,k)];setDone(p,e,arr);
+    const up=xpUpdate(p,REC,xa);
     if(document.activeElement)document.activeElement.blur();
     renderDay();
-    if(!celebrar(d,p,antes))toast(`${PNAME[p]}, serie ${k+1}: ${kg!==null?fmtLoad(kg,ru)+" × ":""}${reps} guardada${REC!==TODAY?" para el "+fmtRec(REC):""}`);
+    const cel=celebrar(d,p,antes);
+    if(up)toast(lvlMsg(up),3500);else if(!cel)toast(`${PNAME[p]}, serie ${k+1}: ${kg!==null?fmtLoad(kg,ru)+" × ":""}${reps} guardada${REC!==TODAY?" para el "+fmtRec(REC):""}`);
     if(e.rest&&REC===TODAY)startTimer(e.rest,PNAME[p]+", "+(xo(e,p).alt||e.n));
    };
   });
@@ -1261,9 +1532,9 @@ function updateProgress(d){
 const tEl=document.getElementById("timer"),tTime=document.getElementById("tTime"),tLabel=document.getElementById("tLabel");
 let tEnd=0,tInt=null,actx=null;
 function beep(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();[0,0.25,0.5].forEach(o=>{const os=actx.createOscillator(),g=actx.createGain();os.frequency.value=880;g.gain.value=.15;os.connect(g);g.connect(actx.destination);os.start(actx.currentTime+o);os.stop(actx.currentTime+o+.15);});}catch(e){}}
-function startTimer(sec,label){
+function startTimer(sec,label,pre){
  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();}catch(e){}
- tEnd=Date.now()+sec*1000;tLabel.textContent="Descanso: "+label;tEl.hidden=false;tEl.classList.remove("end");
+ tEnd=Date.now()+sec*1000;tLabel.textContent=(pre||"Descanso: ")+label;tEl.hidden=false;tEl.classList.remove("end");
  clearInterval(tInt);tick();tInt=setInterval(tick,250);
 }
 function tick(){
@@ -1281,7 +1552,7 @@ const parseD=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)
 const DNAMES=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
 const MESES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
 function weekDates(off){const t=parseD(TODAY);const mon=new Date(t);mon.setDate(t.getDate()-((t.getDay()+6)%7)+off*7);return Array.from({length:7},(_,i)=>{const x=new Date(mon);x.setDate(mon.getDate()+i);return isoDay(x);});}
-const ALLEX=DAYS.filter(d=>d.ex).flatMap(d=>d.ex.map(e=>Object.assign({dayTitle:d.title},e)));
+const ALLEX=Object.values(ROUTINES).flatMap(r=>r.filter(d=>d.ex).flatMap(d=>d.ex.map(e=>Object.assign({dayTitle:d.title},e))));
 function weekData(p,dates){
  const out={};
  ALLEX.forEach(e=>{const h=((D.w[p]||{})[e.id]||{}).h||[];h.forEach(x=>{if(dates.includes(x.d)&&(x.s||[]).some(Boolean)){(out[x.d]=out[x.d]||[]).push({e:e,s:x.s.filter(Boolean)});}});});
@@ -1306,10 +1577,10 @@ function renderWeek(){
  const who=weekWho==="all"?PEOPLE:[weekWho];
  const sums=who.map(p=>{const c=weekStats(p,dates),pv=weekStats(p,prevDates);const ch=pv.vol?Math.round((c.vol-pv.vol)/pv.vol*100):null;
   const ba=avgBW(p,dates),bb=avgBW(p,prevDates),bd=ba!==null&&bb!==null?ba-bb:null;
-  return `<div class="macro"><b>${weekWho==="all"?dot(p):""}${PNAME[p]}</b><div class="line"><span>Peso promedio</span><span>${ba!==null?kgTxt(ba)+" kg":"—"}${bd!==null?` (${bd>0?"+":""}${kgTxt(bd)})`:""}</span></div><div class="line"><span>Días entrenados</span><span>${c.days}</span></div><div class="line"><span>Series registradas</span><span>${c.sets}</span></div><div class="line"><span>Volumen (kg × reps)</span><span>${fmtN(c.vol)}${ch!==null?` <span class="${ch>0?"up":""}">(${ch>0?"+":""}${ch}%)</span>`:""}</span></div>${c.npl?`<p class="vnote">${c.npl===1?"1 serie en placas sin equivalencia no suma":c.npl+" series en placas sin equivalencia no suman"} al volumen. Configura la máquina en Plan → Mi gym.</p>`:""}</div>`;}).join("");
+  return `<div class="macro"><b>${weekWho==="all"?dot(p):""}${PNAME[p]}</b>${isJunior(p)?"":`<div class="line"><span>Peso promedio</span><span>${ba!==null?kgTxt(ba)+" kg":"—"}${bd!==null?` (${bd>0?"+":""}${kgTxt(bd)})`:""}</span></div>`}<div class="line"><span>Días entrenados</span><span>${c.days}</span></div><div class="line"><span>Series registradas</span><span>${c.sets}</span></div><div class="line"><span>Volumen (kg × reps)</span><span>${fmtN(c.vol)}${ch!==null?` <span class="${ch>0?"up":""}">(${ch>0?"+":""}${ch}%)</span>`:""}</span></div>${c.npl?`<p class="vnote">${c.npl===1?"1 serie en placas sin equivalencia no suma":c.npl+" series en placas sin equivalencia no suman"} al volumen. Configura la máquina en Plan → Mi gym.</p>`:""}</div>`;}).join("");
  const days=dates.map(dt=>{
   const blocks=who.map(p=>{const list=(weekData(p,dates)[dt]||[]);
-   return `${weekWho==="all"?`<p class="who">${dot(p)}${PNAME[p]}</p>`:""}${bwRow(p,dt)}${list.length?"":`<p class="muted" style="font-size:14px;margin:2px 0 6px">Sin series registradas.</p>`}${list.map(it=>`<div class="wex"><div class="nm">${esc(xo(it.e,p).alt||it.e.n)}</div><div class="st">${it.s.map((z,i)=>`<span>${i+1}: ${esc(fmtSet(z))}</span>`).join("")}</div></div>`).join("")}`;}).join("");
+   return `${weekWho==="all"?`<p class="who">${dot(p)}${PNAME[p]}</p>`:""}${isJunior(p)?"":bwRow(p,dt)}${list.length?"":`<p class="muted" style="font-size:14px;margin:2px 0 6px">Sin series registradas.</p>`}${list.map(it=>`<div class="wex"><div class="nm">${esc(xo(it.e,p).alt||it.e.n)}</div><div class="st">${it.s.map((z,i)=>`<span>${i+1}: ${esc(fmtSet(z))}</span>`).join("")}</div></div>`).join("")}`;}).join("");
   if(dt>TODAY)return "";
   const x=parseD(dt);
   return `<div class="wday"><h3>${DNAMES[x.getDay()]} ${x.getDate()}/${x.getMonth()+1}</h3>${blocks}</div>`;
@@ -1319,7 +1590,7 @@ function renderWeek(){
  <div class="wk-nav"><button type="button" id="wkPrev" aria-label="Semana anterior">‹</button><b>${label}</b><button type="button" id="wkNext" aria-label="Semana siguiente"${weekOff>=0?" disabled":""}>›</button></div>
  <div class="seg" role="group" aria-label="Ver registro de">${["all",...PEOPLE].map(k=>`<button type="button" data-w="${k}" aria-pressed="${weekWho===k}">${k==="all"?"Todos":PNAME[k]}</button>`).join("")}</div>
  <div class="wsum">${sums}</div>
- <p class="phase-why">Pésense en ayunas, después de ir al baño, al menos 3 días por semana. El peso promedio y el volumen se comparan con la semana anterior: lo que importa es la tendencia, no un día suelto.</p>
+ ${who.every(isJunior)?`<p class="phase-why">El volumen se compara con la semana anterior: lo que importa es la tendencia, no un día suelto.</p>`:`<p class="phase-why">Pésense en ayunas, después de ir al baño, al menos 3 días por semana. El peso promedio y el volumen se comparan con la semana anterior: lo que importa es la tendencia, no un día suelto.</p>`}
  ${days||`<div class="card"><p class="muted">No hay series guardadas en esta semana.</p></div>`}`;
  document.getElementById("wkPrev").onclick=()=>{weekOff--;renderWeek();};
  document.getElementById("wkNext").onclick=()=>{if(weekOff<0){weekOff++;renderWeek();}};
@@ -1339,6 +1610,13 @@ const ul=a=>`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`;
 const wipHTML=p=>`<div class="card wip"><h3>Plan personalizado en construcción</h3><p style="margin:0 0 8px">Para armar el plan de ${PNAME[p]} faltan estos datos:</p>${ul(FALTA)}<p class="tip" style="margin:10px 0 0">Mientras tanto, entrena con la rutina del equipo en la pestaña Entreno.</p></div>`;
 function renderFood(){
  const F=FOOD[me];
+ if(F&&F.rules){
+  document.getElementById("v-food").innerHTML=`
+  <div class="hero mine"><div class="dname">Alimentación de ${PNAME[me]}</div>${nickHTML(me)}<h1>${esc(F.title)}</h1><p class="sub">${esc(F.lead)}</p></div>
+  <div class="card">${ul(F.rules)}</div>
+  <p class="foot">Toca un nombre arriba para ver la alimentación de cada uno.</p>`;
+  return;
+ }
  if(!foodListo(me)){
   document.getElementById("v-food").innerHTML=`
   <div class="hero mine"><div class="dname">Alimentación de ${PNAME[me]}</div><h1>En construcción</h1><p class="sub">El plan de comida se arma cuando estén los datos.</p></div>
@@ -1364,7 +1642,12 @@ const firstCheck=p=>{const e=(D.c[p].e||[]).slice().sort((a,b)=>a.d<b.d?-1:1);re
 const bw=p=>{const l=lastCheck(p);return l&&l.p?l.p:BASE[p].peso;};
 const pct=(f,v)=>f?((v-f)/f*100):0;
 let progDay=null;
-function gDay(){if(!progDay)progDay=DAYS.some(d=>d.ex&&d.key===todayKey)?todayKey:"lun";return progDay;}
+// Día de "Cuánto subimos": de la rutina de la persona activa; si ese día no tiene ejercicios, el primero que tenga
+function gDay(){
+ const r=routineOf(me),has=k=>r.some(d=>d.ex&&d.key===k);
+ if(!progDay||!has(progDay))progDay=has(todayKey)?todayKey:r.find(d=>d.ex).key;
+ return progDay;
+}
 function cellTxt(z,bw){if(!z)return "—";return bw||!hasW(z)?z[1]+(bw==="s"?" s":" reps"):fmtSet(z);}
 // Diferencia entre dos series: en su unidad si coinciden; si no, convertida a kg
 function diffTd(a,b,bw,e){if(!a||!b)return `<td>—</td>`;
@@ -1384,7 +1667,7 @@ function gainOf(e,x){
  return (x.fu||"kg")===(x.vu||"kg")?pct(x.f,x.v):null;
 }
 function growthHTML(){
- const d=DAYS.find(x=>x.key===gDay());
+ const d=routineOf(me).find(x=>x.key===gDay());
  const cards=d.ex.filter(e=>!e.cardio).map(e=>{
   const blocks=PEOPLE.filter(p=>doesEx(e,p)).map(p=>{
    const h=(((D.w[p]||{})[e.id]||{}).h||[]).filter(x=>(x.s||[]).some(Boolean));
@@ -1405,9 +1688,11 @@ function growthHTML(){
  return cards||`<div class="card"><p class="muted">Aún no hay series guardadas para el ${d.name.toLowerCase()}.</p></div>`;
 }
 function renderProgress(){
- const mains=DAYS.filter(d=>d.ex).flatMap(d=>d.ex.filter(e=>PH[e.id]==="P"));
+ // Ejercicios principales de la rutina de cada uno: el ranking es por % de mejora de fuerza, nunca por peso corporal
+ const mainsOf=p=>routineOf(p).filter(d=>d.ex).flatMap(d=>d.ex.filter(e=>PH[e.id]==="P"&&doesEx(e,p)));
+ const mains=mainsOf(me),jr=isJunior(me);
  const avg={};
- PEOPLE.forEach(p=>{const l=mains.map(e=>{const x=D.w[p][e.id];return x&&x.f?gainOf(e,x):null;}).filter(g=>g!==null);avg[p]=l.length?l.reduce((a,g)=>a+g,0)/l.length:null;});
+ PEOPLE.forEach(p=>{const l=mainsOf(p).map(e=>{const x=D.w[p][e.id];return x&&x.f?gainOf(e,x):null;}).filter(g=>g!==null);avg[p]=l.length?l.reduce((a,g)=>a+g,0)/l.length:null;});
  let lead="Cuando registren pesos durante algunas semanas, aquí verán quién progresa más.";
  const ranked=PEOPLE.filter(p=>avg[p]!==null).sort((a,b)=>avg[b]-avg[a]);
  if(ranked.length>=2){
@@ -1420,14 +1705,14 @@ function renderProgress(){
  document.getElementById("v-prog").innerHTML=`
  <div class="hero mine"><div class="dname">Progreso a la par</div><h1>El equipo</h1><p class="sub">${esc(lead)}</p></div>
  <div class="duo" style="grid-template-columns:repeat(2,1fr)">${PEOPLE.map(p=>`<div class="macro"><b style="font-size:24px">${avg[p]===null?"—":(avg[p]>=0?"+":"")+avg[p].toFixed(1)+"%"}</b><span>${dot(p)}${PNAME[p]}: mejora de fuerza</span></div>`).join("")}</div>
- <div class="duo" style="margin-top:10px;grid-template-columns:1fr">${PEOPLE.map(p=>`<div class="macro"><b style="font-size:20px">${waist(p)}</b><span>${dot(p)}${PNAME[p]}: cintura</span></div>`).join("")}</div>
+ ${jr?"":`<div class="duo" style="margin-top:10px;grid-template-columns:1fr">${PEOPLE.filter(p=>!isJunior(p)).map(p=>`<div class="macro"><b style="font-size:20px">${waist(p)}</b><span>${dot(p)}${PNAME[p]}: cintura</span></div>`).join("")}</div>`}
  <h2 class="sec-title">Cuánto subimos en cada serie</h2>
  <p class="phase-why">Inicio es la primera vez que se registró esa serie; Actual, la última sesión. Total es lo que ha subido desde el inicio y Semana, el cambio frente a la sesión anterior del mismo día.</p>
- <div class="seg" id="gDays" role="group" aria-label="Día">${DAYS.filter(d=>d.ex).map(d=>`<button type="button" data-g="${d.key}" aria-pressed="${d.key===gDay()}">${d.short}</button>`).join("")}</div>
+ <div class="seg" id="gDays" role="group" aria-label="Día">${routineOf(me).filter(d=>d.ex).map(d=>`<button type="button" data-g="${d.key}" aria-pressed="${d.key===gDay()}">${d.short}</button>`).join("")}</div>
  ${growthHTML()}
- <h2 class="sec-title">Ejercicios principales</h2>
+ ${jr?"":`<h2 class="sec-title">Ejercicios principales</h2>
  <p class="phase-why">Primer peso anotado → peso actual, cada uno en su unidad; el % de mejora se calcula en kg. Entre paréntesis, kilos levantados por cada kilo de peso corporal, para compararse de forma justa.</p>
- ${mains.map(e=>`<div class="lift"><h3>${esc(e.n)}</h3>${PEOPLE.map(p=>{const x=D.w[p][e.id];if(!x||x.v===undefined||x.v===null)return `<div class="r"><span>${dot(p)}${PNAME[p]}</span><span class="muted">sin datos</span></div>`;const g=gainOf(e,x),vk=toKg(x.v,x.vu,e),pc=bw(p);return `<div class="r"><span>${dot(p)}${PNAME[p]}</span><span>${esc(fmtLoad(x.f,x.fu))} → ${esc(fmtLoad(x.v,x.vu))} <span class="${g>0?"up":""}">${g>0?"+"+g.toFixed(0)+"%":""}</span>${vk!==null&&pc?` <span class="muted">(${(vk/pc).toFixed(2)})</span>`:""}</span></div>`}).join("")}</div>`).join("")}
+ ${mains.map(e=>`<div class="lift"><h3>${esc(e.n)}</h3>${PEOPLE.filter(p=>doesEx(e,p)).map(p=>{const x=D.w[p][e.id];if(!x||x.v===undefined||x.v===null)return `<div class="r"><span>${dot(p)}${PNAME[p]}</span><span class="muted">sin datos</span></div>`;const g=gainOf(e,x),vk=toKg(x.v,x.vu,e),pc=bw(p);return `<div class="r"><span>${dot(p)}${PNAME[p]}</span><span>${esc(fmtLoad(x.f,x.fu))} → ${esc(fmtLoad(x.v,x.vu))} <span class="${g>0?"up":""}">${g>0?"+"+g.toFixed(0)+"%":""}</span>${vk!==null&&pc?` <span class="muted">(${(vk/pc).toFixed(2)})</span>`:""}</span></div>`}).join("")}</div>`).join("")}
  <h2 class="sec-title">Mediciones de ${PNAME[me]}</h2>
  <div class="card">
   <p class="phase-why" style="margin:0 0 10px">Peso en ayunas (promedio de la semana) y cintura a la altura del ombligo. Una vez por semana.</p>
@@ -1438,7 +1723,7 @@ function renderProgress(){
   </div>
   <button type="button" class="btn" id="cSave"${dis}>Guardar medición</button>
   <ul class="entries">${entries.length?entries.map(x=>`<li><span>${esc(x.d)}: ${x.p?esc(x.p)+" kg":""}${x.p&&x.c?", ":""}${x.c?esc(x.c)+" cm":""}</span>${readOnly?"":`<button type="button" data-d="${esc(x.d)}">Borrar</button>`}</li>`).join(""):`<li class="muted">Aún no hay mediciones. Registra la primera hoy.</li>`}</ul>
- </div>
+ </div>`}
  <h2 class="sec-title">Compartir progreso</h2>
  <div class="card">
   <p class="phase-why" style="margin:0 0 4px">Descarga una copia de esta app con el progreso del equipo y envíala por WhatsApp. Se abre en cualquier navegador, sin cuenta, y cada uno puede seguir registrando en su copia.</p>
@@ -1447,7 +1732,7 @@ function renderProgress(){
   <p class="phase-why" style="margin:10px 0 0">Para juntar todo: cuando alguien del equipo registre en su copia, que te devuelva su archivo y lo importas aquí. Se queda el dato más reciente de cada ejercicio y se suman las mediciones.</p>
   ${shareMsg?`<p class="tip" style="margin:8px 0 0;color:var(--ink);font-weight:600">${esc(shareMsg)}</p>`:""}
  </div>
- <p class="foot">Cambia de persona arriba para registrar las mediciones de cada uno.</p>`;
+ <p class="foot">${jr?"Tu progreso se mide por fuerza: compárate contigo mismo.":"Cambia de persona arriba para registrar las mediciones de cada uno."}</p>`;
  document.getElementById("expBtn").onclick=doExport;
  document.querySelectorAll("#gDays button").forEach(b=>b.onclick=()=>{progDay=b.dataset.g;renderProgress();});
  const imp=document.getElementById("impFile");
@@ -1466,16 +1751,16 @@ function renderProgress(){
 /* ---------- Mi gym ---------- */
 let gymDirty=false;
 const parseList=s=>String(s).replace(/,\s+/g," ").split(/[\s;]+/).map(t=>parseFloat(t.replace(",","."))).filter(pos);
-const MACH_EX=ALLEX.filter(e=>!e.cardio&&!LOADED.includes(e.id)&&(isMach(ITYPE[e.id]||"mach")||isMach(LTYPE[e.id]||"")));
+const MACH_EX=ALLEX.filter(e=>!e.cardio&&!LOADED.includes(e.id)&&!MALIAS[e.id]&&(isMach(ITYPE[e.id]||"mach")||isMach(LTYPE[e.id]||"")));
 const LOADED_EX=ALLEX.filter(e=>LOADED.includes(e.id));
 function gymHTML(){
  const g=D.g,dis=readOnly?" disabled":"";
  const num=(id,v,lbl)=>`<label>${lbl}<input type="number" inputmode="decimal" step="any" min="0" id="${id}" value="${esc(v)}"${dis}></label>`;
- const mname=e=>{const lalt=(BEGINNER[e.id]||{}).alt;return isMach(ITYPE[e.id]||"mach")?e.n:`${e.n} (principiantes: ${lalt||"máquina"})`;};
+ const mname=e=>{const lalt=(BEGINNER[e.id]||{}).alt;if(RID[e.id]!=="equipo")return `${e.n} (${PNAME[RID[e.id]]})`;return isMach(ITYPE[e.id]||"mach")?e.n:`${e.n} (principiantes: ${lalt||"máquina"})`;};
  return `<div class="card gym">
   <h3>Nivel</h3>
   <p class="phase-why" style="margin:0 0 4px">Principiante usa variantes en máquina o mancuernas, rangos más altos y sube máximo 2,5 kg (5 lb o 1 placa) por vez. El historial se conserva al cambiar.</p>
-  <div id="gNivel">${PEOPLE.map(p=>`<div class="prefrow"><span>${PNAME[p]}</span><div class="seg" role="group" aria-label="Nivel de ${PNAME[p]}" data-p="${p}">${NIVELES.map(nv=>`<button type="button" data-n="${nv}" aria-pressed="${g.nivel[p]===nv}"${dis}>${nv[0].toUpperCase()+nv.slice(1)}</button>`).join("")}</div></div>`).join("")}</div>
+  <div id="gNivel">${PEOPLE.filter(p=>!isJunior(p)).map(p=>`<div class="prefrow"><span>${PNAME[p]}</span><div class="seg" role="group" aria-label="Nivel de ${PNAME[p]}" data-p="${p}">${NIVELES.map(nv=>`<button type="button" data-n="${nv}" aria-pressed="${g.nivel[p]===nv}"${dis}>${nv[0].toUpperCase()+nv.slice(1)}</button>`).join("")}</div></div>`).join("")}</div>
   <h3>Unidad preferida</h3>
   <p class="phase-why" style="margin:0 0 4px">Es la unidad con la que arranca cada ejercicio. En cada tarjeta se puede cambiar por ejercicio.</p>
   <div id="gPref">${PEOPLE.map(p=>`<div class="prefrow"><span>${PNAME[p]}</span><div class="seg" data-p="${p}">${["kg","lb"].map(u=>`<button type="button" data-u="${u}" aria-pressed="${(g.pref[p]||"kg")===u}"${dis}>${u}</button>`).join("")}</div></div>`).join("")}</div>
@@ -1512,7 +1797,7 @@ function bindGym(box){
   const g={pref:{},bar:{kg:val("gBarKg"),lb:val("gBarLb")},ez:{kg:val("gEzKg"),lb:val("gEzLb")},
    plates:{kg:parseList(box.querySelector("#gPlKg").value),lb:parseList(box.querySelector("#gPlLb").value)},
    db:{kg:{min:val("gDbKgMin"),max:val("gDbKgMax"),step:val("gDbKgStep")},lb:{min:val("gDbLbMin"),max:val("gDbLbMax"),step:val("gDbLbStep")}},
-   mach:{},own:{},nivel:{},at:new Date().toISOString()};
+   mach:{},own:{},nivel:{},junior:D.g.junior,hide:D.g.hide,at:new Date().toISOString()};
   box.querySelectorAll("#gNivel .seg").forEach(s=>{const b=s.querySelector('[aria-pressed="true"]');if(b)g.nivel[s.dataset.p]=b.dataset.n;});
   box.querySelectorAll("#gOwn .mrow").forEach(r=>{const v=parseFloat(r.querySelector(".ow").value);if(pos(v))g.own[r.dataset.id]=v;});
   box.querySelectorAll("#gPref .seg").forEach(s=>{const b=s.querySelector('[aria-pressed="true"]');if(b)g.pref[s.dataset.p]=b.dataset.u;});
@@ -1528,8 +1813,17 @@ function renderPlan(){
  const P=PLAN[me],listo=planListo(me);
  // Si hay cambios sin guardar en Mi gym, se conserva el formulario tal cual al volver a pintar
  const keepGym=gymDirty&&document.getElementById("gymBox");
- const week=DAYS.map(d=>`<li><b>${d.name}:</b> ${esc(d.title)}</li>`).join("");
- document.getElementById("v-plan").innerHTML=`
+ const week=routineOf(me).map(d=>`<li><b>${d.name}:</b> ${esc(d.title)}</li>`).join("");
+ if(P.rules){
+  document.getElementById("v-plan").innerHTML=`
+  <div class="hero mine"><div class="dname">Plan de ${PNAME[me]}</div>${nickHTML(me)}<h1>Gym junior</h1><p class="sub">Su propia rutina: técnica primero, nada al fallo y siempre con un adulto cerca.</p></div>
+  <h2 class="sec-title">${esc(P.title)}</h2><div class="card">${ul(P.rules)}</div>
+  <h2 class="sec-title">La semana</h2><div class="card"><ul>${week}</ul></div>
+  <h2 class="sec-title">Cómo subir de peso</h2><div class="card">${ul(JR_PROG)}</div>
+  <h2 class="sec-title">Mi gym</h2>
+  <div id="gymBox"></div>
+  <p class="foot">Guía general para un adolescente sano. Si algo duele o molesta, para y consúltalo con un adulto y un profesional de la salud.</p>`;
+ }else document.getElementById("v-plan").innerHTML=`
  <div class="hero mine"><div class="dname">Plan de ${PNAME[me]}</div><h1>${listo?"Recomposición":"En construcción"}</h1><p class="sub">${listo?"Bajar grasa y ganar músculo, entrenando en equipo.":"Misma rutina del equipo desde ya; los números personales llegan con sus datos."}</p></div>
  ${listo?`<div class="macros">${P.diag.map(m=>`<div class="macro"><b style="font-size:22px">${m[1]}</b><span>${m[0]}</span></div>`).join("")}</div>`:wipHTML(me)}
  <h2 class="sec-title">Cómo entrenar juntos</h2><div class="card">${ul(PAIR)}</div>
